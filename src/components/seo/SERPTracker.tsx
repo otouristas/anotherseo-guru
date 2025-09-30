@@ -57,6 +57,7 @@ export const SERPTracker = ({ projectId }: SERPTrackerProps) => {
       });
 
       if (error) throw error;
+      if (data?.error) throw new Error(typeof data.error === 'string' ? data.error : JSON.stringify(data.error));
 
       // Save ranking
       await supabase.from('serp_rankings').insert({
@@ -81,7 +82,7 @@ export const SERPTracker = ({ projectId }: SERPTrackerProps) => {
       console.error('SERP tracking error:', error);
       toast({
         title: "Tracking failed",
-        description: "Could not track keyword ranking",
+        description: "Data source not connected or unavailable. Open Settings > Integrations to connect and try again.",
         variant: "destructive"
       });
     } finally {

@@ -45,6 +45,12 @@ export const TrendsAnalysis = ({ keywords }: TrendsAnalysisProps) => {
 
       if (error) throw error;
 
+      if (error) throw error;
+
+      if (data?.error) {
+        throw new Error(typeof data.error === 'string' ? data.error : JSON.stringify(data.error));
+      }
+
       if (data?.tasks?.[0]?.result?.[0]?.items) {
         const items = data.tasks[0].result[0].items;
         const formattedTrends: TrendData[] = items.map((item: any) => ({
@@ -57,6 +63,11 @@ export const TrendsAnalysis = ({ keywords }: TrendsAnalysisProps) => {
         toast({
           title: "Trends analyzed",
           description: `Analyzed ${formattedTrends.length} keyword trends`,
+        });
+      } else {
+        toast({
+          title: "No data yet",
+          description: "Connect your data sources in Settings > Integrations, then try again.",
         });
       }
     } catch (error) {

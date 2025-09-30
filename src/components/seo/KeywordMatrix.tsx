@@ -45,15 +45,27 @@ export const KeywordMatrix = ({ projectId }: KeywordMatrixProps) => {
 
       if (error) throw error;
 
+      if (data?.error) {
+        throw new Error(typeof data.error === 'string' ? data.error : JSON.stringify(data.error));
+      }
+
       const results = data?.tasks?.[0]?.result?.[0]?.items || [];
+
+      if (results.length === 0) {
+        toast({
+          title: "No data yet",
+          description: "Connect your data sources in Settings > Integrations, then try again.",
+        });
+        return;
+      }
       
       // Save top keywords
       const keywordsToSave = results.slice(0, 20).map((item: any) => ({
         project_id: projectId,
         keyword: item.keyword,
-        search_volume: item.search_volume || 0,
-        difficulty: item.competition_level === 'LOW' ? 30 : item.competition_level === 'MEDIUM' ? 60 : 90,
-        cpc: item.cpc || 0,
+        search_volume: item.keyword_info?.search_volume || item.search_volume || 0,
+        difficulty: item.keyword_info?.competition < 0.33 ? 30 : item.keyword_info?.competition < 0.66 ? 60 : 90,
+        cpc: item.keyword_info?.cpc || item.cpc || 0,
         search_intent: item.keyword_info?.search_intent || 'informational'
       }));
 

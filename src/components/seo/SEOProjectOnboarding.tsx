@@ -31,6 +31,14 @@ export const SEOProjectOnboarding = ({ userId, onComplete }: SEOProjectOnboardin
   ];
 
   const createProject = async () => {
+    if (!userId) {
+      toast({
+        title: "Not signed in",
+        description: "Please sign in to create a project.",
+        variant: "destructive",
+      });
+      return;
+    }
     if (!projectName.trim() || !domain.trim()) {
       toast({
         title: "Missing Information",

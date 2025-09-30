@@ -48,6 +48,12 @@ export const KeywordResearch = ({ onKeywordSelect }: KeywordResearchProps) => {
 
       if (error) throw error;
 
+      if (error) throw error;
+
+      if (data?.error) {
+        throw new Error(typeof data.error === 'string' ? data.error : JSON.stringify(data.error));
+      }
+
       if (data?.tasks?.[0]?.result?.[0]?.items) {
         const items = data.tasks[0].result[0].items;
         const formattedKeywords: KeywordData[] = items.map((item: any) => ({
@@ -61,6 +67,11 @@ export const KeywordResearch = ({ onKeywordSelect }: KeywordResearchProps) => {
         toast({
           title: "Research complete",
           description: `Found ${formattedKeywords.length} keyword opportunities`,
+        });
+      } else {
+        toast({
+          title: "No data yet",
+          description: "Connect your data sources in Settings > Integrations, then try again.",
         });
       }
     } catch (error) {
