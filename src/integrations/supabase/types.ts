@@ -14,6 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      automated_seo_fixes: {
+        Row: {
+          automated_fix: string
+          created_at: string
+          detected_at: string
+          fix_result: Json | null
+          fix_status: string
+          fixed_at: string | null
+          id: string
+          issue_description: string
+          issue_severity: string
+          issue_type: string
+          page_url: string
+          project_id: string | null
+        }
+        Insert: {
+          automated_fix: string
+          created_at?: string
+          detected_at?: string
+          fix_result?: Json | null
+          fix_status?: string
+          fixed_at?: string | null
+          id?: string
+          issue_description: string
+          issue_severity?: string
+          issue_type: string
+          page_url: string
+          project_id?: string | null
+        }
+        Update: {
+          automated_fix?: string
+          created_at?: string
+          detected_at?: string
+          fix_result?: Json | null
+          fix_status?: string
+          fixed_at?: string | null
+          id?: string
+          issue_description?: string
+          issue_severity?: string
+          issue_type?: string
+          page_url?: string
+          project_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automated_seo_fixes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       backlink_analysis: {
         Row: {
           anchor_text: string | null
@@ -188,6 +241,62 @@ export type Database = {
           },
         ]
       }
+      content_calendar_suggestions: {
+        Row: {
+          competition_level: string | null
+          created_at: string
+          id: string
+          optimal_publish_date: string | null
+          priority_score: number | null
+          project_id: string | null
+          reasoning: string | null
+          related_trends: Json | null
+          search_volume: number | null
+          status: string | null
+          suggested_keywords: string[]
+          suggested_topic: string
+          trending_score: number | null
+        }
+        Insert: {
+          competition_level?: string | null
+          created_at?: string
+          id?: string
+          optimal_publish_date?: string | null
+          priority_score?: number | null
+          project_id?: string | null
+          reasoning?: string | null
+          related_trends?: Json | null
+          search_volume?: number | null
+          status?: string | null
+          suggested_keywords: string[]
+          suggested_topic: string
+          trending_score?: number | null
+        }
+        Update: {
+          competition_level?: string | null
+          created_at?: string
+          id?: string
+          optimal_publish_date?: string | null
+          priority_score?: number | null
+          project_id?: string | null
+          reasoning?: string | null
+          related_trends?: Json | null
+          search_volume?: number | null
+          status?: string | null
+          suggested_keywords?: string[]
+          suggested_topic?: string
+          trending_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_calendar_suggestions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       content_gap_analysis: {
         Row: {
           ai_recommendations: Json | null
@@ -273,6 +382,65 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      content_performance_predictions: {
+        Row: {
+          confidence_score: number | null
+          content_preview: string | null
+          content_title: string
+          created_at: string
+          id: string
+          improvement_recommendations: string[] | null
+          predicted_backlinks: number | null
+          predicted_engagement_score: number | null
+          predicted_ranking_position: number | null
+          predicted_traffic_30d: number | null
+          predicted_traffic_90d: number | null
+          project_id: string | null
+          success_factors: Json | null
+          target_keywords: string[]
+        }
+        Insert: {
+          confidence_score?: number | null
+          content_preview?: string | null
+          content_title: string
+          created_at?: string
+          id?: string
+          improvement_recommendations?: string[] | null
+          predicted_backlinks?: number | null
+          predicted_engagement_score?: number | null
+          predicted_ranking_position?: number | null
+          predicted_traffic_30d?: number | null
+          predicted_traffic_90d?: number | null
+          project_id?: string | null
+          success_factors?: Json | null
+          target_keywords: string[]
+        }
+        Update: {
+          confidence_score?: number | null
+          content_preview?: string | null
+          content_title?: string
+          created_at?: string
+          id?: string
+          improvement_recommendations?: string[] | null
+          predicted_backlinks?: number | null
+          predicted_engagement_score?: number | null
+          predicted_ranking_position?: number | null
+          predicted_traffic_30d?: number | null
+          predicted_traffic_90d?: number | null
+          project_id?: string | null
+          success_factors?: Json | null
+          target_keywords?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_performance_predictions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       content_scores: {
         Row: {
@@ -572,6 +740,71 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "link_opportunities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      link_opportunity_scoring: {
+        Row: {
+          contact_info: Json | null
+          created_at: string
+          domain_authority: number | null
+          estimated_value: number | null
+          id: string
+          last_outreach_at: string | null
+          opportunity_score: number
+          outreach_difficulty: string | null
+          outreach_status: string | null
+          outreach_template: string | null
+          project_id: string | null
+          reasoning: string | null
+          relevance_score: number | null
+          success_probability: number | null
+          target_domain: string
+          target_url: string | null
+        }
+        Insert: {
+          contact_info?: Json | null
+          created_at?: string
+          domain_authority?: number | null
+          estimated_value?: number | null
+          id?: string
+          last_outreach_at?: string | null
+          opportunity_score: number
+          outreach_difficulty?: string | null
+          outreach_status?: string | null
+          outreach_template?: string | null
+          project_id?: string | null
+          reasoning?: string | null
+          relevance_score?: number | null
+          success_probability?: number | null
+          target_domain: string
+          target_url?: string | null
+        }
+        Update: {
+          contact_info?: Json | null
+          created_at?: string
+          domain_authority?: number | null
+          estimated_value?: number | null
+          id?: string
+          last_outreach_at?: string | null
+          opportunity_score?: number
+          outreach_difficulty?: string | null
+          outreach_status?: string | null
+          outreach_template?: string | null
+          project_id?: string | null
+          reasoning?: string | null
+          relevance_score?: number | null
+          success_probability?: number | null
+          target_domain?: string
+          target_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "link_opportunity_scoring_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "seo_projects"
