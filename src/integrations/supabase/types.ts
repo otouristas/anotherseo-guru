@@ -296,6 +296,47 @@ export type Database = {
         }
         Relationships: []
       }
+      google_api_settings: {
+        Row: {
+          created_at: string
+          credentials_json: Json | null
+          google_ads_customer_id: string | null
+          google_analytics_property_id: string | null
+          google_search_console_site_url: string | null
+          id: string
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credentials_json?: Json | null
+          google_ads_customer_id?: string | null
+          google_analytics_property_id?: string | null
+          google_search_console_site_url?: string | null
+          id?: string
+          project_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credentials_json?: Json | null
+          google_ads_customer_id?: string | null
+          google_analytics_property_id?: string | null
+          google_search_console_site_url?: string | null
+          id?: string
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "google_api_settings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: true
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       keyword_tracking: {
         Row: {
           cpc: number | null

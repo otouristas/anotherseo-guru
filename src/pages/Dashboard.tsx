@@ -20,7 +20,8 @@ import {
   Target,
   Activity,
   History,
-  Search
+  Search,
+  LayoutDashboard
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { ContentHistory } from "@/components/ContentHistory";
@@ -89,91 +90,170 @@ function DashboardContent() {
         <meta name="description" content="Manage your SEO projects, track content generation, and monitor your account performance." />
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
-      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      <section className="py-12 px-4 border-b bg-gradient-to-br from-primary/5 to-secondary/5">
-        <div className="container mx-auto max-w-6xl">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div>
-              <h1 className="text-4xl font-bold mb-2">Welcome back, {profile?.first_name || "Creator"}! 👋</h1>
-              <p className="text-muted-foreground">Track your performance and manage your account</p>
+      <div className="min-h-screen bg-gradient-to-b from-background via-muted/10 to-background">
+      {/* Hero Section */}
+      <section className="py-8 sm:py-12 px-4 border-b bg-gradient-to-br from-primary/5 to-secondary/5">
+        <div className="container mx-auto max-w-7xl">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 truncate">Welcome back, {profile?.first_name || "Creator"}! 👋</h1>
+              <p className="text-sm sm:text-base text-muted-foreground">Track your performance and manage your account</p>
             </div>
-            <Badge variant={planType === "free" ? "secondary" : "default"} className="text-lg px-4 py-2">
-              <Crown className="w-4 h-4 mr-2" />
+            <Badge variant={planType === "free" ? "secondary" : "default"} className="text-sm sm:text-lg px-3 sm:px-4 py-1.5 sm:py-2 shrink-0">
+              <Crown className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
               {currentPlan.name.toUpperCase()}
             </Badge>
           </div>
         </div>
       </section>
 
-      <section className="py-12 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-8 md:mb-12">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
-                <CardTitle className="text-xs sm:text-sm font-medium">Credits</CardTitle>
-                <Zap className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+      {/* Main Dashboard Content */}
+      <section className="py-6 sm:py-8 md:py-12 px-4">
+        <div className="container mx-auto max-w-7xl space-y-6 sm:space-y-8">
+          {/* CRM-Style Metrics Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+            <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4 md:p-6">
+                <div className="space-y-1">
+                  <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Credits</CardTitle>
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold">{isUnlimited ? "∞" : credits}</div>
+                </div>
+                <div className="p-2 sm:p-3 rounded-lg bg-primary/10">
+                  <Zap className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-primary" />
+                </div>
               </CardHeader>
-              <CardContent className="p-3 sm:p-4 pt-0">
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold">{isUnlimited ? "∞" : credits}</div>
-                {!isUnlimited && <Progress value={(credits/currentPlan.maxCredits)*100} className="mt-2" />}
+              <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
+                {!isUnlimited && <Progress value={(credits/currentPlan.maxCredits)*100} className="h-1.5 sm:h-2" />}
+                <p className="text-xs text-muted-foreground mt-2">of {isUnlimited ? "unlimited" : currentPlan.maxCredits} available</p>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
-                <CardTitle className="text-xs sm:text-sm font-medium">Posts</CardTitle>
-                <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+            
+            <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4 md:p-6">
+                <div className="space-y-1">
+                  <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Posts</CardTitle>
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold">{usageData?.content_generated_count || 0}</div>
+                </div>
+                <div className="p-2 sm:p-3 rounded-lg bg-blue-500/10">
+                  <FileText className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-blue-500" />
+                </div>
               </CardHeader>
-              <CardContent className="p-3 sm:p-4 pt-0">
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold">{usageData?.content_generated_count || 0}</div>
+              <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
+                <p className="text-xs text-muted-foreground">Created this month</p>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
-                <CardTitle className="text-xs sm:text-sm font-medium">Platforms</CardTitle>
-                <Target className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+            
+            <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-green-500">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4 md:p-6">
+                <div className="space-y-1">
+                  <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Platforms</CardTitle>
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold">{usageData?.platforms_used_count || 0}</div>
+                </div>
+                <div className="p-2 sm:p-3 rounded-lg bg-green-500/10">
+                  <Target className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-green-500" />
+                </div>
               </CardHeader>
-              <CardContent className="p-3 sm:p-4 pt-0">
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold">{usageData?.platforms_used_count || 0}</div>
+              <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
+                <p className="text-xs text-muted-foreground">Actively used</p>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
-                <CardTitle className="text-xs sm:text-sm font-medium">Used</CardTitle>
-                <Activity className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+            
+            <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-orange-500">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4 md:p-6">
+                <div className="space-y-1">
+                  <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Used</CardTitle>
+                  <div className="text-xl sm:text-2xl md:text-3xl font-bold">{usageData?.credits_used || 0}</div>
+                </div>
+                <div className="p-2 sm:p-3 rounded-lg bg-orange-500/10">
+                  <Activity className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-orange-500" />
+                </div>
               </CardHeader>
-              <CardContent className="p-3 sm:p-4 pt-0">
-                <div className="text-xl sm:text-2xl md:text-3xl font-bold">{usageData?.credits_used || 0}</div>
+              <CardContent className="p-3 sm:p-4 md:p-6 pt-0">
+                <p className="text-xs text-muted-foreground">Credits consumed</p>
               </CardContent>
             </Card>
           </div>
 
-          <Tabs defaultValue="overview">
-            <TabsList className="grid w-full max-w-full lg:max-w-3xl grid-cols-3 sm:grid-cols-6 gap-1">
-              <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
-              <TabsTrigger value="seo" className="text-xs sm:text-sm">Projects</TabsTrigger>
-              <TabsTrigger value="history" className="text-xs sm:text-sm">Content</TabsTrigger>
-              <TabsTrigger value="trends" className="text-xs sm:text-sm">Insights</TabsTrigger>
-              <TabsTrigger value="account" className="text-xs sm:text-sm">Account</TabsTrigger>
-              <TabsTrigger value="billing" className="text-xs sm:text-sm">Billing</TabsTrigger>
-            </TabsList>
-            <TabsContent value="overview" className="space-y-6 mt-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Quick Actions</CardTitle>
+          {/* CRM-Style Tabs */}
+          <Card className="shadow-lg">
+            <Tabs defaultValue="overview" className="w-full">
+              <div className="border-b px-4 sm:px-6">
+                <TabsList className="h-auto p-0 bg-transparent border-0 flex-wrap justify-start gap-0">
+                  <TabsTrigger 
+                    value="overview" 
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm font-medium"
+                  >
+                    <LayoutDashboard className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    Overview
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="seo" 
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm font-medium"
+                  >
+                    <Search className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    Projects
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="history" 
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm font-medium"
+                  >
+                    <History className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    Content
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="trends" 
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm font-medium"
+                  >
+                    <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    Insights
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="account" 
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm font-medium"
+                  >
+                    <User className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    Account
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="billing" 
+                    className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm font-medium"
+                  >
+                    <CreditCard className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                    Billing
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+            <TabsContent value="overview" className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+              <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+                <Card className="border-l-4 border-l-primary">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                      <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                      Quick Actions
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Button asChild variant="hero" className="w-full" size="lg">
-                      <Link to="/repurpose"><Zap className="w-4 h-4 mr-2" />Create New Content</Link>
+                  <CardContent className="space-y-2 sm:space-y-3">
+                    <Button asChild variant="hero" className="w-full h-auto py-3 sm:py-4" size="lg">
+                      <Link to="/repurpose" className="flex items-center justify-center gap-2">
+                        <Zap className="w-4 h-4" />
+                        <span className="text-sm sm:text-base">Create New Content</span>
+                      </Link>
                     </Button>
-                    <Button asChild variant="outline" className="w-full" size="lg">
-                      <Link to="/seo"><Search className="w-4 h-4 mr-2" />Open SEO Suite</Link>
+                    <Button asChild variant="outline" className="w-full h-auto py-3 sm:py-4" size="lg">
+                      <Link to="/seo" className="flex items-center justify-center gap-2">
+                        <Search className="w-4 h-4" />
+                        <span className="text-sm sm:text-base">Open SEO Suite</span>
+                      </Link>
                     </Button>
                   </CardContent>
                 </Card>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Recent SEO Projects</CardTitle>
+                
+                <Card className="border-l-4 border-l-blue-500">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                      <Search className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+                      Recent SEO Projects
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     {seoProjects.length > 0 ? (
@@ -182,18 +262,18 @@ function DashboardContent() {
                           <Link
                             key={project.id}
                             to="/seo"
-                            className="block p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                            className="block p-3 rounded-lg hover:bg-muted/50 transition-colors border"
                           >
-                            <div className="font-medium">{project.name}</div>
-                            <div className="text-sm text-muted-foreground">{project.domain}</div>
+                            <div className="font-medium text-sm sm:text-base truncate">{project.name}</div>
+                            <div className="text-xs sm:text-sm text-muted-foreground truncate">{project.domain}</div>
                           </Link>
                         ))}
                       </div>
                     ) : (
-                      <div className="text-center py-8 text-muted-foreground">
-                        <Search className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                        <p className="text-sm">No SEO projects yet</p>
-                        <Button asChild variant="link" size="sm" className="mt-2">
+                      <div className="text-center py-6 sm:py-8">
+                        <Search className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 opacity-50 text-muted-foreground" />
+                        <p className="text-xs sm:text-sm text-muted-foreground mb-2">No SEO projects yet</p>
+                        <Button asChild variant="link" size="sm" className="text-xs sm:text-sm">
                           <Link to="/seo">Create your first project</Link>
                         </Button>
                       </div>
@@ -202,18 +282,18 @@ function DashboardContent() {
                 </Card>
               </div>
             </TabsContent>
-            <TabsContent value="seo" className="space-y-6 mt-6">
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-2">SEO Projects</h3>
-                <p className="text-muted-foreground">Manage your SEO projects and tracking</p>
+            <TabsContent value="seo" className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+              <div className="mb-4 sm:mb-6">
+                <h3 className="text-xl sm:text-2xl font-bold mb-2">SEO Projects</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">Manage your SEO projects and tracking</p>
               </div>
               {seoProjects.length > 0 ? (
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {seoProjects.map((project) => (
-                    <Card key={project.id}>
-                      <CardHeader>
-                        <CardTitle>{project.name}</CardTitle>
-                        <CardDescription>{project.domain}</CardDescription>
+                    <Card key={project.id} className="hover:shadow-lg transition-all duration-300">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-base sm:text-lg truncate">{project.name}</CardTitle>
+                        <CardDescription className="truncate text-xs sm:text-sm">{project.domain}</CardDescription>
                       </CardHeader>
                       <CardContent>
                         <Button asChild className="w-full">
@@ -224,61 +304,73 @@ function DashboardContent() {
                   ))}
                 </div>
               ) : (
-                <Card className="p-12 text-center">
-                  <Search className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-xl font-semibold mb-2">No SEO Projects</h3>
-                  <p className="text-muted-foreground mb-6">Create your first SEO project to start tracking rankings</p>
+                <Card className="p-8 sm:p-12 text-center">
+                  <Search className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg sm:text-xl font-semibold mb-2">No SEO Projects</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">Create your first SEO project to start tracking rankings</p>
                   <Button asChild size="lg">
                     <Link to="/seo">Create SEO Project</Link>
                   </Button>
                 </Card>
               )}
             </TabsContent>
-            <TabsContent value="history" className="space-y-6 mt-6">
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-2">Content History</h3>
-                <p className="text-muted-foreground">View, manage, and reuse your generated content</p>
+            
+            <TabsContent value="history" className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+              <div className="mb-4 sm:mb-6">
+                <h3 className="text-xl sm:text-2xl font-bold mb-2">Content History</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">View, manage, and reuse your generated content</p>
               </div>
               <ContentHistory />
             </TabsContent>
-            <TabsContent value="account" className="space-y-6 mt-6">
-              <Card>
-                <CardHeader><CardTitle>Account Information</CardTitle></CardHeader>
+            <TabsContent value="account" className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+              <Card className="border-l-4 border-l-primary">
+                <CardHeader>
+                  <CardTitle className="text-lg sm:text-xl">Account Information</CardTitle>
+                </CardHeader>
                 <CardContent className="space-y-4">
-                  <div><p className="text-sm font-medium">Email</p><p className="text-muted-foreground">{user?.email}</p></div>
+                  <div className="p-4 rounded-lg bg-muted/50">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Email Address</p>
+                    <p className="text-sm sm:text-base font-medium break-all">{user?.email}</p>
+                  </div>
+                  <div className="p-4 rounded-lg bg-muted/50">
+                    <p className="text-xs sm:text-sm font-medium text-muted-foreground mb-1">Member Since</p>
+                    <p className="text-sm sm:text-base font-medium">{new Date(user?.created_at || "").toLocaleDateString()}</p>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
-            <TabsContent value="trends" className="space-y-6 mt-6">
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-2">News & Insights</h3>
-                <p className="text-muted-foreground">SEO trends and personalized recommendations for your projects</p>
+            <TabsContent value="trends" className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+              <div className="mb-4 sm:mb-6">
+                <h3 className="text-xl sm:text-2xl font-bold mb-2">News & Insights</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">SEO trends and personalized recommendations for your projects</p>
               </div>
               <NewsAndTrends projectId={seoProjects[0]?.id} />
             </TabsContent>
-            <TabsContent value="billing" className="space-y-6 mt-6">
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-2">Billing & Subscription</h3>
-                <p className="text-muted-foreground">Manage your plan and payment details</p>
+            <TabsContent value="billing" className="space-y-4 sm:space-y-6 p-4 sm:p-6">
+              <div className="mb-4 sm:mb-6">
+                <h3 className="text-xl sm:text-2xl font-bold mb-2">Billing & Subscription</h3>
+                <p className="text-sm sm:text-base text-muted-foreground">Manage your plan and payment details</p>
               </div>
-              <div className="grid md:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader><CardTitle>Current Plan</CardTitle></CardHeader>
+              <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+                <Card className="border-l-4 border-l-primary hover:shadow-lg transition-all duration-300">
+                  <CardHeader>
+                    <CardTitle className="text-lg sm:text-xl">Current Plan</CardTitle>
+                  </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Badge className="text-lg px-4 py-2">{currentPlan.name}</Badge>
-                      <p className="text-2xl font-bold">{currentPlan.price}<span className="text-sm text-muted-foreground">/mo</span></p>
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <Badge className="text-base sm:text-lg px-3 sm:px-4 py-1.5 sm:py-2">{currentPlan.name}</Badge>
+                      <p className="text-xl sm:text-2xl font-bold">{currentPlan.price}<span className="text-xs sm:text-sm text-muted-foreground">/mo</span></p>
                     </div>
                     <div className="pt-4 border-t space-y-2">
-                      <div className="flex justify-between text-sm">
+                      <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-muted-foreground">Credits per month</span>
                         <span className="font-medium">{isUnlimited ? "Unlimited" : currentPlan.maxCredits}</span>
                       </div>
-                      <div className="flex justify-between text-sm">
+                      <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-muted-foreground">SEO Projects</span>
                         <span className="font-medium">{planType === "free" ? "1" : "Unlimited"}</span>
                       </div>
-                      <div className="flex justify-between text-sm">
+                      <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-muted-foreground">Priority Support</span>
                         <span className="font-medium">{planType === "enterprise" ? "✓" : "—"}</span>
                       </div>
@@ -290,29 +382,32 @@ function DashboardContent() {
                     )}
                   </CardContent>
                 </Card>
-                <Card>
-                  <CardHeader><CardTitle>Usage This Month</CardTitle></CardHeader>
+                
+                <Card className="border-l-4 border-l-blue-500 hover:shadow-lg transition-all duration-300">
+                  <CardHeader>
+                    <CardTitle className="text-lg sm:text-xl">Usage This Month</CardTitle>
+                  </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
                       <div>
-                        <div className="flex justify-between text-sm mb-2">
+                        <div className="flex justify-between text-xs sm:text-sm mb-2">
                           <span className="text-muted-foreground">Credits Used</span>
                           <span className="font-medium">{usageData?.credits_used || 0} / {isUnlimited ? "∞" : currentPlan.maxCredits}</span>
                         </div>
                         {!isUnlimited && (
-                          <Progress value={((usageData?.credits_used || 0) / currentPlan.maxCredits) * 100} />
+                          <Progress value={((usageData?.credits_used || 0) / currentPlan.maxCredits) * 100} className="h-2" />
                         )}
                       </div>
                       <div className="pt-4 border-t space-y-2">
-                        <div className="flex justify-between text-sm">
+                        <div className="flex justify-between text-xs sm:text-sm">
                           <span className="text-muted-foreground">Content Generated</span>
                           <span className="font-medium">{usageData?.content_generated_count || 0}</span>
                         </div>
-                        <div className="flex justify-between text-sm">
+                        <div className="flex justify-between text-xs sm:text-sm">
                           <span className="text-muted-foreground">Platforms Used</span>
                           <span className="font-medium">{usageData?.platforms_used_count || 0}</span>
                         </div>
-                        <div className="flex justify-between text-sm">
+                        <div className="flex justify-between text-xs sm:text-sm">
                           <span className="text-muted-foreground">SEO Projects</span>
                           <span className="font-medium">{seoProjects.length}</span>
                         </div>
@@ -323,6 +418,7 @@ function DashboardContent() {
               </div>
             </TabsContent>
           </Tabs>
+        </Card>
         </div>
       </section>
       <Footer />

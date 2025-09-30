@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart3, Search, CheckCircle, AlertCircle, ExternalLink } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface GoogleIntegrationsProps {
   projectId: string;
@@ -15,22 +16,70 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
   const [gaConnected, setGaConnected] = useState(false);
   const [gscPropertyId, setGscPropertyId] = useState("");
   const [gaPropertyId, setGaPropertyId] = useState("");
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+
+  useEffect(() => {
+    loadSettings();
+  }, [projectId]);
+
+  const loadSettings = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('google_api_settings')
+      .select('*')
+      .eq('project_id', projectId)
+      .maybeSingle();
+
+    if (data) {
+      setGscPropertyId(data.google_search_console_site_url || "");
+      setGaPropertyId(data.google_analytics_property_id || "");
+      setGscConnected(!!data.google_search_console_site_url);
+      setGaConnected(!!data.google_analytics_property_id);
+    }
+    setLoading(false);
+  };
+
+  const saveSettings = async (gscUrl?: string, gaId?: string) => {
+    const { data: existing } = await supabase
+      .from('google_api_settings')
+      .select('*')
+      .eq('project_id', projectId)
+      .maybeSingle();
+
+    if (existing) {
+      await supabase
+        .from('google_api_settings')
+        .update({
+          google_search_console_site_url: gscUrl ?? gscPropertyId,
+          google_analytics_property_id: gaId ?? gaPropertyId,
+        })
+        .eq('project_id', projectId);
+    } else {
+      await supabase
+        .from('google_api_settings')
+        .insert({
+          project_id: projectId,
+          google_search_console_site_url: gscUrl ?? gscPropertyId,
+          google_analytics_property_id: gaId ?? gaPropertyId,
+        });
+    }
+  };
 
   const connectGoogleSearchConsole = async () => {
     if (!gscPropertyId.trim()) {
       toast({
         title: "Property ID Required",
-        description: "Please enter your Google Search Console property ID",
+        description: "Please enter your Google Search Console property URL",
         variant: "destructive",
       });
       return;
     }
 
-    // In production, this would initiate OAuth flow and store credentials
+    await saveSettings(gscPropertyId, gaPropertyId);
     toast({
       title: "Google Search Console Connected! ✅",
-      description: "Now syncing data from your property",
+      description: "Settings saved successfully",
     });
     setGscConnected(true);
   };
@@ -45,13 +94,37 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
       return;
     }
 
-    // In production, this would initiate OAuth flow and store credentials
+    await saveSettings(gscPropertyId, gaPropertyId);
     toast({
       title: "Google Analytics Connected! ✅",
-      description: "Now syncing data from your property",
+      description: "Settings saved successfully",
     });
     setGaConnected(true);
   };
+
+  const disconnectGSC = async () => {
+    await saveSettings("", gaPropertyId);
+    setGscConnected(false);
+    setGscPropertyId("");
+    toast({
+      title: "Disconnected",
+      description: "Google Search Console disconnected",
+    });
+  };
+
+  const disconnectGA = async () => {
+    await saveSettings(gscPropertyId, "");
+    setGaConnected(false);
+    setGaPropertyId("");
+    toast({
+      title: "Disconnected",
+      description: "Google Analytics disconnected",
+    });
+  };
+
+  if (loading) {
+    return <div className="p-8 text-center text-muted-foreground">Loading settings...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -146,7 +219,7 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
                 <div className="text-sm text-muted-foreground">Avg. CTR (7d)</div>
               </div>
             </div>
-            <Button variant="outline" onClick={() => setGscConnected(false)}>Disconnect</Button>
+            <Button variant="outline" onClick={disconnectGSC}>Disconnect</Button>
           </div>
         )}
       </Card>
@@ -234,7 +307,7 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
                 <div className="text-sm text-muted-foreground">Avg. Duration</div>
               </div>
             </div>
-            <Button variant="outline" onClick={() => setGaConnected(false)}>Disconnect</Button>
+            <Button variant="outline" onClick={disconnectGA}>Disconnect</Button>
           </div>
         )}
       </Card>
