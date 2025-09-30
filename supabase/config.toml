@@ -53,3 +53,15 @@ verify_jwt = false
 
 [functions.link-scorer]
 verify_jwt = false
+
+[functions.multi-location-analyzer]
+verify_jwt = false
+
+[functions.revenue-analyzer]
+verify_jwt = false
+
+[functions.white-label-generator]
+verify_jwt = false
+
+[functions.cross-channel-analyzer]
+verify_jwt = false
