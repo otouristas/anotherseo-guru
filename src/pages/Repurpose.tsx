@@ -150,6 +150,21 @@ function RepurposeContent() {
 
       setGeneratedContent(data.generatedContent);
       
+      // Save to content history
+      const historyPromises = data.generatedContent.map((item: GeneratedContent) => 
+        supabase.from('content_history').insert({
+          user_id: user?.id,
+          original_content: content,
+          platform: item.platform,
+          generated_content: item.content,
+          tone,
+          style,
+          keywords: [seoData.primaryKeyword, ...seoData.secondaryKeywords].filter(k => k)
+        })
+      );
+      
+      await Promise.all(historyPromises);
+      
       // Move to results step
       setActiveStep("results");
 

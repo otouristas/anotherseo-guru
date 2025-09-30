@@ -17,9 +17,11 @@ import {
   Crown,
   BarChart3,
   Target,
-  Activity
+  Activity,
+  History
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
+import { ContentHistory } from "@/components/ContentHistory";
 
 export default function Dashboard() {
   return (
@@ -124,8 +126,9 @@ function DashboardContent() {
           </div>
 
           <Tabs defaultValue="overview">
-            <TabsList className="grid w-full max-w-md grid-cols-3">
+            <TabsList className="grid w-full max-w-2xl grid-cols-4">
               <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="history">Content History</TabsTrigger>
               <TabsTrigger value="account">Account</TabsTrigger>
               <TabsTrigger value="billing">Billing</TabsTrigger>
             </TabsList>
@@ -140,6 +143,13 @@ function DashboardContent() {
                   </Button>
                 </CardContent>
               </Card>
+            </TabsContent>
+            <TabsContent value="history" className="space-y-6 mt-6">
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold mb-2">Content History</h3>
+                <p className="text-muted-foreground">View, manage, and reuse your generated content</p>
+              </div>
+              <ContentHistory />
             </TabsContent>
             <TabsContent value="account" className="space-y-6 mt-6">
               <Card>
