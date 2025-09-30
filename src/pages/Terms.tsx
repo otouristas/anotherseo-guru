@@ -54,7 +54,7 @@ const Terms = () => {
               <h2 className="text-2xl font-bold">4. Data Ownership</h2>
               <p className="text-muted-foreground leading-relaxed">
                 You retain all rights to your SEO data, projects, and configurations. We process your data solely to provide 
-                our SEO analysis services. Your DataForSEO API key remains your property and is encrypted in our system.
+                our SEO analysis services. Your third-party API keys remain your property and are encrypted in our system.
               </p>
             </section>
 

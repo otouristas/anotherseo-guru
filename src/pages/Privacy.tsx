@@ -33,7 +33,7 @@ const Privacy = () => {
                   <li>SEO project data and website information</li>
                   <li>Keyword research and ranking data</li>
                   <li>Usage analytics and platform interaction data</li>
-                  <li>DataForSEO API key (encrypted and stored securely)</li>
+                  <li>API keys for third-party integrations (encrypted and stored securely)</li>
                 </ul>
               </div>
             </section>
@@ -89,7 +89,7 @@ const Privacy = () => {
             <section className="space-y-4">
               <h2 className="text-2xl font-bold">7. Third-Party Services</h2>
               <p className="text-muted-foreground leading-relaxed">
-                We integrate with DataForSEO API for keyword and SEO data. Your API keys are encrypted and never shared. 
+                We integrate with enterprise-grade APIs for SEO and keyword data. Your API keys are encrypted and never shared. 
                 We also use Stripe for payment processing and Google services (Analytics, Search Console) when you choose to connect them.
               </p>
             </section>

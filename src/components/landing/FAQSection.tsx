@@ -12,7 +12,7 @@ const faqs = [
   },
   {
     question: "How is this different from ChatGPT or other AI tools?",
-    answer: "While ChatGPT is general-purpose, Repurposfy is specifically trained for content repurposing with platform-specific best practices, 2025 algorithm knowledge, real-time SEO data from DataForSEO, and strategic prompt engineering. It's like having a senior content strategist for every platform."
+    answer: "While ChatGPT is general-purpose, AnotherSEOGuru is specifically trained for SEO optimization with platform-specific best practices, 2025 algorithm knowledge, real-time SEO data from enterprise sources, and strategic prompt engineering. It's like having a senior SEO strategist at your fingertips."
   },
   {
     question: "Can I customize the AI prompts or add my own platforms?",
@@ -40,7 +40,7 @@ const faqs = [
   },
   {
     question: "How accurate is the keyword research data?",
-    answer: "Our keyword data comes directly from DataForSEO, which aggregates real-time data from Google Ads API, search engines, and other authoritative sources. It's the same data used by enterprise SEO tools."
+    answer: "Our keyword data comes from enterprise-grade APIs that aggregate real-time data from Google Ads, search engines, and other authoritative sources. It's the same data used by leading SEO platforms."
   },
   {
     question: "Can multiple team members use one account?",

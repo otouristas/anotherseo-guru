@@ -99,12 +99,12 @@ export const FeaturesSection = () => {
         
         <div className="mt-16 text-center">
           <Card className="p-8 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
-            <h3 className="text-2xl font-bold mb-4">DataForSEO Integration</h3>
+            <h3 className="text-2xl font-bold mb-4">Enterprise API Access</h3>
             <p className="text-muted-foreground mb-4">
-              Plug in your DataForSEO API key to pull real-time organic traffic data, backlinks analytics, and comprehensive keyword research instantly.
+              Connect your enterprise API keys to access real-time organic traffic data, backlinks analytics, and comprehensive keyword research from industry-leading sources.
             </p>
             <p className="text-sm text-muted-foreground">
-              Pay-as-you-go pricing • No expensive monthly subscriptions • Just like OpenAI API
+              Flexible pay-as-you-go pricing • No expensive monthly subscriptions • Enterprise-grade data quality
             </p>
           </Card>
         </div>

@@ -2,8 +2,9 @@ import { Helmet } from "react-helmet-async";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Search, BookOpen, TrendingUp, Link2, BarChart3, Target, Globe, Zap, FileText, Users, Layers } from "lucide-react";
+import { Search, BookOpen, TrendingUp, Link2, BarChart3, Target, Globe, Zap, Users, Layers } from "lucide-react";
 import { useState } from "react";
+import { Footer } from "@/components/Footer";
 
 const categories = [
   {
@@ -151,24 +152,6 @@ const categories = [
     ]
   },
   {
-    icon: FileText,
-    title: "DataForSEO Integration",
-    articles: [
-      {
-        title: "Setting Up DataForSEO API",
-        content: "Connect your DataForSEO API key for pay-as-you-go access to organic traffic data and keyword metrics."
-      },
-      {
-        title: "Understanding API Costs",
-        content: "DataForSEO uses pay-as-you-go pricing, similar to OpenAI API. No expensive monthly subscriptions required."
-      },
-      {
-        title: "API Rate Limits",
-        content: "Learn about API rate limits and best practices for efficient data usage."
-      }
-    ]
-  },
-  {
     icon: Users,
     title: "Account & Billing",
     articles: [
@@ -276,6 +259,7 @@ const Help = () => {
           </Card>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

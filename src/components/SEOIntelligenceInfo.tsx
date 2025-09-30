@@ -13,7 +13,7 @@ export const SEOIntelligenceInfo = () => {
           <div>
             <h3 className="text-lg font-semibold mb-1">Advanced SEO Intelligence Enabled</h3>
             <p className="text-sm text-muted-foreground">
-              Powered by DataForSEO + Lovable AI for data-driven content optimization
+              Powered by enterprise-grade APIs and AI for data-driven content optimization
             </p>
           </div>
 
