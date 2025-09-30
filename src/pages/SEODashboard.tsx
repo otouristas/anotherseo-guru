@@ -26,6 +26,8 @@ import { BacklinkMonitor } from "@/components/seo/BacklinkMonitor";
 import { ContentCalendarView } from "@/components/seo/ContentCalendarView";
 import { TechnicalAudit } from "@/components/seo/TechnicalAudit";
 import { ProjectSelector } from "@/components/seo/ProjectSelector";
+import { SiteAuditCrawler } from "@/components/seo/SiteAuditCrawler";
+import { GoogleIntegrations } from "@/components/seo/GoogleIntegrations";
 
 export default function SEODashboard() {
   return (
@@ -127,10 +129,10 @@ function SEODashboardContent() {
 
           {selectedProject ? (
             <Tabs defaultValue="serp" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 xl:grid-cols-9">
                 <TabsTrigger value="serp" className="gap-2">
                   <Search className="w-4 h-4" />
-                  <span className="hidden sm:inline">SERP Tracker</span>
+                  <span className="hidden sm:inline">SERP</span>
                 </TabsTrigger>
                 <TabsTrigger value="competitors" className="gap-2">
                   <BarChart3 className="w-4 h-4" />
@@ -148,9 +150,17 @@ function SEODashboardContent() {
                   <LinkIcon className="w-4 h-4" />
                   <span className="hidden sm:inline">Backlinks</span>
                 </TabsTrigger>
-                <TabsTrigger value="technical" className="gap-2">
+                <TabsTrigger value="audit" className="gap-2">
                   <Globe className="w-4 h-4" />
+                  <span className="hidden sm:inline">Site Audit</span>
+                </TabsTrigger>
+                <TabsTrigger value="technical" className="gap-2">
+                  <Zap className="w-4 h-4" />
                   <span className="hidden sm:inline">Technical</span>
+                </TabsTrigger>
+                <TabsTrigger value="integrations" className="gap-2">
+                  <TrendingUp className="w-4 h-4" />
+                  <span className="hidden sm:inline">Google</span>
                 </TabsTrigger>
                 <TabsTrigger value="calendar" className="gap-2">
                   <Calendar className="w-4 h-4" />
@@ -178,8 +188,16 @@ function SEODashboardContent() {
                 <BacklinkMonitor projectId={selectedProject} />
               </TabsContent>
 
+              <TabsContent value="audit">
+                <SiteAuditCrawler projectId={selectedProject} />
+              </TabsContent>
+
               <TabsContent value="technical">
                 <TechnicalAudit projectId={selectedProject} />
+              </TabsContent>
+
+              <TabsContent value="integrations">
+                <GoogleIntegrations projectId={selectedProject} />
               </TabsContent>
 
               <TabsContent value="calendar">

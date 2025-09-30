@@ -1,86 +1,280 @@
-# AnotherSEOGuru
+# AnotherSEOGuru - AI/LLM Context
+
+> https://anotherseoguru.com
+> Contact: support@anotherseoguru.com
+> Updated: 2025-09-30
 
 ## Overview
-AnotherSEOGuru is a professional SEO platform that combines enterprise-grade SEO analytics with AI-powered content creation. We help businesses dominate search rankings through comprehensive SEO tools and intelligent content optimization.
+AnotherSEOGuru is a professional, enterprise-grade SEO platform that combines comprehensive SEO analytics with AI-powered content creation. We help businesses, agencies, and SEO professionals dominate search rankings through data-driven insights and intelligent content optimization.
 
-## Key Features
+## Core SEO Features
 
-### SEO Suite
-- SERP Position Tracking: Monitor keyword rankings in real-time with historical data
-- Competitor Analysis: Analyze competitor strategies, backlinks, and content gaps
-- Keyword Research: Advanced keyword research with volume, difficulty, CPC, and search intent
-- Backlink Monitoring: Track backlink profiles and discover link opportunities
-- Technical SEO Audit: Identify technical issues, page speed, Core Web Vitals
-- Content Scoring: Analyze content quality with readability and SEO metrics
-- Content Calendar: Plan and manage content strategy with team collaboration
-- Local SEO: Track local pack positions and GMB performance
+### 1. SERP Position Tracking
+- Real-time keyword ranking monitoring across all major search engines
+- Historical ranking data and trend analysis
+- Competitor position comparison
+- Featured snippet and SERP feature tracking
+- Local pack position monitoring
+- Mobile vs desktop ranking differences
 
-### AI Content Generation
-- Platform-Optimized Content: Generate content for 10+ platforms
-- SEO Optimization: AI trained on 2025 ranking factors
-- Multi-Format Export: .docx, .html, .md formats
-- Content History: Save and reuse generated content
+### 2. Competitor Analysis
+- Comprehensive competitor SEO strategy analysis
+- Backlink profile comparison and gap analysis
+- Content gap identification
+- Keyword overlap and opportunity discovery
+- Domain authority and traffic estimation
+- Competitor content performance metrics
 
-## Pricing
+### 3. Advanced Keyword Research
+- Search volume data for accurate traffic forecasting
+- Keyword difficulty scoring for realistic targeting
+- CPC data for commercial intent assessment
+- Search intent classification (informational, transactional, navigational, commercial)
+- LSI and semantic keyword suggestions
+- Trending keywords and seasonal patterns
+- Related questions and "People Also Ask" data
 
-### Starter - €49/month
-- 1 SEO Project
-- 50 AI content generations/month
+### 4. Backlink Monitoring
+- Complete backlink profile tracking
+- New and lost backlink alerts
+- Referring domain analysis with authority metrics
+- Anchor text distribution
+- Link type classification (dofollow/nofollow)
+- Toxic backlink identification
+- Link building opportunity discovery
+- Competitor backlink analysis
+
+### 5. Technical SEO Audit
+- Comprehensive site crawling and analysis
+- Core Web Vitals monitoring (LCP, FID, CLS)
+- Page speed optimization recommendations
+- Mobile-friendliness testing
+- SSL/HTTPS verification
+- XML sitemap validation
+- Robots.txt analysis
+- Canonical URL verification
+- Schema markup detection and validation
+- Image optimization issues
+- Broken link detection
+- Redirect chain analysis
+- Duplicate content identification
+
+### 6. Content Scoring & Analysis
+- Readability score (Flesch Reading Ease)
+- SEO optimization score
+- Keyword density analysis
+- Content structure evaluation
+- Entity extraction and analysis
+- Topic clustering and relevance
+- E-E-A-T signal detection
+- Internal linking suggestions
+- Meta tag optimization recommendations
+
+### 7. Content Calendar
+- Editorial calendar with scheduling
+- Content brief templates
+- Keyword and topic assignments
+- Team collaboration and workflow management
+- Content status tracking (planned, in progress, published)
+- Multi-user permissions and roles
+- Performance tracking post-publication
+
+### 8. Local SEO Tools
+- Google My Business integration
+- Local pack ranking tracking
+- Citation consistency monitoring
+- Review management and tracking
+- Local keyword research
+- Geographic performance analysis
+
+## AI Content Generation
+
+### Platform Support
+Generate optimized content for 15+ platforms:
+- SEO Blog Posts (with proper heading structure, keyword optimization)
+- LinkedIn Posts (professional tone, engagement-focused)
+- Twitter/X Threads (concise, engaging, hashtag optimized)
+- Medium Articles (long-form, storytelling approach)
+- Instagram Captions (visual-first, hashtag strategy)
+- Facebook Posts (community-focused, shareable)
+- YouTube Descriptions (SEO optimized, timestamp-ready)
+- Pinterest Descriptions (keyword-rich, discovery-optimized)
+- TikTok Scripts (trending, hook-driven)
+- Reddit Posts (community-appropriate, value-focused)
+- Email Newsletters (subject lines, body content)
+- Product Descriptions (conversion-optimized)
+- Press Releases (AP style, newsworthy)
+- Website Copy (conversion-focused, SEO-optimized)
+- Ad Copy (platform-specific, CTR-optimized)
+
+### AI Capabilities
+- Trained on 2025 SEO ranking factors and algorithm updates
+- Multi-format export (.docx, .html, .md, plain text)
+- Tone and style customization (professional, casual, technical, friendly, authoritative)
+- SEO keyword integration with natural placement
+- Meta title and description generation
+- Content history and template library
+- Batch content generation
+- Multi-language support (coming soon)
+
+### Content Optimization
+- Automatic keyword placement and density optimization
+- LSI keyword integration
+- Semantic relevance scoring
+- Readability optimization for target audience
+- Internal linking suggestions
+- CTA placement recommendations
+- Schema markup suggestions
+
+## Integrations & Connectivity
+
+### Analytics Platforms
+- Google Analytics 4 integration
+- Google Search Console direct connection
+- Custom dashboard creation
+- Automated reporting and alerts
+- Data export and API access
+
+### Content Management Systems
+- WordPress plugin
+- Shopify integration
+- HubSpot connection
+- Custom API webhooks
+
+### Third-Party Tools
+- Ahrefs data compatibility
+- SEMrush data import
+- Moz metrics integration
+- Majestic backlink data
+
+## Pricing Plans
+
+### Starter Plan - €49/month
+- 1 SEO project
+- 50 AI content generations per month
 - Basic SERP tracking (10 keywords)
-- Keyword research tool
-- Content scoring & optimization
+- Keyword research tool access
+- Content scoring and optimization
 - Technical SEO audit
+- Email support
 
-### Professional - €99/month
-- 5 SEO Projects
-- 200 AI content generations/month
+### Professional Plan - €99/month
+- 5 SEO projects
+- 200 AI content generations per month
 - Advanced SERP tracking (100 keywords)
-- Competitor analysis suite
+- Full competitor analysis suite
 - Backlink monitoring
 - Team collaboration (3 seats)
+- Priority email support
 
-### Agency - €249/month
-- 20 SEO Projects
+### Agency Plan - €249/month
+- 20 SEO projects
 - Unlimited AI content generation
 - SERP tracking (500 keywords)
-- Full competitor intelligence
-- White-label reporting
-- API access
+- Complete competitor intelligence
+- White-label reporting capabilities
+- Full API access
 - Team collaboration (10 seats)
+- Phone and email priority support
 
-### Enterprise - Custom Pricing
-- Unlimited SEO Projects
+### Enterprise Plan - Custom Pricing
+- Unlimited SEO projects
 - Unlimited AI content generation
 - Unlimited keyword tracking
-- Custom integrations & workflows
+- Custom integrations and workflows
+- Dedicated account manager
+- Custom training and onboarding
 - Unlimited team seats
-- SLA with 24/7 support
-
-## Use Cases
-- SEO Agencies managing multiple client projects
-- In-house marketing teams tracking company SEO performance
-- Content creators optimizing blog posts and social media
-- E-commerce businesses improving product page rankings
-- Local businesses tracking local pack positions
-
-## Technology
-- Real-time SEO data and analytics
-- AI-powered content generation using advanced language models
-- Comprehensive technical SEO analysis
-- Automated backlink discovery and monitoring
+- 24/7 SLA with priority support
+- Custom contract terms
 
 ## Target Audience
+
+### Primary Users
 - SEO professionals and consultants
 - Digital marketing agencies
-- Content marketers and creators
-- Business owners focused on organic growth
-- Enterprise marketing teams
+- Content marketing teams
+- In-house SEO specialists
+- E-commerce businesses
+- SaaS companies
+- Enterprise marketing departments
 
-## Free Trial
-14-day free trial available on all plans, no credit card required.
+### Use Cases
+- Multi-client SEO management for agencies
+- Enterprise-level SEO tracking and reporting
+- Content strategy and optimization
+- Competitive intelligence gathering
+- Technical SEO maintenance
+- Local SEO management for multi-location businesses
+- E-commerce product optimization
+- Blog and content hub optimization
 
-## Support
-- Email support on all plans
-- Priority support on Professional and above
-- Dedicated account manager on Agency and Enterprise plans
-- 24/7 SLA support on Enterprise plan
+## Technology Stack
+- Real-time SEO data aggregation
+- Advanced AI language models for content generation
+- Comprehensive web crawling technology
+- Automated backlink discovery algorithms
+- Machine learning for trend prediction
+- Cloud-based infrastructure for scalability
+
+## Data Sources
+- Multiple SERP tracking data providers
+- Proprietary web crawling technology
+- Third-party SEO metric APIs
+- Direct search engine API integrations
+- Historical data archives dating back 5+ years
+
+## Support & Resources
+
+### Documentation
+- Comprehensive knowledge base
+- Video tutorials and courses
+- API documentation for developers
+- Best practices guides
+- Case studies and success stories
+
+### Customer Support
+- Email support: support@anotherseoguru.com
+- Response time: < 24 hours (< 4 hours for Agency+)
+- Phone support for Agency and Enterprise plans
+- Dedicated Slack channel for Enterprise customers
+- Regular webinars and training sessions
+
+### Free Trial
+- 14-day free trial on all plans
+- No credit card required
+- Full feature access during trial
+- Easy cancellation
+
+## Security & Compliance
+- SOC 2 Type II certified
+- GDPR compliant
+- Data encryption at rest and in transit
+- Regular security audits
+- Privacy-first data handling
+- API rate limiting and access controls
+
+## Updates & Roadmap
+- Monthly feature releases
+- Algorithm update notifications
+- Regular data source improvements
+- User-requested feature implementation
+- Transparent public roadmap
+
+## Getting Started
+1. Sign up for free 14-day trial at https://anotherseoguru.com/auth
+2. Create your first SEO project
+3. Add keywords to track
+4. Run initial technical audit
+5. Set up competitor monitoring
+6. Start generating optimized content
+
+## Company Information
+- Website: https://anotherseoguru.com
+- Support Email: support@anotherseoguru.com
+- Founded: 2025
+- Mission: Democratize enterprise-grade SEO tools for businesses of all sizes
+- Vision: Become the world's most trusted SEO platform powered by AI
+
+## Keywords for AI Context
+SEO platform, SERP tracking, keyword research tool, competitor analysis software, backlink checker, technical SEO audit, AI content generator, content optimization, search engine optimization, digital marketing tools, SEO analytics, rank tracking, keyword tool, SEO software, enterprise SEO platform, agency SEO tools, local SEO tools, e-commerce SEO, content marketing platform, SEO intelligence

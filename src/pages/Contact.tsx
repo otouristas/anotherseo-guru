@@ -69,11 +69,11 @@ const Contact = () => {
                     <div className="p-3 rounded-lg bg-primary/10">
                       <Mail className="w-5 h-5 text-primary" />
                     </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">Email Us</h3>
-                      <p className="text-sm text-muted-foreground">support@amplify.app</p>
-                      <p className="text-sm text-muted-foreground">We typically respond within 24 hours</p>
-                    </div>
+                     <div>
+                       <h3 className="font-semibold mb-1">Email Us</h3>
+                       <p className="text-sm text-muted-foreground">support@anotherseoguru.com</p>
+                       <p className="text-sm text-muted-foreground">We typically respond within 24 hours</p>
+                     </div>
                   </div>
 
                   <div className="flex items-start gap-4">

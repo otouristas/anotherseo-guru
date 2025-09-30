@@ -15,10 +15,14 @@ export default function Index() {
   return (
     <>
       <Helmet>
-        <title>AnotherSEOGuru - Professional SEO Tools & AI Content Creation Platform</title>
-        <meta name="description" content="Dominate search rankings with our professional SEO suite. Track SERP positions, analyze competitors, research keywords, monitor backlinks, and create AI-powered content. All-in-one platform for SEO professionals." />
-        <meta name="keywords" content="SEO tools, SERP tracker, keyword research, competitor analysis, backlink monitor, content creation, AI content generator, technical SEO audit" />
-        <link rel="canonical" href="https://anotherseo.guru/" />
+        <title>AnotherSEOGuru - Enterprise SEO Tools & AI Content Platform</title>
+        <meta name="description" content="Professional SEO platform with SERP tracking, competitor analysis, keyword research, backlink monitoring, technical audits, and AI-powered content generation. Dominate search rankings." />
+        <meta name="keywords" content="SEO tools, SERP tracking, keyword research, competitor analysis, backlink monitoring, technical SEO, AI content generation" />
+        <link rel="canonical" href="https://anotherseoguru.com/" />
+        <meta property="og:url" content="https://anotherseoguru.com/" />
+        <meta property="og:title" content="AnotherSEOGuru - Enterprise SEO Tools & AI Content Platform" />
+        <meta property="og:description" content="Professional SEO platform with SERP tracking, competitor analysis, keyword research, backlink monitoring, and AI-powered content generation." />
+        <meta name="twitter:url" content="https://anotherseoguru.com/" />
       </Helmet>
       <div className="min-h-screen">
         <Hero />
