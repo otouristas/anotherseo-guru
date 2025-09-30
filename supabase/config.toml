@@ -1,31 +1,43 @@
 project_id = "cabzhcbnxbnhjannbpxj"
 
 [functions.generate-content]
-verify_jwt = true
-
-[functions.scrape-url]
-verify_jwt = true
-
-[functions.dataforseo-research]
-verify_jwt = true
-
-[functions.seo-content-analyzer]
-verify_jwt = true
-
-[functions.serp-tracker]
-verify_jwt = true
-
-[functions.competitor-analyzer]
-verify_jwt = true
-
-[functions.seo-ai-chat]
-verify_jwt = true
-
-[functions.job-worker]
-verify_jwt = true
+verify_jwt = false
 
 [functions.keyword-clustering]
-verify_jwt = true
+verify_jwt = false
+
+[functions.scrape-url]
+verify_jwt = false
 
 [functions.send-contact-email]
+verify_jwt = false
+
+[functions.serp-tracker]
+verify_jwt = false
+
+[functions.dataforseo-research]
+verify_jwt = false
+
+[functions.competitor-analyzer]
+verify_jwt = false
+
+[functions.seo-content-analyzer]
+verify_jwt = false
+
+[functions.seo-ai-chat]
+verify_jwt = false
+
+[functions.job-worker]
+verify_jwt = false
+
+[functions.serp-monitor]
+verify_jwt = false
+
+[functions.content-gap-analyzer]
+verify_jwt = false
+
+[functions.ranking-predictor]
+verify_jwt = false
+
+[functions.voice-search-optimizer]
 verify_jwt = false

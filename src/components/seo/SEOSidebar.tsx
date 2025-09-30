@@ -11,9 +11,11 @@ import {
   Calendar,
   Settings,
   Upload,
-  Sparkles
+  Sparkles,
+  Bell,
+  Brain,
+  Mic
 } from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -23,7 +25,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -38,11 +39,24 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
 
   const mainItems = [
     { id: "overview", title: "Overview", icon: LayoutDashboard },
+  ];
+
+  const aiItems = [
+    { id: "monitoring", title: "SERP Monitoring", icon: Bell },
+    { id: "content-gaps", title: "Content Gaps", icon: Target },
+    { id: "predictions", title: "Ranking Predictor", icon: Brain },
+    { id: "voice-search", title: "Voice Search", icon: Mic },
+  ];
+
+  const rankingItems = [
     { id: "serp", title: "SERP Tracker", icon: Search },
     { id: "keywords", title: "Keywords", icon: Target },
-    { id: "competitors", title: "Competitors", icon: BarChart3 },
     { id: "bulk", title: "Bulk Analysis", icon: Upload },
     { id: "clustering", title: "Clustering", icon: Sparkles },
+  ];
+
+  const competitionItems = [
+    { id: "competitors", title: "Competitors", icon: BarChart3 },
   ];
 
   const contentItems = [
@@ -58,7 +72,6 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
 
   const integrationsItems = [
     { id: "integrations", title: "Google Tools", icon: TrendingUp },
-    { id: "settings", title: "Settings", icon: Settings },
   ];
 
   const isActive = (id: string) => activeTab === id;
@@ -89,6 +102,30 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
           <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Main</SidebarGroupLabel>
           <SidebarGroupContent>
             {renderMenuItems(mainItems)}
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
+            <Sparkles className="w-3 h-3" />
+            AI Intelligence
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            {renderMenuItems(aiItems)}
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Rankings</SidebarGroupLabel>
+          <SidebarGroupContent>
+            {renderMenuItems(rankingItems)}
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Competition</SidebarGroupLabel>
+          <SidebarGroupContent>
+            {renderMenuItems(competitionItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 

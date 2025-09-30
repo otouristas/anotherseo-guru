@@ -9,9 +9,13 @@ import { Zap, Plus } from "lucide-react";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Footer } from "@/components/Footer";
 import { SERPTracker } from "@/components/seo/SERPTracker";
+import { SERPMonitoring } from "@/components/seo/SERPMonitoring";
 import { CompetitorAnalysis } from "@/components/seo/CompetitorAnalysis";
+import { ContentGapAnalysis } from "@/components/seo/ContentGapAnalysis";
 import { ContentScoring } from "@/components/seo/ContentScoring";
 import { KeywordMatrix } from "@/components/seo/KeywordMatrix";
+import { RankingPredictor } from "@/components/seo/RankingPredictor";
+import { VoiceSearchOptimizer } from "@/components/seo/VoiceSearchOptimizer";
 import { BacklinkMonitor } from "@/components/seo/BacklinkMonitor";
 import { ContentCalendarView } from "@/components/seo/ContentCalendarView";
 import { TechnicalAudit } from "@/components/seo/TechnicalAudit";
@@ -127,12 +131,20 @@ function SEODashboardContent() {
         return <ProjectOverview projectId={selectedProject} />;
       case "serp":
         return <SERPTracker projectId={selectedProject} />;
+      case "monitoring":
+        return <SERPMonitoring projectId={selectedProject} />;
       case "competitors":
         return <CompetitorAnalysis projectId={selectedProject} />;
+      case "content-gaps":
+        return <ContentGapAnalysis projectId={selectedProject} />;
       case "keywords":
         return <KeywordMatrix projectId={selectedProject} />;
+      case "predictions":
+        return <RankingPredictor projectId={selectedProject} />;
       case "content":
         return <ContentScoring projectId={selectedProject} />;
+      case "voice-search":
+        return <VoiceSearchOptimizer projectId={selectedProject} />;
       case "backlinks":
         return <BacklinkMonitor projectId={selectedProject} />;
       case "bulk":

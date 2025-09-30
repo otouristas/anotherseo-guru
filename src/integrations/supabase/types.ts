@@ -188,6 +188,53 @@ export type Database = {
           },
         ]
       }
+      content_gap_analysis: {
+        Row: {
+          ai_recommendations: Json | null
+          analyzed_at: string
+          competitor_urls: string[]
+          content_suggestions: string[]
+          created_at: string
+          id: string
+          keyword: string
+          keyword_gaps: string[]
+          missing_topics: string[]
+          project_id: string | null
+        }
+        Insert: {
+          ai_recommendations?: Json | null
+          analyzed_at?: string
+          competitor_urls: string[]
+          content_suggestions: string[]
+          created_at?: string
+          id?: string
+          keyword: string
+          keyword_gaps: string[]
+          missing_topics: string[]
+          project_id?: string | null
+        }
+        Update: {
+          ai_recommendations?: Json | null
+          analyzed_at?: string
+          competitor_urls?: string[]
+          content_suggestions?: string[]
+          created_at?: string
+          id?: string
+          keyword?: string
+          keyword_gaps?: string[]
+          missing_topics?: string[]
+          project_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_gap_analysis_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       content_history: {
         Row: {
           created_at: string
@@ -609,6 +656,56 @@ export type Database = {
         }
         Relationships: []
       }
+      ranking_predictions: {
+        Row: {
+          confidence_score: number | null
+          created_at: string
+          current_position: number | null
+          factors: Json | null
+          id: string
+          keyword: string
+          predicted_position_30d: number | null
+          predicted_position_7d: number | null
+          predicted_position_90d: number | null
+          project_id: string | null
+          trend: string | null
+        }
+        Insert: {
+          confidence_score?: number | null
+          created_at?: string
+          current_position?: number | null
+          factors?: Json | null
+          id?: string
+          keyword: string
+          predicted_position_30d?: number | null
+          predicted_position_7d?: number | null
+          predicted_position_90d?: number | null
+          project_id?: string | null
+          trend?: string | null
+        }
+        Update: {
+          confidence_score?: number | null
+          created_at?: string
+          current_position?: number | null
+          factors?: Json | null
+          id?: string
+          keyword?: string
+          predicted_position_30d?: number | null
+          predicted_position_7d?: number | null
+          predicted_position_90d?: number | null
+          project_id?: string | null
+          trend?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ranking_predictions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       seo_projects: {
         Row: {
           created_at: string
@@ -641,6 +738,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      serp_alerts: {
+        Row: {
+          alert_type: string
+          competitor_domain: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          keyword: string
+          message: string
+          new_position: number | null
+          old_position: number | null
+          project_id: string | null
+          severity: string
+        }
+        Insert: {
+          alert_type: string
+          competitor_domain?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          keyword: string
+          message: string
+          new_position?: number | null
+          old_position?: number | null
+          project_id?: string | null
+          severity?: string
+        }
+        Update: {
+          alert_type?: string
+          competitor_domain?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          keyword?: string
+          message?: string
+          new_position?: number | null
+          old_position?: number | null
+          project_id?: string | null
+          severity?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "serp_alerts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       serp_rankings: {
         Row: {
@@ -826,6 +973,56 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voice_search_tracking: {
+        Row: {
+          answer_box_present: boolean | null
+          checked_at: string
+          created_at: string
+          has_featured_snippet: boolean | null
+          id: string
+          keyword: string
+          optimization_tips: string[] | null
+          people_also_ask: string[] | null
+          project_id: string | null
+          snippet_content: string | null
+          voice_search_score: number | null
+        }
+        Insert: {
+          answer_box_present?: boolean | null
+          checked_at?: string
+          created_at?: string
+          has_featured_snippet?: boolean | null
+          id?: string
+          keyword: string
+          optimization_tips?: string[] | null
+          people_also_ask?: string[] | null
+          project_id?: string | null
+          snippet_content?: string | null
+          voice_search_score?: number | null
+        }
+        Update: {
+          answer_box_present?: boolean | null
+          checked_at?: string
+          created_at?: string
+          has_featured_snippet?: boolean | null
+          id?: string
+          keyword?: string
+          optimization_tips?: string[] | null
+          people_also_ask?: string[] | null
+          project_id?: string | null
+          snippet_content?: string | null
+          voice_search_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voice_search_tracking_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
             referencedColumns: ["id"]
           },
         ]
