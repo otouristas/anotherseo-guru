@@ -12,14 +12,39 @@ serve(async (req) => {
 
   try {
     const { url } = await req.json();
-    const FIRECRAWL_API_KEY = Deno.env.get('FIRECRAWL_API_KEY');
     
-    if (!FIRECRAWL_API_KEY) {
-      throw new Error('FIRECRAWL_API_KEY is not configured');
+    // Input validation
+    if (!url || typeof url !== 'string') {
+      return new Response(
+        JSON.stringify({ success: false, error: 'URL is required and must be a string' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
-
-    if (!url) {
-      throw new Error('URL is required');
+    
+    if (url.length > 2000) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'URL exceeds maximum length of 2000 characters' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    // Validate URL format
+    try {
+      new URL(url);
+    } catch {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid URL format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    const FIRECRAWL_API_KEY = Deno.env.get('FIRECRAWL_API_KEY');
+    if (!FIRECRAWL_API_KEY) {
+      console.error('FIRECRAWL_API_KEY is not configured');
+      return new Response(
+        JSON.stringify({ success: false, error: 'Service configuration error' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     console.log('Scraping URL:', url);
@@ -42,8 +67,11 @@ serve(async (req) => {
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('Firecrawl API error:', error);
-      throw new Error(`Firecrawl API error: ${response.status}`);
+      console.error('API error:', response.status);
+      return new Response(
+        JSON.stringify({ success: false, error: 'Failed to scrape URL' }),
+        { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const data = await response.json();
@@ -67,9 +95,8 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in scrape-url function:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
     return new Response(
-      JSON.stringify({ success: false, error: errorMessage }),
+      JSON.stringify({ success: false, error: 'An error occurred while processing your request' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

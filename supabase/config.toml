@@ -1,19 +1,19 @@
 project_id = "cabzhcbnxbnhjannbpxj"
 
 [functions.generate-content]
-verify_jwt = false
+verify_jwt = true
 
 [functions.scrape-url]
-verify_jwt = false
+verify_jwt = true
 
 [functions.dataforseo-research]
-verify_jwt = false
+verify_jwt = true
 
 [functions.seo-content-analyzer]
-verify_jwt = false
+verify_jwt = true
 
 [functions.serp-tracker]
-verify_jwt = false
+verify_jwt = true
 
 [functions.competitor-analyzer]
-verify_jwt = false
+verify_jwt = true

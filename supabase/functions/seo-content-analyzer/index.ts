@@ -12,10 +12,36 @@ serve(async (req) => {
 
   try {
     const { content, keywords } = await req.json();
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
     
+    // Input validation
+    if (!content || typeof content !== 'string') {
+      return new Response(
+        JSON.stringify({ error: 'Content is required and must be a string' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    if (content.length > 100000) {
+      return new Response(
+        JSON.stringify({ error: 'Content exceeds maximum length of 100,000 characters' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    if (keywords && (!Array.isArray(keywords) || keywords.length > 50)) {
+      return new Response(
+        JSON.stringify({ error: 'Keywords must be an array with maximum 50 items' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
     if (!lovableApiKey) {
-      throw new Error('LOVABLE_API_KEY not configured');
+      console.error('LOVABLE_API_KEY not configured');
+      return new Response(
+        JSON.stringify({ error: 'Service configuration error' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Analyze content using Lovable AI

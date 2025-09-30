@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import logo from "@/assets/logo.png";
+import { signInSchema, signUpSchema } from "@/lib/validation";
 
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +31,20 @@ export default function Auth() {
     e.preventDefault();
     setIsLoading(true);
 
-    const { error } = await signIn(email, password);
+    // Validate input
+    const validation = signInSchema.safeParse({ email, password });
+    if (!validation.success) {
+      const errors = validation.error.errors.map(e => e.message).join(", ");
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: errors,
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    const { error } = await signIn(validation.data.email, validation.data.password);
 
     if (error) {
       toast({
@@ -53,7 +67,31 @@ export default function Auth() {
     e.preventDefault();
     setIsLoading(true);
 
-    const { error } = await signUp(email, password, firstName, lastName);
+    // Validate input
+    const validation = signUpSchema.safeParse({ 
+      email, 
+      password, 
+      firstName: firstName || undefined, 
+      lastName: lastName || undefined 
+    });
+    
+    if (!validation.success) {
+      const errors = validation.error.errors.map(e => e.message).join(", ");
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: errors,
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    const { error } = await signUp(
+      validation.data.email, 
+      validation.data.password, 
+      validation.data.firstName, 
+      validation.data.lastName
+    );
 
     if (error) {
       toast({
@@ -64,7 +102,7 @@ export default function Auth() {
     } else {
       toast({
         title: "Account created!",
-        description: "Welcome to Amplify. You can now start creating content.",
+        description: "Welcome to AnotherSEOGuru. You can now start creating content.",
       });
       navigate("/repurpose");
     }
@@ -77,9 +115,9 @@ export default function Auth() {
       <div className="w-full max-w-md">
         <div className="flex flex-col items-center mb-8">
           <Link to="/" className="flex items-center gap-2 mb-4">
-            <img src={logo} alt="Amplify Logo" className="h-12 w-12" />
+            <img src={logo} alt="AnotherSEOGuru Logo" className="h-12 w-12" />
             <span className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              Amplify
+              AnotherSEOGuru
             </span>
           </Link>
           <p className="text-muted-foreground text-center">
