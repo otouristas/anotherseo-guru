@@ -70,6 +70,37 @@ function SEODashboardContent() {
     });
   };
 
+  const handleNewProject = () => {
+    setShowOnboarding(true);
+    setSelectedProject(null);
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    const { error } = await supabase
+      .from('seo_projects')
+      .delete()
+      .eq('id', projectId);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete project",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Project Deleted",
+      description: "The project has been removed successfully",
+    });
+    
+    loadProjects();
+    if (selectedProject === projectId) {
+      setSelectedProject(null);
+    }
+  };
+
   const renderContent = () => {
     if (!selectedProject) {
       if (showOnboarding) {
@@ -129,7 +160,7 @@ function SEODashboardContent() {
                 <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">Enterprise-grade SEO platform</p>
               </div>
               {selectedProject && (
-                <Button onClick={() => setShowOnboarding(true)} size="sm" className="gap-2 w-full sm:w-auto">
+                <Button onClick={handleNewProject} size="sm" className="gap-2 w-full sm:w-auto">
                   <Plus className="w-4 h-4" />
                   <span className="hidden sm:inline">New Project</span>
                   <span className="sm:hidden">New</span>
@@ -146,6 +177,7 @@ function SEODashboardContent() {
                   projects={projects}
                   selectedProject={selectedProject}
                   onSelectProject={setSelectedProject}
+                  onDeleteProject={handleDeleteProject}
                 />
               </div>
             )}
