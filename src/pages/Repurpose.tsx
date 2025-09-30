@@ -25,6 +25,9 @@ import { SEOIntelligenceInfo } from "@/components/SEOIntelligenceInfo";
 import { ContentReview } from "@/components/ContentReview";
 import { ContentTips } from "@/components/ContentTips";
 import { DataForSEOContentTools } from "@/components/DataForSEOContentTools";
+import { SERPAnalyzer } from "@/components/SERPAnalyzer";
+import { OnPageAnalyzer } from "@/components/OnPageAnalyzer";
+import { Footer } from "@/components/Footer";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -479,6 +482,10 @@ function RepurposeContent() {
                     }}
                   />
 
+                  <SERPAnalyzer />
+
+                  <OnPageAnalyzer />
+
                   <div className="space-y-3">
                     <h4 className="font-semibold">SEO Meta Preview (Optional)</h4>
                     <div className="space-y-2">
@@ -585,6 +592,9 @@ function RepurposeContent() {
           </Card>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

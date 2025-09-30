@@ -147,20 +147,102 @@ serve(async (req) => {
         }];
         break;
 
+      case 'serp_ai_summary':
+        // SERP AI Summary - requires task_id from previous SERP call
+        endpoint = 'https://api.dataforseo.com/v3/serp/ai_summary';
+        payload = [{
+          task_id: requestData.task_id,
+          prompt: requestData.prompt,
+          include_links: requestData.include_links !== false,
+          fetch_content: requestData.fetch_content || false
+        }];
+        break;
+
+      case 'google_organic':
+        // Google Organic SERP Live
+        endpoint = 'https://api.dataforseo.com/v3/serp/google/organic/live/advanced';
+        payload = [{
+          keyword: keyword,
+          location_name: locationName,
+          language_name: "English",
+          device: requestData.device || "desktop",
+          os: requestData.os || "windows",
+          depth: requestData.depth || 10
+        }];
+        break;
+
+      case 'google_ai_mode':
+        // Google AI Mode SERP
+        endpoint = 'https://api.dataforseo.com/v3/serp/google/ai_mode/live/advanced';
+        payload = [{
+          keyword: keyword,
+          location_name: locationName,
+          language_name: "English",
+          depth: requestData.depth || 20
+        }];
+        break;
+
+      case 'google_maps':
+        // Google Maps SERP
+        endpoint = 'https://api.dataforseo.com/v3/serp/google/maps/live/advanced';
+        payload = [{
+          keyword: keyword,
+          location_name: locationName,
+          language_name: "English",
+          depth: requestData.depth || 100
+        }];
+        break;
+
+      case 'google_images':
+        // Google Images SERP
+        endpoint = 'https://api.dataforseo.com/v3/serp/google/images/live/advanced';
+        payload = [{
+          keyword: keyword,
+          location_name: locationName,
+          language_name: "English",
+          depth: requestData.depth || 100
+        }];
+        break;
+
+      case 'onpage_task':
+        // OnPage API - Create crawl task
+        endpoint = 'https://api.dataforseo.com/v3/on_page/task_post';
+        payload = [{
+          target: domain || keyword,
+          max_crawl_pages: requestData.max_crawl_pages || 100,
+          enable_javascript: requestData.enable_javascript || false,
+          store_raw_html: requestData.store_raw_html || false
+        }];
+        break;
+
+      case 'onpage_summary':
+        // OnPage API - Get summary
+        const taskId = requestData.task_id;
+        endpoint = `https://api.dataforseo.com/v3/on_page/summary/${taskId}`;
+        payload = [];
+        break;
+
       default:
         throw new Error(`Invalid action: ${action}`);
     }
 
     console.log('DataForSEO request:', { action, keyword, endpoint });
 
-    const response = await fetch(endpoint, {
-      method: 'POST',
+    // Handle GET requests (like onpage_summary)
+    const isGetRequest = action === 'onpage_summary';
+    const requestOptions: RequestInit = {
+      method: isGetRequest ? 'GET' : 'POST',
       headers: {
         'Authorization': `Basic ${auth}`,
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+      }
+    };
+
+    if (!isGetRequest && payload.length > 0) {
+      requestOptions.body = JSON.stringify(payload);
+    }
+
+    const response = await fetch(endpoint, requestOptions);
 
     if (!response.ok) {
       const errorText = await response.text();
