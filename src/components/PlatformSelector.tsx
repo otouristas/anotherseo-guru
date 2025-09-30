@@ -2,7 +2,18 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { BlogIcon, MediumIcon, LinkedInIcon, RedditIcon, QuoraIcon, TwitterIcon, InstagramIcon, YoutubeIcon, NewsletterIcon, TikTokIcon } from "@/components/PlatformLogos";
+import { 
+  BlogIcon, 
+  MediumIcon, 
+  LinkedInIcon, 
+  RedditIcon, 
+  QuoraIcon, 
+  TwitterIcon,
+  InstagramIcon,
+  YoutubeIcon,
+  NewsletterIcon,
+  TikTokIcon
+} from "@/components/PlatformLogos";
 
 export type Platform = {
   id: string;
