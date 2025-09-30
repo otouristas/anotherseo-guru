@@ -14,35 +14,41 @@ serve(async (req) => {
   try {
     const requestData = await req.json();
     action = requestData.action;
-    const keyword = requestData.keyword;
-    const location = requestData.location || "United States";
+    const { keyword, keywords, location, domain } = requestData;
+    const locationName = location || "United States";
+    
     const apiKey = Deno.env.get('DATAFORSEO_API_KEY');
     
     if (!apiKey) {
       throw new Error('DATAFORSEO_API_KEY not configured');
     }
 
-    const [login, password] = apiKey.split(':');
+    // DataForSEO uses login:password format
+    const [login, password] = apiKey.includes(':') ? apiKey.split(':') : [apiKey, apiKey];
     const auth = btoa(`${login}:${password}`);
 
     let endpoint = '';
-    let payload = {};
+    let payload: any[] = [];
+
+    console.log('DataForSEO action:', action);
 
     switch (action) {
       case 'keyword_research':
+        // Search volume endpoint
         endpoint = 'https://api.dataforseo.com/v3/keywords_data/google_ads/search_volume/live';
         payload = [{
-          keywords: Array.isArray(keyword) ? keyword : [keyword],
-          location_name: location,
+          keywords: Array.isArray(keywords) ? keywords : (keywords ? [keywords] : [keyword]),
+          location_name: locationName,
           language_name: "English"
         }];
         break;
 
       case 'keyword_suggestions':
+        // Keyword suggestions endpoint
         endpoint = 'https://api.dataforseo.com/v3/keywords_data/google_ads/keywords_for_keywords/live';
         payload = [{
           keywords: [keyword],
-          location_name: location,
+          location_name: locationName,
           language_name: "English",
           include_seed_keyword: true,
           include_serp_info: true,
@@ -51,30 +57,45 @@ serve(async (req) => {
         break;
 
       case 'trends':
+        // Google Trends endpoint
         endpoint = 'https://api.dataforseo.com/v3/keywords_data/google_trends/explore/live';
+        const dateFrom = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        const dateTo = new Date().toISOString().split('T')[0];
         payload = [{
-          keywords: Array.isArray(keyword) ? keyword : [keyword],
-          location_name: location,
+          keywords: Array.isArray(keywords) ? keywords : [keyword],
+          location_name: locationName,
           language_name: "English",
-          date_from: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          date_to: new Date().toISOString().split('T')[0]
+          date_from: dateFrom,
+          date_to: dateTo
         }];
         break;
 
       case 'serp_analysis':
+        // SERP organic results endpoint
         endpoint = 'https://api.dataforseo.com/v3/serp/google/organic/live/advanced';
         payload = [{
-          keyword: keyword,
-          location_name: location,
+          keyword: keyword || domain,
+          location_name: locationName,
           language_name: "English",
           device: "desktop",
           os: "windows",
-          depth: 10
+          depth: 100
+        }];
+        break;
+
+      case 'domain_overview':
+        // Domain metrics using backlinks API
+        endpoint = 'https://api.dataforseo.com/v3/backlinks/summary/live';
+        payload = [{
+          target: domain || keyword,
+          internal_list_limit: 10,
+          include_subdomains: true,
+          backlinks_status_type: "live"
         }];
         break;
 
       default:
-        throw new Error('Invalid action');
+        throw new Error(`Invalid action: ${action}`);
     }
 
     console.log('DataForSEO request:', { action, keyword, endpoint });
