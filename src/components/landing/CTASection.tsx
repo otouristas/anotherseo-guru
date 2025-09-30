@@ -59,7 +59,7 @@ export const CTASection = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Check className="w-4 h-4 text-success" />
-                <span>14-day money-back guarantee</span>
+                <span>1-day money-back guarantee</span>
               </div>
             </div>
 

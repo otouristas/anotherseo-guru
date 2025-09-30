@@ -1,17 +1,23 @@
 import { Card } from "@/components/ui/card";
-import { Sparkles, Target, Zap, Users } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Sparkles, Target, Users, Zap, TrendingUp, Globe } from "lucide-react";
+import { Footer } from "@/components/Footer";
 
-const About = () => {
+export default function About() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       {/* Hero Section */}
-      <section className="py-20 px-4 bg-gradient-to-b from-primary/5 to-background">
+      <section className="py-20 px-4 border-b">
         <div className="container mx-auto max-w-4xl text-center space-y-6">
-          <h1 className="text-5xl md:text-6xl font-bold">
-            About <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Amplify</span>
+          <Badge variant="secondary" className="mb-4">About Repurposfy</Badge>
+          <h1 className="text-5xl md:text-6xl font-bold mb-4">
+            We're Building the Future of{" "}
+            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Content Marketing
+            </span>
           </h1>
-          <p className="text-xl text-muted-foreground">
-            We're on a mission to help content creators amplify their reach without multiplying their workload
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Repurposfy is transforming how marketers, agencies, and creators scale their content across platforms with AI-powered intelligence and real-time SEO data.
           </p>
         </div>
       </section>
@@ -20,50 +26,50 @@ const About = () => {
       <section className="py-20 px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h2 className="text-3xl md:text-4xl font-bold">Our Mission</h2>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                Content creation is hard enough. You shouldn't have to manually rewrite your content for every platform. 
-                Amplify uses AI to transform your original content into platform-optimized versions, maintaining your 
-                voice while adapting to each platform's unique style and audience.
+            <div>
+              <h2 className="text-4xl font-bold mb-6">Our Mission</h2>
+              <p className="text-lg text-muted-foreground mb-4">
+                We believe content creation shouldn't be a bottleneck. Every marketer, creator, and business deserves enterprise-level content capabilities without the enterprise-level team.
               </p>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                We believe that great content deserves to reach its full potential audience, and that creators should 
-                spend their time creating—not reformatting.
+              <p className="text-lg text-muted-foreground mb-4">
+                That's why we built Repurposfy: to democratize high-quality, multi-platform content creation through AI, automation, and strategic intelligence.
+              </p>
+              <p className="text-lg text-muted-foreground">
+                Our platform combines cutting-edge AI (Lovable AI + Gemini), real-time SEO data (DataForSEO), and intelligent web scraping (Firecrawl) to give you content that actually performs.
               </p>
             </div>
-            <Card className="p-8 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
+            <Card className="p-8 bg-gradient-to-br from-primary/5 to-secondary/5">
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-lg bg-primary/10">
                     <Target className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-2">Platform Optimization</h3>
+                    <h3 className="font-semibold mb-2">Data-Driven Excellence</h3>
                     <p className="text-sm text-muted-foreground">
-                      Each platform has its own culture, format, and best practices. We understand them all.
+                      Every output is backed by real-time keyword research, SERP analysis, and platform algorithm insights from 2025.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-secondary/10">
-                    <Zap className="w-6 h-6 text-secondary" />
+                  <div className="p-3 rounded-lg bg-primary/10">
+                    <Sparkles className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-2">AI-Powered</h3>
+                    <h3 className="font-semibold mb-2">AI That Understands Context</h3>
                     <p className="text-sm text-muted-foreground">
-                      Advanced AI models adapt your content while maintaining your unique voice and message.
+                      Our prompts are trained on platform-specific best practices, not generic rewrites. LinkedIn vs Reddit? We know the difference.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-success/10">
-                    <Sparkles className="w-6 h-6 text-success" />
+                  <div className="p-3 rounded-lg bg-primary/10">
+                    <Users className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-2">SEO Optimized</h3>
+                    <h3 className="font-semibold mb-2">Built for Teams & Agencies</h3>
                     <p className="text-sm text-muted-foreground">
-                      Built-in SEO optimization ensures your content ranks well and reaches more people.
+                      From solo creators to 100+ person agencies, our platform scales with collaboration, workflows, and client management.
                     </p>
                   </div>
                 </div>
@@ -73,63 +79,111 @@ const About = () => {
         </div>
       </section>
 
-      {/* Values Section */}
+      {/* Stats Section */}
       <section className="py-20 px-4 bg-muted/30">
         <div className="container mx-auto max-w-6xl">
+          <h2 className="text-4xl font-bold text-center mb-12">By The Numbers</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+                1,000+
+              </div>
+              <p className="text-muted-foreground">Active Users</p>
+            </div>
+            <div className="text-center">
+              <div className="text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+                50K+
+              </div>
+              <p className="text-muted-foreground">Posts Generated</p>
+            </div>
+            <div className="text-center">
+              <div className="text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+                42%
+              </div>
+              <p className="text-muted-foreground">Avg Engagement Increase</p>
+            </div>
+            <div className="text-center">
+              <div className="text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+                70%
+              </div>
+              <p className="text-muted-foreground">Time Saved</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Technology Stack */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Our Values</h2>
-            <p className="text-lg text-muted-foreground">
-              The principles that guide everything we build
+            <h2 className="text-4xl font-bold mb-4">Powered by Best-in-Class Technology</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              We integrate the most powerful tools in AI, SEO, and web intelligence to deliver unmatched results
             </p>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-6 text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Creator-First</h3>
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <Zap className="w-10 h-10 text-primary mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Lovable AI + Gemini 2.5</h3>
               <p className="text-muted-foreground">
-                Every feature is designed with content creators in mind. Your workflow, your needs, your success.
+                Cutting-edge language models trained on 2025 platform algorithms for authentic, engaging content that converts.
               </p>
             </Card>
-
-            <Card className="p-6 text-center">
-              <div className="w-16 h-16 rounded-full bg-secondary/10 flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-8 h-8 text-secondary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Quality Over Quantity</h3>
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <TrendingUp className="w-10 h-10 text-primary mb-4" />
+              <h3 className="text-xl font-semibold mb-2">DataForSEO Integration</h3>
               <p className="text-muted-foreground">
-                We focus on generating high-quality, authentic content that truly resonates with your audience.
+                Real-time keyword research, search volume data, competition analysis, and SERP feature insights from Google's API.
               </p>
             </Card>
-
-            <Card className="p-6 text-center">
-              <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
-                <Zap className="w-8 h-8 text-success" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">Continuous Innovation</h3>
+            <Card className="p-6 hover:shadow-lg transition-shadow">
+              <Globe className="w-10 h-10 text-primary mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Firecrawl Intelligence</h3>
               <p className="text-muted-foreground">
-                We're constantly improving our AI and adding new platforms to stay ahead of the curve.
+                Advanced web scraping to analyze competitor content, trending formats, and SERP meta data for strategic insights.
               </p>
             </Card>
           </div>
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-4xl text-center space-y-8">
-          <h2 className="text-3xl md:text-4xl font-bold">Built by Creators, for Creators</h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Our team understands the challenges of content creation because we've lived them. We're marketers, 
-            writers, and entrepreneurs who got tired of copy-pasting and manually reformatting content. So we 
-            built Amplify to solve our own problem—and now we're sharing it with you.
+      {/* Vision Section */}
+      <section className="py-20 px-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+        <div className="container mx-auto max-w-4xl text-center space-y-6">
+          <h2 className="text-4xl font-bold mb-6">Our Vision for the Future</h2>
+          <p className="text-xl text-muted-foreground mb-8">
+            We're just getting started. Our roadmap includes:
           </p>
+          <div className="grid md:grid-cols-2 gap-6 text-left">
+            <Card className="p-6">
+              <h3 className="font-semibold mb-2">🚀 Direct Platform Scheduling</h3>
+              <p className="text-sm text-muted-foreground">
+                Publish directly to LinkedIn, Medium, WordPress, and more without copy-pasting.
+              </p>
+            </Card>
+            <Card className="p-6">
+              <h3 className="font-semibold mb-2">📊 Advanced Analytics Dashboard</h3>
+              <p className="text-sm text-muted-foreground">
+                Track performance, engagement, and ROI across all platforms in one place.
+              </p>
+            </Card>
+            <Card className="p-6">
+              <h3 className="font-semibold mb-2">🌍 Multi-Language Support</h3>
+              <p className="text-sm text-muted-foreground">
+                Expand globally with AI-powered translation and localization for 50+ languages.
+              </p>
+            </Card>
+            <Card className="p-6">
+              <h3 className="font-semibold mb-2">🤖 Custom AI Prompt Builder</h3>
+              <p className="text-sm text-muted-foreground">
+                Create your own platform templates, tone variations, and brand voice presets.
+              </p>
+            </Card>
+          </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
-};
-
-export default About;
+}

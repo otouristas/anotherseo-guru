@@ -76,7 +76,7 @@ function CheckoutContent() {
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-2">Complete Your Purchase</h1>
-            <p className="text-muted-foreground">14-day free trial, cancel anytime</p>
+            <p className="text-muted-foreground">1-day free trial, cancel anytime</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -111,7 +111,7 @@ function CheckoutContent() {
                     <span>€{selectedPlan.price}</span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
-                    <span>14-day trial</span>
+                    <span>1-day trial</span>
                     <span>€0</span>
                   </div>
                   <div className="border-t pt-4">

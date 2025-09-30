@@ -84,7 +84,7 @@ const Terms = () => {
                 <li>Promptly update account information if payment details change</li>
               </ul>
               <p className="text-muted-foreground leading-relaxed mt-4">
-                Refund Policy: We offer a 14-day money-back guarantee for new subscriptions. After 14 days, 
+                Refund Policy: We offer a 1-day money-back guarantee for new subscriptions. After 24 hours, 
                 subscriptions are non-refundable.
               </p>
             </section>

@@ -62,7 +62,7 @@ export const Hero = () => {
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                14-day money back
+                <span>1-day money back</span>
               </div>
             </div>
           </div>

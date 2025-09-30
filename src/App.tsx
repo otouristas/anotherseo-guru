@@ -5,7 +5,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import Index from "./pages/Index";
 import Repurpose from "./pages/Repurpose";
 import Auth from "./pages/Auth";
@@ -41,7 +40,6 @@ const App = () => (
             <Route path="/terms" element={<Terms />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <Footer />
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>

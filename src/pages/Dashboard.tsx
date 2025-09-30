@@ -1,14 +1,25 @@
+import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
-import { Coins, User, CreditCard, BarChart3, FileText } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
-import { CreditDisplay } from "@/components/CreditDisplay";
+import { Link } from "react-router-dom";
+import { 
+  User, 
+  CreditCard, 
+  TrendingUp, 
+  FileText, 
+  Zap, 
+  Crown,
+  BarChart3,
+  Target,
+  Activity
+} from "lucide-react";
+import { Footer } from "@/components/Footer";
 
 export default function Dashboard() {
   return (
@@ -19,204 +30,139 @@ export default function Dashboard() {
 }
 
 function DashboardContent() {
-  const { profile, user } = useAuth();
-  const [usage, setUsage] = useState<any>(null);
+  const { user, profile } = useAuth();
+  const [usageData, setUsageData] = useState<any>(null);
+
+  const planType = profile?.plan_type || "free";
+  const isUnlimited = planType === "enterprise";
+  const credits = profile?.credits || 0;
+
+  const planLimits = {
+    free: { maxCredits: 2, name: "Free", price: "€0" },
+    basic: { maxCredits: 100, name: "Basic", price: "€49" },
+    pro: { maxCredits: 300, name: "Pro", price: "€79" },
+    enterprise: { maxCredits: Infinity, name: "Enterprise", price: "€299" }
+  };
+
+  const currentPlan = planLimits[planType as keyof typeof planLimits] || planLimits.free;
 
   useEffect(() => {
-    if (user) {
+    async function fetchUsage() {
       const currentMonth = new Date().toISOString().slice(0, 7);
-      supabase
+      const { data } = await supabase
         .from("usage_tracking")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id", user?.id)
         .eq("month_year", currentMonth)
-        .maybeSingle()
-        .then(({ data }) => setUsage(data));
+        .maybeSingle();
+
+      setUsageData(data);
+    }
+
+    if (user) {
+      fetchUsage();
     }
   }, [user]);
 
-  const subscription = profile?.subscriptions?.[0];
-  const planType = profile?.plan_type || "free";
-  const credits = profile?.credits || 0;
-  const isUnlimited = planType === 'pro';
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-accent/20">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
-          <p className="text-muted-foreground">Manage your account and view your usage</p>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <section className="py-12 px-4 border-b bg-gradient-to-br from-primary/5 to-secondary/5">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">Welcome back, {profile?.first_name || "Creator"}! 👋</h1>
+              <p className="text-muted-foreground">Track your performance and manage your account</p>
+            </div>
+            <Badge variant={planType === "free" ? "secondary" : "default"} className="text-lg px-4 py-2">
+              <Crown className="w-4 h-4 mr-2" />
+              {currentPlan.name.toUpperCase()}
+            </Badge>
+          </div>
         </div>
+      </section>
 
-        <Tabs defaultValue="overview" className="space-y-8">
-          <TabsList>
-            <TabsTrigger value="overview">
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Overview
-            </TabsTrigger>
-            <TabsTrigger value="account">
-              <User className="h-4 w-4 mr-2" />
-              Account
-            </TabsTrigger>
-            <TabsTrigger value="billing">
-              <CreditCard className="h-4 w-4 mr-2" />
-              Billing
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-3">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm font-medium">Current Plan</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <Badge variant={planType === "free" ? "secondary" : "default"} className="text-lg">
-                      {planType.toUpperCase()}
-                    </Badge>
-                    {planType === "free" && (
-                      <Button asChild variant="outline" size="sm">
-                        <Link to="/pricing">Upgrade</Link>
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm font-medium">Available Credits</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-2">
-                    <Coins className="w-5 h-5 text-primary" />
-                    <p className="text-3xl font-bold">{isUnlimited ? '∞' : credits}</p>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {isUnlimited ? "Unlimited" : "Credits remaining"}
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm font-medium">Credits Used</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-3xl font-bold">{usage?.credits_used || 0}</p>
-                  <p className="text-xs text-muted-foreground mt-1">This month</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm font-medium">Content Generated</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-3xl font-bold">{usage?.content_generated_count || 0}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Pieces this month</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm font-medium">Platforms Used</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-3xl font-bold">{usage?.platforms_used_count || 0}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Different platforms</p>
-                </CardContent>
-              </Card>
-            </div>
-
+      <section className="py-12 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-4 gap-6 mb-12">
             <Card>
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-                <CardDescription>Get started with your content creation</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Credits Available</CardTitle>
+                <Zap className="h-4 w-4 text-primary" />
               </CardHeader>
-              <CardContent className="space-y-4">
-                <Button asChild className="w-full" size="lg">
-                  <Link to="/repurpose">
-                    <FileText className="mr-2 h-5 w-5" />
-                    Create New Content
-                  </Link>
-                </Button>
+              <CardContent>
+                <div className="text-3xl font-bold">{isUnlimited ? "∞" : credits}</div>
+                {!isUnlimited && <Progress value={(credits/currentPlan.maxCredits)*100} className="mt-2" />}
               </CardContent>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="account" className="space-y-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Account Information</CardTitle>
-                <CardDescription>Your personal details</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Posts Created</CardTitle>
+                <FileText className="h-4 w-4 text-primary" />
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Email</p>
-                  <p className="text-sm text-muted-foreground">{user?.email}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">First Name</p>
-                    <p className="text-sm text-muted-foreground">{profile?.first_name || "Not set"}</p>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">Last Name</p>
-                    <p className="text-sm text-muted-foreground">{profile?.last_name || "Not set"}</p>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Member Since</p>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(profile?.created_at).toLocaleDateString()}
-                  </p>
-                </div>
+              <CardContent>
+                <div className="text-3xl font-bold">{usageData?.content_generated_count || 0}</div>
               </CardContent>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="billing" className="space-y-6">
             <Card>
-              <CardHeader>
-                <CardTitle>Subscription Details</CardTitle>
-                <CardDescription>Manage your billing and subscription</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Platforms</CardTitle>
+                <Target className="h-4 w-4 text-primary" />
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Current Plan</p>
-                  <Badge variant={planType === "free" ? "secondary" : "default"}>
-                    {planType.toUpperCase()}
-                  </Badge>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">Status</p>
-                  <Badge variant="outline">{subscription?.status || "Active"}</Badge>
-                </div>
-                {planType === "free" ? (
-                  <div className="pt-4">
-                    <Button asChild className="w-full">
-                      <Link to="/pricing">Upgrade Your Plan</Link>
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">Next Billing Date</p>
-                    <p className="text-sm text-muted-foreground">
-                      {subscription?.current_period_end
-                        ? new Date(subscription.current_period_end).toLocaleDateString()
-                        : "N/A"}
-                    </p>
-                  </div>
-                )}
+              <CardContent>
+                <div className="text-3xl font-bold">{usageData?.platforms_used_count || 0}</div>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Credits Used</CardTitle>
+                <Activity className="h-4 w-4 text-primary" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold">{usageData?.credits_used || 0}</div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Tabs defaultValue="overview">
+            <TabsList className="grid w-full max-w-md grid-cols-3">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="account">Account</TabsTrigger>
+              <TabsTrigger value="billing">Billing</TabsTrigger>
+            </TabsList>
+            <TabsContent value="overview" className="space-y-6 mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Button asChild variant="hero" className="w-full" size="lg">
+                    <Link to="/repurpose"><Zap className="w-4 h-4 mr-2" />Create New Content</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="account" className="space-y-6 mt-6">
+              <Card>
+                <CardHeader><CardTitle>Account Information</CardTitle></CardHeader>
+                <CardContent className="space-y-4">
+                  <div><p className="text-sm font-medium">Email</p><p className="text-muted-foreground">{user?.email}</p></div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="billing" className="space-y-6 mt-6">
+              <Card>
+                <CardHeader><CardTitle>Plan Details</CardTitle></CardHeader>
+                <CardContent>
+                  <Badge>{currentPlan.name}</Badge>
+                  <p className="mt-2">{currentPlan.price}/month</p>
+                  {planType !== "enterprise" && <Button asChild className="w-full mt-4"><Link to="/pricing">Upgrade</Link></Button>}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </section>
+      <Footer />
     </div>
   );
 }
