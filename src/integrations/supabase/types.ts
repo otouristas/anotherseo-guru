@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      content_history: {
+        Row: {
+          created_at: string
+          generated_content: string
+          id: string
+          keywords: string[] | null
+          original_content: string
+          platform: string
+          style: string | null
+          tone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          generated_content: string
+          id?: string
+          keywords?: string[] | null
+          original_content: string
+          platform: string
+          style?: string | null
+          tone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          generated_content?: string
+          id?: string
+          keywords?: string[] | null
+          original_content?: string
+          platform?: string
+          style?: string | null
+          tone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       credit_costs: {
         Row: {
           cost: number

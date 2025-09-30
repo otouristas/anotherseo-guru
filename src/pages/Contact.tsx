@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, MessageSquare, Send } from "lucide-react";
+import { Footer } from "@/components/Footer";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -161,6 +162,8 @@ const Contact = () => {
           </div>
         </div>
       </section>
+      
+      <Footer />
     </div>
   );
 };
