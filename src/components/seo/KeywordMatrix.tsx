@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Target, TrendingUp, DollarSign } from "lucide-react";
+import { ExportMenu } from "@/components/ExportMenu";
 
 interface KeywordMatrixProps {
   projectId: string;
@@ -116,20 +117,30 @@ export const KeywordMatrix = ({ projectId }: KeywordMatrixProps) => {
 
   return (
     <div className="space-y-6">
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Keyword Research & Difficulty Matrix</h3>
-        <div className="flex gap-4">
-          <Input
-            placeholder="Enter seed keyword..."
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && researchKeyword()}
-          />
-          <Button onClick={researchKeyword} disabled={loading} className="gap-2">
-            <Target className="w-4 h-4" />
-            Research
-          </Button>
-        </div>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Keyword Research Matrix</CardTitle>
+              <CardDescription>Track and analyze keyword opportunities</CardDescription>
+            </div>
+            <ExportMenu data={keywords} filename="keywords" type="keyword" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4">
+            <Input
+              placeholder="Enter seed keyword..."
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && researchKeyword()}
+            />
+            <Button onClick={researchKeyword} disabled={loading} className="gap-2">
+              <Target className="w-4 h-4" />
+              Research
+            </Button>
+          </div>
+        </CardContent>
       </Card>
 
       {keywords.length > 0 && (

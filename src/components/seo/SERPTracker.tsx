@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Search, TrendingUp, TrendingDown, Minus, Target } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { ExportMenu } from "@/components/ExportMenu";
 
 interface SERPTrackerProps {
   projectId: string;
@@ -110,19 +111,30 @@ export const SERPTracker = ({ projectId }: SERPTrackerProps) => {
 
   return (
     <div className="space-y-6">
-      <Card className="p-6">
-        <div className="flex gap-4">
-          <Input
-            placeholder="Enter keyword to track..."
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && trackKeyword()}
-          />
-          <Button onClick={trackKeyword} disabled={loading} className="gap-2">
-            <Search className="w-4 h-4" />
-            Track
-          </Button>
-        </div>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>SERP Position Tracker</CardTitle>
+              <CardDescription>Monitor your keyword rankings over time</CardDescription>
+            </div>
+            <ExportMenu data={rankings} filename="serp-rankings" type="ranking" />
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4">
+            <Input
+              placeholder="Enter keyword to track..."
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && trackKeyword()}
+            />
+            <Button onClick={trackKeyword} disabled={loading} className="gap-2">
+              <Search className="w-4 h-4" />
+              Track
+            </Button>
+          </div>
+        </CardContent>
       </Card>
 
       <div className="grid gap-4">

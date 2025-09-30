@@ -10,8 +10,12 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let action = 'unknown';
   try {
-    const { action, keyword, location = "United States" } = await req.json();
+    const requestData = await req.json();
+    action = requestData.action;
+    const keyword = requestData.keyword;
+    const location = requestData.location || "United States";
     const apiKey = Deno.env.get('DATAFORSEO_API_KEY');
     
     if (!apiKey) {
@@ -99,8 +103,17 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in dataforseo-research function:', error);
+    
+    // Provide more detailed error information
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorDetails = {
+      error: errorMessage,
+      action: action || 'unknown',
+      timestamp: new Date().toISOString(),
+    };
+    
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
+      JSON.stringify(errorDetails),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

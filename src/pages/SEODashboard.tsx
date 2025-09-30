@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Zap, Plus } from "lucide-react";
+import { Breadcrumb } from "@/components/Breadcrumb";
 import { Footer } from "@/components/Footer";
 import { SERPTracker } from "@/components/seo/SERPTracker";
 import { CompetitorAnalysis } from "@/components/seo/CompetitorAnalysis";
@@ -171,17 +172,18 @@ function SEODashboardContent() {
 
           {/* Main Content */}
           <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-auto pt-6 sm:pt-8">
-            {selectedProject && (
-              <div className="mb-4 md:mb-6">
-                <ProjectSelector
-                  projects={projects}
-                  selectedProject={selectedProject}
-                  onSelectProject={setSelectedProject}
-                  onDeleteProject={handleDeleteProject}
-                />
-              </div>
-            )}
             <div className="max-w-7xl mx-auto">
+              <Breadcrumb />
+              {selectedProject && (
+                <div className="mb-4 md:mb-6">
+                  <ProjectSelector
+                    projects={projects}
+                    selectedProject={selectedProject}
+                    onSelectProject={setSelectedProject}
+                    onDeleteProject={handleDeleteProject}
+                  />
+                </div>
+              )}
               {renderContent()}
             </div>
           </main>
