@@ -2,86 +2,88 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const plans = [
   {
-    name: "Free",
-    price: "€0",
-    period: "forever",
-    description: "Perfect for trying out the platform",
-    credits: "2 posts/month",
-    features: [
-      "2 content generations per month",
-      "2 platform exports",
-      "Basic SEO preview",
-      "Community support",
-    ],
-    limitations: ["Limited to 2 posts monthly", "No keyword research"],
-    cta: "Start Free",
-    popular: false,
-    priceId: null,
-  },
-  {
-    name: "Basic",
+    name: "Starter",
     price: "€49",
     period: "per month",
-    description: "For regular content creators",
-    credits: "100 credits/month",
+    description: "Perfect for solo SEO consultants",
+    credits: "50 content generations",
     features: [
-      "100 credits per month",
-      "All platforms (10+)",
-      "Real-time keyword research",
-      "SEO preview + link suggestions",
-      "Export formats (.docx, .html, .md)",
-      "Priority support",
-      "Trends analysis",
+      "1 SEO Project",
+      "50 AI content generations/month",
+      "Basic SERP tracking (10 keywords)",
+      "Keyword research tool",
+      "Content scoring & optimization",
+      "Technical SEO audit",
+      "Email support",
     ],
-    limitations: [],
-    cta: "Start 1-Day Trial",
+    cta: "Start Free Trial",
     popular: false,
-    priceId: "price_basic",
   },
   {
-    name: "Pro",
-    price: "€79",
+    name: "Professional",
+    price: "€99",
     period: "per month",
-    description: "For power users and teams",
-    credits: "300 credits/month",
+    description: "For growing SEO agencies",
+    credits: "200 content generations",
     features: [
-      "300 credits per month",
-      "Everything in Basic",
-      "Advanced SERP analysis",
-      "Custom prompt builder",
-      "API integrations",
-      "Team collaboration (up to 5 seats)",
-      "Advanced analytics dashboard",
-      "Priority support + chat",
+      "5 SEO Projects",
+      "200 AI content generations/month",
+      "Advanced SERP tracking (100 keywords)",
+      "Competitor analysis suite",
+      "Backlink monitoring",
+      "Content calendar & workflow",
+      "Technical SEO + Core Web Vitals",
+      "Team collaboration (3 seats)",
+      "Priority support",
     ],
-    limitations: [],
-    cta: "Start 1-Day Trial",
+    cta: "Start Free Trial",
     popular: true,
-    priceId: "price_pro",
+  },
+  {
+    name: "Agency",
+    price: "€249",
+    period: "per month",
+    description: "For established SEO agencies",
+    credits: "Unlimited content",
+    features: [
+      "20 SEO Projects",
+      "Unlimited AI content generation",
+      "SERP tracking (500 keywords)",
+      "Full competitor intelligence",
+      "Advanced backlink analysis",
+      "Link opportunity finder",
+      "White-label reporting",
+      "API access",
+      "Team collaboration (10 seats)",
+      "Dedicated account manager",
+    ],
+    cta: "Start Free Trial",
+    popular: false,
   },
   {
     name: "Enterprise",
-    price: "€299",
-    period: "per month",
-    description: "For agencies and large teams",
-    credits: "Unlimited",
+    price: "Custom",
+    period: "contact us",
+    description: "For large organizations",
+    credits: "Unlimited everything",
     features: [
-      "Unlimited content generation",
-      "Everything in Pro",
-      "White-label options",
+      "Unlimited SEO Projects",
+      "Unlimited AI content generation",
+      "Unlimited keyword tracking",
+      "Custom integrations & workflows",
       "Unlimited team seats",
-      "Dedicated account manager",
-      "Custom integrations",
-      "SLA support",
-      "Training & onboarding",
+      "Advanced analytics & reporting",
+      "Custom training & onboarding",
+      "SLA with 24/7 support",
+      "Dedicated infrastructure",
+      "Custom contract terms",
     ],
-    limitations: [],
     cta: "Contact Sales",
     popular: false,
-    priceId: "price_enterprise",
   },
 ];
 
@@ -94,15 +96,15 @@ export const PricingSection = () => {
             Simple, Transparent Pricing
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Choose the plan that fits your content creation needs
+            Professional SEO tools + AI content creation. Start with a 14-day free trial.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
           {plans.map((plan) => (
             <Card
               key={plan.name}
-              className={`p-8 relative ${
+              className={`p-8 relative flex flex-col ${
                 plan.popular
                   ? "border-primary border-2 shadow-[0_0_30px_hsl(262_83%_58%/0.2)]"
                   : ""
@@ -114,26 +116,31 @@ export const PricingSection = () => {
                 </Badge>
               )}
 
-              <div className="space-y-6">
+              <div className="space-y-6 flex-1">
                 <div>
                   <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                  <p className="text-sm text-muted-foreground mb-1">{plan.description}</p>
-                  <p className="text-xs font-medium text-primary">{plan.credits}</p>
+                  <p className="text-sm text-muted-foreground mb-2">{plan.description}</p>
+                  <Badge variant="outline" className="text-xs">
+                    {plan.credits}
+                  </Badge>
                 </div>
 
                 <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  <span className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                     {plan.price}
                   </span>
-                  <span className="text-muted-foreground">/{plan.period}</span>
+                  <span className="text-muted-foreground text-sm">/{plan.period}</span>
                 </div>
 
                 <Button
+                  asChild
                   className="w-full"
                   variant={plan.popular ? "hero" : "outline"}
                   size="lg"
                 >
-                  {plan.cta}
+                  <Link to={plan.cta === "Contact Sales" ? "/contact" : "/auth"}>
+                    {plan.cta}
+                  </Link>
                 </Button>
 
                 <div className="space-y-3 pt-6 border-t">

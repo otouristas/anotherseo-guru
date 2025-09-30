@@ -28,6 +28,7 @@ import { TechnicalAudit } from "@/components/seo/TechnicalAudit";
 import { ProjectSelector } from "@/components/seo/ProjectSelector";
 import { SiteAuditCrawler } from "@/components/seo/SiteAuditCrawler";
 import { GoogleIntegrations } from "@/components/seo/GoogleIntegrations";
+import { SEOProjectOnboarding } from "@/components/seo/SEOProjectOnboarding";
 
 export default function SEODashboard() {
   return (
@@ -42,6 +43,7 @@ function SEODashboardContent() {
   const { toast } = useToast();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [projects, setProjects] = useState<any[]>([]);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     loadProjects();
@@ -65,41 +67,14 @@ function SEODashboardContent() {
     }
   };
 
-  const createProject = async () => {
-    const name = prompt("Project name:");
-    const domain = prompt("Domain (e.g., example.com):");
-    
-    if (!name || !domain) return;
-
-    const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
-
-    const { data, error } = await supabase
-      .from('seo_projects')
-      .insert({
-        user_id: user?.id,
-        name,
-        domain: cleanDomain,
-        target_location: 'United States'
-      })
-      .select()
-      .single();
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create project",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    toast({
-      title: "Project created! 🎉",
-      description: `${name} is ready. Visit the "Site Audit" tab to crawl your website and get comprehensive technical analysis, keyword data, and backlink insights.`
-    });
-
+  const handleOnboardingComplete = (projectId: string) => {
+    setShowOnboarding(false);
     loadProjects();
-    setSelectedProject(data.id);
+    setSelectedProject(projectId);
+    toast({
+      title: "Setup Complete! 🎉",
+      description: "Your SEO project is ready. Explore all the tools in the tabs above.",
+    });
   };
 
   return (
@@ -111,7 +86,7 @@ function SEODashboardContent() {
               <h1 className="text-4xl font-bold mb-2">Professional SEO Suite 🎯</h1>
               <p className="text-muted-foreground">Enterprise-grade SEO tools for serious results</p>
             </div>
-            <Button onClick={createProject} size="lg" className="gap-2">
+            <Button onClick={() => setShowOnboarding(true)} size="lg" className="gap-2">
               <Zap className="w-4 h-4" />
               New SEO Project
             </Button>
@@ -206,13 +181,15 @@ function SEODashboardContent() {
                 <ContentCalendarView projectId={selectedProject} />
               </TabsContent>
             </Tabs>
+          ) : showOnboarding ? (
+            <SEOProjectOnboarding userId={user?.id || ""} onComplete={handleOnboardingComplete} />
           ) : (
             <Card className="p-12 text-center">
               <Zap className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
               <h3 className="text-2xl font-bold mb-2">No Projects Yet</h3>
-              <p className="text-muted-foreground mb-6">Create your first SEO project to get started</p>
-              <Button onClick={createProject} size="lg">
-                Create Project
+              <p className="text-muted-foreground mb-6">Create your first SEO project with our guided setup</p>
+              <Button onClick={() => setShowOnboarding(true)} size="lg">
+                Create Your First Project
               </Button>
             </Card>
           )}
