@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { ContentHistory } from "@/components/ContentHistory";
+import { NewsAndTrends } from "@/components/dashboard/NewsAndTrends";
 
 export default function Dashboard() {
   return (
@@ -106,53 +107,54 @@ function DashboardContent() {
 
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid md:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 mb-8 md:mb-12">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Credits Available</CardTitle>
-                <Zap className="h-4 w-4 text-primary" />
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+                <CardTitle className="text-xs sm:text-sm font-medium">Credits</CardTitle>
+                <Zap className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
               </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{isUnlimited ? "∞" : credits}</div>
+              <CardContent className="p-3 sm:p-4 pt-0">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold">{isUnlimited ? "∞" : credits}</div>
                 {!isUnlimited && <Progress value={(credits/currentPlan.maxCredits)*100} className="mt-2" />}
               </CardContent>
             </Card>
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Posts Created</CardTitle>
-                <FileText className="h-4 w-4 text-primary" />
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+                <CardTitle className="text-xs sm:text-sm font-medium">Posts</CardTitle>
+                <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
               </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{usageData?.content_generated_count || 0}</div>
+              <CardContent className="p-3 sm:p-4 pt-0">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold">{usageData?.content_generated_count || 0}</div>
               </CardContent>
             </Card>
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Platforms</CardTitle>
-                <Target className="h-4 w-4 text-primary" />
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+                <CardTitle className="text-xs sm:text-sm font-medium">Platforms</CardTitle>
+                <Target className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
               </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{usageData?.platforms_used_count || 0}</div>
+              <CardContent className="p-3 sm:p-4 pt-0">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold">{usageData?.platforms_used_count || 0}</div>
               </CardContent>
             </Card>
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Credits Used</CardTitle>
-                <Activity className="h-4 w-4 text-primary" />
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
+                <CardTitle className="text-xs sm:text-sm font-medium">Used</CardTitle>
+                <Activity className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
               </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold">{usageData?.credits_used || 0}</div>
+              <CardContent className="p-3 sm:p-4 pt-0">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold">{usageData?.credits_used || 0}</div>
               </CardContent>
             </Card>
           </div>
 
           <Tabs defaultValue="overview">
-            <TabsList className="grid w-full max-w-2xl grid-cols-5">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="seo">SEO Projects</TabsTrigger>
-              <TabsTrigger value="history">Content</TabsTrigger>
-              <TabsTrigger value="account">Account</TabsTrigger>
-              <TabsTrigger value="billing">Billing</TabsTrigger>
+            <TabsList className="grid w-full max-w-full lg:max-w-3xl grid-cols-3 sm:grid-cols-6 gap-1">
+              <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+              <TabsTrigger value="seo" className="text-xs sm:text-sm">Projects</TabsTrigger>
+              <TabsTrigger value="history" className="text-xs sm:text-sm">Content</TabsTrigger>
+              <TabsTrigger value="trends" className="text-xs sm:text-sm">Insights</TabsTrigger>
+              <TabsTrigger value="account" className="text-xs sm:text-sm">Account</TabsTrigger>
+              <TabsTrigger value="billing" className="text-xs sm:text-sm">Billing</TabsTrigger>
             </TabsList>
             <TabsContent value="overview" className="space-y-6 mt-6">
               <div className="grid md:grid-cols-2 gap-6">
@@ -247,15 +249,78 @@ function DashboardContent() {
                 </CardContent>
               </Card>
             </TabsContent>
+            <TabsContent value="trends" className="space-y-6 mt-6">
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold mb-2">News & Insights</h3>
+                <p className="text-muted-foreground">SEO trends and personalized recommendations for your projects</p>
+              </div>
+              <NewsAndTrends projectId={seoProjects[0]?.id} />
+            </TabsContent>
             <TabsContent value="billing" className="space-y-6 mt-6">
-              <Card>
-                <CardHeader><CardTitle>Plan Details</CardTitle></CardHeader>
-                <CardContent>
-                  <Badge>{currentPlan.name}</Badge>
-                  <p className="mt-2">{currentPlan.price}/month</p>
-                  {planType !== "enterprise" && <Button asChild className="w-full mt-4"><Link to="/pricing">Upgrade</Link></Button>}
-                </CardContent>
-              </Card>
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold mb-2">Billing & Subscription</h3>
+                <p className="text-muted-foreground">Manage your plan and payment details</p>
+              </div>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader><CardTitle>Current Plan</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Badge className="text-lg px-4 py-2">{currentPlan.name}</Badge>
+                      <p className="text-2xl font-bold">{currentPlan.price}<span className="text-sm text-muted-foreground">/mo</span></p>
+                    </div>
+                    <div className="pt-4 border-t space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Credits per month</span>
+                        <span className="font-medium">{isUnlimited ? "Unlimited" : currentPlan.maxCredits}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">SEO Projects</span>
+                        <span className="font-medium">{planType === "free" ? "1" : "Unlimited"}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Priority Support</span>
+                        <span className="font-medium">{planType === "enterprise" ? "✓" : "—"}</span>
+                      </div>
+                    </div>
+                    {planType !== "enterprise" && (
+                      <Button asChild className="w-full mt-4">
+                        <Link to="/pricing">Upgrade Plan</Link>
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader><CardTitle>Usage This Month</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-3">
+                      <div>
+                        <div className="flex justify-between text-sm mb-2">
+                          <span className="text-muted-foreground">Credits Used</span>
+                          <span className="font-medium">{usageData?.credits_used || 0} / {isUnlimited ? "∞" : currentPlan.maxCredits}</span>
+                        </div>
+                        {!isUnlimited && (
+                          <Progress value={((usageData?.credits_used || 0) / currentPlan.maxCredits) * 100} />
+                        )}
+                      </div>
+                      <div className="pt-4 border-t space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Content Generated</span>
+                          <span className="font-medium">{usageData?.content_generated_count || 0}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Platforms Used</span>
+                          <span className="font-medium">{usageData?.platforms_used_count || 0}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">SEO Projects</span>
+                          <span className="font-medium">{seoProjects.length}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
           </Tabs>
         </div>

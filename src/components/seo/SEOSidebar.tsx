@@ -67,10 +67,10 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
           <SidebarMenuItem key={item.id}>
             <SidebarMenuButton
               onClick={() => onTabChange(item.id)}
-              className={isActive(item.id) ? "bg-primary/10 text-primary font-medium" : "hover:bg-muted/50"}
+              className={isActive(item.id) ? "bg-primary/15 text-primary font-semibold border-l-4 border-primary" : "hover:bg-muted/60 transition-all"}
             >
-              <Icon className="w-4 h-4" />
-              {!collapsed && <span>{item.title}</span>}
+              <Icon className="w-5 h-5" />
+              {!collapsed && <span className="text-sm">{item.title}</span>}
             </SidebarMenuButton>
           </SidebarMenuItem>
         );
@@ -79,31 +79,31 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
   );
 
   return (
-    <Sidebar className={collapsed ? "w-16" : "w-64"} collapsible="icon">
-      <SidebarContent>
+    <Sidebar className={collapsed ? "w-16" : "w-64 border-r shadow-sm"} collapsible="icon">
+      <SidebarContent className="mt-2">
         <SidebarGroup>
-          <SidebarGroupLabel>Main</SidebarGroupLabel>
+          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Main</SidebarGroupLabel>
           <SidebarGroupContent>
             {renderMenuItems(mainItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Content</SidebarGroupLabel>
+          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Content</SidebarGroupLabel>
           <SidebarGroupContent>
             {renderMenuItems(contentItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Technical</SidebarGroupLabel>
+          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Technical</SidebarGroupLabel>
           <SidebarGroupContent>
             {renderMenuItems(technicalItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Tools</SidebarGroupLabel>
+          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Tools</SidebarGroupLabel>
           <SidebarGroupContent>
             {renderMenuItems(integrationsItems)}
           </SidebarGroupContent>

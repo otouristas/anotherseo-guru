@@ -121,26 +121,27 @@ function SEODashboardContent() {
         
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-6">
-            {selectedProject && <SidebarTrigger />}
-            <div className="flex-1 flex items-center justify-between">
+          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card/95 backdrop-blur shadow-sm px-4 md:px-6">
+            {selectedProject && <SidebarTrigger className="mr-2" />}
+            <div className="flex-1 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
               <div>
-                <h1 className="text-2xl font-bold">Professional SEO Suite</h1>
-                <p className="text-sm text-muted-foreground">Enterprise-grade SEO platform</p>
+                <h1 className="text-lg sm:text-2xl font-bold">Professional SEO Suite</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">Enterprise-grade SEO platform</p>
               </div>
               {selectedProject && (
-                <Button onClick={() => setShowOnboarding(true)} size="sm" className="gap-2">
+                <Button onClick={() => setShowOnboarding(true)} size="sm" className="gap-2 w-full sm:w-auto">
                   <Plus className="w-4 h-4" />
-                  New Project
+                  <span className="hidden sm:inline">New Project</span>
+                  <span className="sm:hidden">New</span>
                 </Button>
               )}
             </div>
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 p-6 overflow-auto">
+          <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-auto">
             {selectedProject && (
-              <div className="mb-6">
+              <div className="mb-4 md:mb-6">
                 <ProjectSelector
                   projects={projects}
                   selectedProject={selectedProject}
