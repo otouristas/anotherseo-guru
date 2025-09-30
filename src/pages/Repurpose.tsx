@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ContentInput } from "@/components/ContentInput";
 import { PlatformSelector } from "@/components/PlatformSelector";
 import { ToneStyleSelector } from "@/components/ToneStyleSelector";
@@ -9,16 +9,29 @@ import { PreviewPane } from "@/components/PreviewPane";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { Sparkles, Zap, FileText, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { Link } from "react-router-dom";
 
 interface GeneratedContent {
   platform: string;
   content: string;
 }
 
-const Repurpose = () => {
+export default function Repurpose() {
+  return (
+    <ProtectedRoute>
+      <RepurposeContent />
+    </ProtectedRoute>
+  );
+}
+
+function RepurposeContent() {
+  const { user, profile } = useAuth();
   const [content, setContent] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [tone, setTone] = useState("professional");
@@ -32,7 +45,35 @@ const Repurpose = () => {
   const [serpMeta, setSerpMeta] = useState({ title: "", description: "" });
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [usageCount, setUsageCount] = useState(0);
   const { toast } = useToast();
+
+  const planType = profile?.subscriptions?.[0]?.plan_type || "free";
+  const planLimits = {
+    free: { posts: 1, platforms: 2 },
+    basic: { posts: Infinity, platforms: 5 },
+    pro: { posts: Infinity, platforms: Infinity },
+  };
+  const limits = planLimits[planType as keyof typeof planLimits];
+  const canGenerate = planType === "free" ? usageCount < limits.posts : true;
+  const maxPlatforms = limits.platforms;
+
+  useEffect(() => {
+    if (profile && user) {
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      supabase
+        .from("usage_tracking")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("month_year", currentMonth)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data) {
+            setUsageCount(data.content_generated_count);
+          }
+        });
+    }
+  }, [profile, user]);
 
   const handlePlatformSelect = (platformId: string) => {
     setSelectedPlatforms((prev) =>
@@ -43,6 +84,20 @@ const Repurpose = () => {
   };
 
   const handleGenerate = async () => {
+    if (!canGenerate) {
+      toast({
+        variant: "destructive",
+        title: "Limit reached",
+        description: "You've reached your monthly limit. Upgrade to continue.",
+        action: (
+          <Link to="/pricing">
+            <Button variant="outline" size="sm">Upgrade</Button>
+          </Link>
+        ),
+      });
+      return;
+    }
+
     if (content.length < 100) {
       toast({
         title: "Content too short",
@@ -57,6 +112,20 @@ const Repurpose = () => {
         title: "No platforms selected",
         description: "Please select at least one platform",
         variant: "destructive",
+      });
+      return;
+    }
+
+    if (selectedPlatforms.length > maxPlatforms) {
+      toast({
+        variant: "destructive",
+        title: "Too many platforms",
+        description: `Your plan allows ${maxPlatforms} platforms. Upgrade for more.`,
+        action: (
+          <Link to="/pricing">
+            <Button variant="outline" size="sm">Upgrade</Button>
+          </Link>
+        ),
       });
       return;
     }
@@ -83,6 +152,34 @@ const Repurpose = () => {
       }
 
       setGeneratedContent(data.generatedContent);
+
+      // Track usage
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      const { data: existingUsage } = await supabase
+        .from("usage_tracking")
+        .select("*")
+        .eq("user_id", user?.id)
+        .eq("month_year", currentMonth)
+        .maybeSingle();
+
+      if (existingUsage) {
+        await supabase
+          .from("usage_tracking")
+          .update({
+            content_generated_count: existingUsage.content_generated_count + 1,
+            platforms_used_count: Math.max(existingUsage.platforms_used_count, selectedPlatforms.length),
+          })
+          .eq("id", existingUsage.id);
+      } else {
+        await supabase.from("usage_tracking").insert({
+          user_id: user?.id,
+          month_year: currentMonth,
+          content_generated_count: 1,
+          platforms_used_count: selectedPlatforms.length,
+        });
+      }
+
+      setUsageCount(usageCount + 1);
 
       toast({
         title: "Content Generated! ✨",
@@ -115,6 +212,19 @@ const Repurpose = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Transform your original content into platform-optimized versions with AI-powered rewriting, SEO optimization, and anchor link integration
           </p>
+          <div className="flex items-center justify-center gap-4 pt-2">
+            <Badge variant={planType === "free" ? "secondary" : "default"}>
+              {planType.toUpperCase()} PLAN
+            </Badge>
+            {planType === "free" && (
+              <span className="text-sm text-muted-foreground">
+                {usageCount}/{limits.posts} generations used ·{" "}
+                <Link to="/pricing" className="text-primary hover:underline">
+                  Upgrade
+                </Link>
+              </span>
+            )}
+          </div>
         </div>
       </section>
 
@@ -189,10 +299,10 @@ const Repurpose = () => {
                   variant="hero"
                   className="w-full"
                   onClick={handleGenerate}
-                  disabled={content.length < 100 || selectedPlatforms.length === 0 || isGenerating}
+                  disabled={content.length < 100 || selectedPlatforms.length === 0 || isGenerating || !canGenerate}
                 >
                   <Sparkles className="w-5 h-5" />
-                  {isGenerating ? "Generating..." : "Generate Optimized Content"}
+                  {isGenerating ? "Generating..." : !canGenerate ? "Upgrade to Continue" : "Generate Optimized Content"}
                 </Button>
               </div>
 
@@ -217,6 +327,4 @@ const Repurpose = () => {
       </section>
     </div>
   );
-};
-
-export default Repurpose;
+}
