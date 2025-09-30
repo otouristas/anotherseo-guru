@@ -2,9 +2,12 @@ import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Loader2, Copy, Download } from "lucide-react";
+import { Loader2, Copy, Download, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { BlogIcon, MediumIcon, LinkedInIcon, RedditIcon, QuoraIcon, TwitterIcon, InstagramIcon, YoutubeIcon, NewsletterIcon, TikTokIcon } from "@/components/PlatformLogos";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { useState } from "react";
 
 interface GeneratedContent {
   platform: string;
@@ -31,11 +34,14 @@ const platformIcons: Record<string, React.ComponentType<{ className?: string }>>
 
 export const PreviewPane = ({ generatedContent, isGenerating }: PreviewPaneProps) => {
   const { toast } = useToast();
+  const [copiedPlatform, setCopiedPlatform] = useState<string | null>(null);
 
   const copyToClipboard = (content: string, platform: string) => {
     navigator.clipboard.writeText(content);
+    setCopiedPlatform(platform);
+    setTimeout(() => setCopiedPlatform(null), 2000);
     toast({
-      title: "Copied!",
+      title: "Copied! ✨",
       description: `${platform} content copied to clipboard`,
     });
   };
@@ -52,7 +58,7 @@ export const PreviewPane = ({ generatedContent, isGenerating }: PreviewPaneProps
     URL.revokeObjectURL(url);
     
     toast({
-      title: "Downloaded!",
+      title: "Downloaded! 📥",
       description: `${platform} content downloaded`,
     });
   };
@@ -83,11 +89,15 @@ export const PreviewPane = ({ generatedContent, isGenerating }: PreviewPaneProps
   return (
     <Card className="p-6 min-h-[400px]">
       <Tabs defaultValue={generatedContent[0]?.platform} className="w-full">
-        <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
+        <TabsList className="w-full justify-start overflow-x-auto flex-nowrap bg-muted p-1">
           {generatedContent.map((content) => {
             const IconComponent = platformIcons[content.platform];
             return (
-              <TabsTrigger key={content.platform} value={content.platform} className="gap-2">
+              <TabsTrigger 
+                key={content.platform} 
+                value={content.platform} 
+                className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+              >
                 {IconComponent && <IconComponent className="w-4 h-4" />}
                 {content.platform.split('-').map(word => 
                   word.charAt(0).toUpperCase() + word.slice(1)
@@ -99,14 +109,17 @@ export const PreviewPane = ({ generatedContent, isGenerating }: PreviewPaneProps
 
         {generatedContent.map((content) => {
           const IconComponent = platformIcons[content.platform];
+          const platformName = content.platform.split('-').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1)
+          ).join(' ');
+          const isCopied = copiedPlatform === content.platform;
+          
           return (
             <TabsContent key={content.platform} value={content.platform} className="space-y-4 mt-6">
-              <div className="flex items-center justify-between">
-                <Badge variant="secondary" className="text-sm flex items-center gap-2">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <Badge variant="secondary" className="text-sm flex items-center gap-2 px-3 py-1.5">
                   {IconComponent && <IconComponent className="w-4 h-4" />}
-                  {content.platform.split('-').map(word => 
-                    word.charAt(0).toUpperCase() + word.slice(1)
-                  ).join(' ')} Version
+                  {platformName} Version
                 </Badge>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">
@@ -114,28 +127,41 @@ export const PreviewPane = ({ generatedContent, isGenerating }: PreviewPaneProps
                   </span>
                   <Button
                     size="sm"
-                    variant="outline"
-                    onClick={() => copyToClipboard(content.content, content.platform)}
+                    variant={isCopied ? "default" : "outline"}
+                    onClick={() => copyToClipboard(content.content, platformName)}
+                    className="gap-2"
                   >
-                    <Copy className="w-4 h-4 mr-2" />
-                    Copy
+                    {isCopied ? (
+                      <>
+                        <Check className="w-4 h-4" />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-4 h-4" />
+                        Copy
+                      </>
+                    )}
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => downloadContent(content.content, content.platform)}
+                    onClick={() => downloadContent(content.content, platformName)}
+                    className="gap-2"
                   >
-                    <Download className="w-4 h-4 mr-2" />
+                    <Download className="w-4 h-4" />
                     Download
                   </Button>
                 </div>
               </div>
             
-              <div className="prose prose-sm max-w-none">
-                <div className="whitespace-pre-wrap text-foreground leading-relaxed p-4 bg-muted/30 rounded-lg">
-                  {content.content}
+              <Card className="p-6 bg-gradient-to-br from-card to-muted/20">
+                <div className="prose prose-sm max-w-none dark:prose-invert markdown-content">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {content.content}
+                  </ReactMarkdown>
                 </div>
-              </div>
+              </Card>
             </TabsContent>
           );
         })}

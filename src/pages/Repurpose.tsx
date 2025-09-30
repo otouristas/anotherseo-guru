@@ -56,7 +56,7 @@ function RepurposeContent() {
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [credits, setCredits] = useState(0);
-  const [activeStep, setActiveStep] = useState<"input" | "review" | "generate">("input");
+  const [activeStep, setActiveStep] = useState<"input" | "review" | "generate" | "results">("input");
   const { toast } = useToast();
 
   const planType = profile?.plan_type || "free";
@@ -149,6 +149,9 @@ function RepurposeContent() {
       }
 
       setGeneratedContent(data.generatedContent);
+      
+      // Move to results step
+      setActiveStep("results");
 
       // Update credits locally
       if (!isUnlimited) {
@@ -246,34 +249,52 @@ function RepurposeContent() {
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-7xl">
           {/* Step Progress */}
-          <div className="flex items-center justify-center gap-4 mb-8">
+          <div className="flex items-center justify-center gap-2 md:gap-4 mb-8 overflow-x-auto pb-2">
             <Button
               variant={activeStep === "input" ? "default" : "outline"}
               onClick={() => setActiveStep("input")}
-              className="gap-2"
+              className="gap-2 whitespace-nowrap"
+              size="sm"
             >
               <FileText className="w-4 h-4" />
-              1. Input Content
+              <span className="hidden sm:inline">1. Input</span>
+              <span className="sm:hidden">1</span>
             </Button>
-            <div className="w-12 h-0.5 bg-border" />
+            <div className="w-8 md:w-12 h-0.5 bg-border flex-shrink-0" />
             <Button
               variant={activeStep === "review" ? "default" : "outline"}
               onClick={() => content.length > 0 && setActiveStep("review")}
               disabled={content.length === 0}
-              className="gap-2"
+              className="gap-2 whitespace-nowrap"
+              size="sm"
             >
               <Globe className="w-4 h-4" />
-              2. Review Content
+              <span className="hidden sm:inline">2. Review</span>
+              <span className="sm:hidden">2</span>
             </Button>
-            <div className="w-12 h-0.5 bg-border" />
+            <div className="w-8 md:w-12 h-0.5 bg-border flex-shrink-0" />
             <Button
               variant={activeStep === "generate" ? "default" : "outline"}
               onClick={() => content.length > 0 && setActiveStep("generate")}
               disabled={content.length === 0}
-              className="gap-2"
+              className="gap-2 whitespace-nowrap"
+              size="sm"
             >
               <Sparkles className="w-4 h-4" />
-              3. Generate
+              <span className="hidden sm:inline">3. Generate</span>
+              <span className="sm:hidden">3</span>
+            </Button>
+            <div className="w-8 md:w-12 h-0.5 bg-border flex-shrink-0" />
+            <Button
+              variant={activeStep === "results" ? "default" : "outline"}
+              onClick={() => generatedContent.length > 0 && setActiveStep("results")}
+              disabled={generatedContent.length === 0}
+              className="gap-2 whitespace-nowrap"
+              size="sm"
+            >
+              <Zap className="w-4 h-4" />
+              <span className="hidden sm:inline">4. Results</span>
+              <span className="sm:hidden">4</span>
             </Button>
           </div>
 
@@ -470,13 +491,58 @@ function RepurposeContent() {
                     description={serpMeta.description}
                   />
                   
-                  <div>
-                    <h3 className="text-2xl font-bold mb-4">Generated Content</h3>
-                    <PreviewPane
-                      generatedContent={generatedContent}
-                      isGenerating={isGenerating}
-                    />
+                  <Card className="p-6">
+                    <div className="text-center space-y-3">
+                      <div className="text-4xl">⚡</div>
+                      <h3 className="text-lg font-semibold">Ready to Generate</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Click Generate to create optimized content for all selected platforms
+                      </p>
+                    </div>
+                  </Card>
+                </div>
+              </div>
+            )}
+
+            {activeStep === "results" && (
+              <div className="space-y-6">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 border border-success/20 text-success mb-4">
+                    <Zap className="w-4 h-4" />
+                    Content Generated Successfully!
                   </div>
+                  <h2 className="text-2xl font-bold mb-2">Your Platform-Optimized Content</h2>
+                  <p className="text-muted-foreground">Ready to copy, download, and publish</p>
+                </div>
+
+                <PreviewPane
+                  generatedContent={generatedContent}
+                  isGenerating={isGenerating}
+                />
+
+                <div className="flex gap-4 justify-center pt-4">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={() => setActiveStep("generate")}
+                    className="gap-2"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Generate More
+                  </Button>
+                  <Button
+                    size="lg"
+                    onClick={() => {
+                      setContent("");
+                      setGeneratedContent([]);
+                      setSelectedPlatforms([]);
+                      setActiveStep("input");
+                    }}
+                    className="gap-2"
+                  >
+                    <FileText className="w-4 h-4" />
+                    Start New
+                  </Button>
                 </div>
               </div>
             )}
