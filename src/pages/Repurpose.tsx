@@ -19,6 +19,9 @@ import { Link } from "react-router-dom";
 import { platforms } from "@/components/PlatformSelector";
 import { CreditDisplay } from "@/components/CreditDisplay";
 import { URLScraper } from "@/components/URLScraper";
+import { KeywordResearch } from "@/components/KeywordResearch";
+import { TrendsAnalysis } from "@/components/TrendsAnalysis";
+import { SEOIntelligenceInfo } from "@/components/SEOIntelligenceInfo";
 
 interface GeneratedContent {
   platform: string;
@@ -207,13 +210,13 @@ function RepurposeContent() {
         <div className="container mx-auto max-w-4xl text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary">
             <Zap className="w-4 h-4" />
-            AI-Powered Content Transformation with SEO
+            AI-Powered SEO Intelligence Platform
           </div>
           <h1 className="text-4xl md:text-5xl font-bold">
-            Repurpose Your Content
+            Repurpose Your Content with SEO Intelligence
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Transform your original content into platform-optimized versions with AI-powered rewriting, SEO optimization, and smart web scraping
+            Transform content into platform-optimized versions powered by real-time keyword research, trends analysis, and advanced AI prompts engineered for 2025 algorithms
           </p>
           <div className="flex items-center justify-center gap-4 pt-2">
             <Badge variant={planType === "free" ? "secondary" : "default"}>
@@ -241,6 +244,8 @@ function RepurposeContent() {
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Left Column - Input & Controls */}
               <div className="space-y-6">
+                <SEOIntelligenceInfo />
+                
                 <CreditDisplay credits={credits} planType={planType} />
                 
                 <Tabs defaultValue="type" className="w-full">
@@ -302,6 +307,24 @@ function RepurposeContent() {
                   style={style}
                   onToneChange={setTone}
                   onStyleChange={setStyle}
+                />
+
+                <KeywordResearch 
+                  onKeywordSelect={(keyword, data) => {
+                    setSeoData({
+                      ...seoData,
+                      primaryKeyword: keyword,
+                      secondaryKeywords: [...new Set([...seoData.secondaryKeywords, keyword])].slice(0, 5)
+                    });
+                    toast({
+                      title: "Keyword added",
+                      description: `Added "${keyword}" with ${data.search_volume.toLocaleString()} monthly searches`,
+                    });
+                  }}
+                />
+
+                <TrendsAnalysis 
+                  keywords={[seoData.primaryKeyword, ...seoData.secondaryKeywords].filter(k => k)}
                 />
 
                 <SEOSettings value={seoData} onChange={setSeoData} />

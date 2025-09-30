@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.scrape-url]
 verify_jwt = false
+
+[functions.dataforseo-research]
+verify_jwt = false
