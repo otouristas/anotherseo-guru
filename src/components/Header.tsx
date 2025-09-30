@@ -141,6 +141,10 @@ export const Header = () => {
                 </Link>
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t">
+                <div className="flex items-center justify-between px-2 py-2">
+                  <span className="text-sm font-medium text-muted-foreground">Theme</span>
+                  <ThemeToggle />
+                </div>
                 {user ? (
                   <>
                     <Button variant="ghost" asChild>
