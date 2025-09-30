@@ -40,7 +40,7 @@ serve(async (req) => {
     
     const FIRECRAWL_API_KEY = Deno.env.get('FIRECRAWL_API_KEY');
     if (!FIRECRAWL_API_KEY) {
-      console.error('FIRECRAWL_API_KEY is not configured');
+      console.error('FIRECRAWL_API_KEY not configured');
       return new Response(
         JSON.stringify({ success: false, error: 'Service configuration error' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -67,10 +67,10 @@ serve(async (req) => {
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('API error:', response.status);
+      console.error('Firecrawl API error:', error);
       return new Response(
         JSON.stringify({ success: false, error: 'Failed to scrape URL' }),
-        { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
@@ -95,8 +95,11 @@ serve(async (req) => {
 
   } catch (error) {
     console.error('Error in scrape-url function:', error);
+    
+    // Don't leak sensitive information
+    const errorMessage = 'Failed to scrape URL. Please try again later.';
     return new Response(
-      JSON.stringify({ success: false, error: 'An error occurred while processing your request' }),
+      JSON.stringify({ success: false, error: errorMessage }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

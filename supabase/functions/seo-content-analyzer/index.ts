@@ -28,9 +28,9 @@ serve(async (req) => {
       );
     }
     
-    if (keywords && (!Array.isArray(keywords) || keywords.length > 50)) {
+    if (keywords && !Array.isArray(keywords)) {
       return new Response(
-        JSON.stringify({ error: 'Keywords must be an array with maximum 50 items' }),
+        JSON.stringify({ error: 'Keywords must be an array' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -85,6 +85,14 @@ Return JSON only with structure:
       }),
     });
 
+    if (!response.ok) {
+      console.error('AI gateway error:', response.status);
+      return new Response(
+        JSON.stringify({ error: 'Analysis service temporarily unavailable' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const data = await response.json();
     const analysis = JSON.parse(data.choices[0].message.content);
 
@@ -94,8 +102,14 @@ Return JSON only with structure:
 
   } catch (error) {
     console.error('Error in seo-content-analyzer:', error);
+    
+    // Don't leak sensitive information in error messages
+    const errorMessage = error instanceof Error && error.message.includes('API') 
+      ? 'Service temporarily unavailable' 
+      : 'Analysis failed';
+    
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Analysis failed' }),
+      JSON.stringify({ error: errorMessage }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
