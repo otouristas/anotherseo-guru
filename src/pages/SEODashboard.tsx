@@ -71,12 +71,14 @@ function SEODashboardContent() {
     
     if (!name || !domain) return;
 
+    const cleanDomain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
     const { data, error } = await supabase
       .from('seo_projects')
       .insert({
         user_id: user?.id,
         name,
-        domain: domain.replace(/^https?:\/\//, '').replace(/\/$/, ''),
+        domain: cleanDomain,
         target_location: 'United States'
       })
       .select()
@@ -92,8 +94,8 @@ function SEODashboardContent() {
     }
 
     toast({
-      title: "Project created",
-      description: `${name} is ready for SEO tracking`
+      title: "Project created! 🎉",
+      description: `${name} is ready. Visit the "Site Audit" tab to crawl your website and get comprehensive technical analysis, keyword data, and backlink insights.`
     });
 
     loadProjects();

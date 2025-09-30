@@ -14,9 +14,8 @@ const Terms = () => {
             <section className="space-y-4">
               <h2 className="text-2xl font-bold">1. Agreement to Terms</h2>
               <p className="text-muted-foreground leading-relaxed">
-                By accessing or using Amplify, you agree to be bound by these Terms of Service and all applicable 
-                laws and regulations. If you do not agree with any of these terms, you are prohibited from using 
-                or accessing this site.
+                By accessing or using AnotherSEOGuru, you agree to be bound by these Terms of Service and all applicable 
+                laws and regulations. If you do not agree with any of these terms, you are prohibited from using our platform.
               </p>
             </section>
 
@@ -52,24 +51,23 @@ const Terms = () => {
             </section>
 
             <section className="space-y-4">
-              <h2 className="text-2xl font-bold">4. Content Ownership</h2>
+              <h2 className="text-2xl font-bold">4. Data Ownership</h2>
               <p className="text-muted-foreground leading-relaxed">
-                You retain all rights to the content you submit to Amplify. By submitting content, you grant us 
-                a limited license to process, store, and generate derivative versions of your content solely for 
-                the purpose of providing our service to you.
+                You retain all rights to your SEO data, projects, and configurations. We process your data solely to provide 
+                our SEO analysis services. Your DataForSEO API key remains your property and is encrypted in our system.
               </p>
             </section>
 
             <section className="space-y-4">
-              <h2 className="text-2xl font-bold">5. AI-Generated Content</h2>
+              <h2 className="text-2xl font-bold">5. SEO Data Accuracy</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Our service uses AI to generate content based on your input. While we strive for accuracy and quality:
+                While we strive for accuracy in our SEO metrics and analysis:
               </p>
               <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
-                <li>You are responsible for reviewing all AI-generated content before publication</li>
-                <li>We do not guarantee the accuracy, completeness, or appropriateness of generated content</li>
-                <li>You should not rely solely on AI-generated content without human review</li>
-                <li>You are responsible for ensuring generated content complies with applicable laws</li>
+                <li>SEO data is sourced from third-party providers and may vary</li>
+                <li>Rankings and metrics can change frequently</li>
+                <li>We do not guarantee specific SEO results or ranking improvements</li>
+                <li>You are responsible for your SEO strategy and implementation decisions</li>
               </ul>
             </section>
 
@@ -95,12 +93,13 @@ const Terms = () => {
                 You may not use our service to:
               </p>
               <ul className="list-disc list-inside space-y-2 text-muted-foreground ml-4">
-                <li>Generate illegal, harmful, or offensive content</li>
-                <li>Violate any intellectual property rights</li>
-                <li>Impersonate any person or entity</li>
-                <li>Distribute spam or malware</li>
-                <li>Interfere with or disrupt the service</li>
+                <li>Scrape or crawl websites without permission</li>
+                <li>Generate spam or manipulate search rankings artificially</li>
+                <li>Violate any search engine's terms of service</li>
+                <li>Access competitor data through unauthorized means</li>
+                <li>Interfere with or disrupt our platform or services</li>
                 <li>Attempt to gain unauthorized access to our systems</li>
+                <li>Resell or redistribute our services without authorization</li>
               </ul>
             </section>
 
@@ -142,7 +141,7 @@ const Terms = () => {
               <p className="text-muted-foreground leading-relaxed">
                 If you have any questions about these Terms, please contact us at:
               </p>
-              <p className="text-muted-foreground">Email: legal@amplify.app</p>
+              <p className="text-muted-foreground">Email: support@anotherseoguru.com</p>
             </section>
           </Card>
         </div>

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CreditCard, Apple, DollarSign } from "lucide-react";
+import logoImage from "@/assets/logo.png";
 
 export const Footer = () => {
   return (
@@ -9,7 +9,7 @@ export const Footer = () => {
           {/* Brand */}
           <div className="md:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <img src="/logo.png" alt="AnotherSEOGuru" className="h-8" />
+              <img src={logoImage} alt="AnotherSEOGuru" className="h-8" />
               <span className="font-bold text-xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 AnotherSEOGuru
               </span>
@@ -17,10 +17,23 @@ export const Footer = () => {
             <p className="text-sm text-muted-foreground mb-4">
               Enterprise-level SEO platform with advanced analytics, competitor research, and AI-powered content generation.
             </p>
-            <div className="flex gap-3 items-center">
-              <CreditCard className="w-6 h-6 text-muted-foreground" />
-              <Apple className="w-6 h-6 text-muted-foreground" />
-              <DollarSign className="w-6 h-6 text-muted-foreground" />
+            <div className="flex gap-3 items-center flex-wrap">
+              <svg className="w-10 h-6" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="48" height="32" rx="4" fill="#1A1F71"/>
+                <path d="M20 10L16 22H18.5L19.5 19H23L24 22H26.5L22.5 10H20ZM20.5 17L21.7 13H21.8L23 17H20.5Z" fill="white"/>
+                <path d="M28 10V22H30.5V18H32.5C34.5 18 36 16.5 36 14.5C36 12.5 34.5 11 32.5 11H28V10ZM30.5 13H32C33 13 33.5 13.5 33.5 14.5C33.5 15.5 33 16 32 16H30.5V13Z" fill="white"/>
+              </svg>
+              <svg className="w-10 h-6" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="48" height="32" rx="4" fill="#EB001B"/>
+                <circle cx="18" cy="16" r="9" fill="#FF5F00"/>
+                <circle cx="30" cy="16" r="9" fill="#F79E1B"/>
+              </svg>
+              <svg className="w-10 h-6" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="48" height="32" rx="4" fill="#0066B2"/>
+                <path d="M14 8H20V24H14V8Z" fill="#FFF"/>
+                <path d="M22 8H28L32 16L28 24H22L26 16L22 8Z" fill="#FFF"/>
+                <path d="M30 8H36V24H30V8Z" fill="#FFF"/>
+              </svg>
               <span className="text-xs text-muted-foreground">Secure payments</span>
             </div>
           </div>
@@ -38,28 +51,24 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Features */}
+          {/* Resources */}
           <div>
-            <h3 className="font-semibold mb-4">Features</h3>
+            <h3 className="font-semibold mb-4">Resources</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/#features" className="text-muted-foreground hover:text-foreground transition-colors">Keyword Clustering</Link></li>
-              <li><Link to="/#features" className="text-muted-foreground hover:text-foreground transition-colors">SERP Similarity</Link></li>
-              <li><Link to="/#features" className="text-muted-foreground hover:text-foreground transition-colors">Rank Tracker</Link></li>
-              <li><Link to="/#features" className="text-muted-foreground hover:text-foreground transition-colors">AI Content Writer</Link></li>
-              <li><Link to="/#features" className="text-muted-foreground hover:text-foreground transition-colors">Competitor Analysis</Link></li>
-              <li><Link to="/#features" className="text-muted-foreground hover:text-foreground transition-colors">NLP Analysis</Link></li>
+              <li><Link to="/help" className="text-muted-foreground hover:text-foreground transition-colors">Help Center</Link></li>
+              <li><Link to="/#features" className="text-muted-foreground hover:text-foreground transition-colors">Features</Link></li>
+              <li><Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</Link></li>
+              <li><Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">About</Link></li>
+              <li><Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</Link></li>
             </ul>
           </div>
 
-          {/* Company */}
+          {/* Legal */}
           <div>
-            <h3 className="font-semibold mb-4">Company</h3>
+            <h3 className="font-semibold mb-4">Legal</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">About</Link></li>
-              <li><Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</Link></li>
-              <li><Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</Link></li>
-              <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">Privacy</Link></li>
-              <li><Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">Terms</Link></li>
+              <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="text-muted-foreground hover:text-foreground transition-colors">Terms of Service</Link></li>
               <li><a href="mailto:support@anotherseoguru.com" className="text-muted-foreground hover:text-foreground transition-colors">Support</a></li>
             </ul>
           </div>
