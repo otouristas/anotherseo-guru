@@ -22,6 +22,8 @@ import { URLScraper } from "@/components/URLScraper";
 import { KeywordResearch } from "@/components/KeywordResearch";
 import { TrendsAnalysis } from "@/components/TrendsAnalysis";
 import { SEOIntelligenceInfo } from "@/components/SEOIntelligenceInfo";
+import { ContentReview } from "@/components/ContentReview";
+import { ContentTips } from "@/components/ContentTips";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -54,6 +56,7 @@ function RepurposeContent() {
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [credits, setCredits] = useState(0);
+  const [activeStep, setActiveStep] = useState<"input" | "review" | "generate">("input");
   const { toast } = useToast();
 
   const planType = profile?.plan_type || "free";
@@ -242,12 +245,47 @@ function RepurposeContent() {
       {/* Main Interface */}
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-7xl">
+          {/* Step Progress */}
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <Button
+              variant={activeStep === "input" ? "default" : "outline"}
+              onClick={() => setActiveStep("input")}
+              className="gap-2"
+            >
+              <FileText className="w-4 h-4" />
+              1. Input Content
+            </Button>
+            <div className="w-12 h-0.5 bg-border" />
+            <Button
+              variant={activeStep === "review" ? "default" : "outline"}
+              onClick={() => content.length > 0 && setActiveStep("review")}
+              disabled={content.length === 0}
+              className="gap-2"
+            >
+              <Globe className="w-4 h-4" />
+              2. Review Content
+            </Button>
+            <div className="w-12 h-0.5 bg-border" />
+            <Button
+              variant={activeStep === "generate" ? "default" : "outline"}
+              onClick={() => content.length > 0 && setActiveStep("generate")}
+              disabled={content.length === 0}
+              className="gap-2"
+            >
+              <Sparkles className="w-4 h-4" />
+              3. Generate
+            </Button>
+          </div>
+
           <Card className="p-8 md:p-12 shadow-strong">
-            <div className="grid lg:grid-cols-2 gap-8">
-              {/* Left Column - Input & Controls */}
+            {activeStep === "input" && (
               <div className="space-y-6">
+                <div className="text-center mb-8">
+                  <h2 className="text-2xl font-bold mb-2">Input Your Content</h2>
+                  <p className="text-muted-foreground">Type, scrape from URL, or upload a file to get started</p>
+                </div>
+
                 <SEOIntelligenceInfo />
-                
                 <CreditDisplay credits={credits} planType={planType} />
                 
                 <Tabs defaultValue="type" className="w-full">
@@ -299,96 +337,149 @@ function RepurposeContent() {
                   </TabsContent>
                 </Tabs>
 
-                <PlatformSelector
-                  selected={selectedPlatforms}
-                  onSelect={handlePlatformSelect}
-                />
+                {content.length > 0 && (
+                  <Button
+                    size="lg"
+                    className="w-full"
+                    onClick={() => setActiveStep("review")}
+                  >
+                    Next: Review Content
+                  </Button>
+                )}
+              </div>
+            )}
 
-                <ToneStyleSelector
-                  tone={tone}
-                  style={style}
-                  onToneChange={setTone}
-                  onStyleChange={setStyle}
-                />
+            {activeStep === "review" && (
+              <div className="space-y-6">
+                <div className="text-center mb-8">
+                  <h2 className="text-2xl font-bold mb-2">Review Your Content</h2>
+                  <p className="text-muted-foreground">Check the structure and get optimization tips</p>
+                </div>
 
-                <KeywordResearch 
-                  onKeywordSelect={(keyword, data) => {
-                    setSeoData({
-                      ...seoData,
-                      primaryKeyword: keyword,
-                      secondaryKeywords: [...new Set([...seoData.secondaryKeywords, keyword])].slice(0, 5)
-                    });
-                    toast({
-                      title: "Keyword added",
-                      description: `Added "${keyword}" with ${data.search_volume.toLocaleString()} monthly searches`,
-                    });
-                  }}
-                />
+                <div className="grid lg:grid-cols-2 gap-8">
+                  <ContentReview content={content} />
+                  <ContentTips />
+                </div>
 
-                <TrendsAnalysis 
-                  keywords={[seoData.primaryKeyword, ...seoData.secondaryKeywords].filter(k => k)}
-                />
+                <div className="flex gap-4">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => setActiveStep("input")}
+                  >
+                    Back: Edit Content
+                  </Button>
+                  <Button
+                    size="lg"
+                    className="w-full"
+                    onClick={() => setActiveStep("generate")}
+                  >
+                    Next: Configure & Generate
+                  </Button>
+                </div>
+              </div>
+            )}
 
-                <SEOSettings value={seoData} onChange={setSeoData} />
+            {activeStep === "generate" && (
+              <div className="grid lg:grid-cols-2 gap-8">
+                {/* Left Column - Controls */}
+                <div className="space-y-6">
+                  <div className="text-center lg:text-left mb-6">
+                    <h2 className="text-2xl font-bold mb-2">Configure & Generate</h2>
+                    <p className="text-muted-foreground">Select platforms and customize your output</p>
+                  </div>
 
-                <div className="space-y-3">
-                  <h4 className="font-semibold">SEO Meta Preview (Optional)</h4>
-                  <div className="space-y-2">
-                    <input
-                      type="text"
-                      placeholder="Meta title for SEO preview..."
-                      className="w-full px-3 py-2 border rounded-lg text-sm"
-                      value={serpMeta.title}
-                      onChange={(e) => setSerpMeta({ ...serpMeta, title: e.target.value })}
-                    />
-                    <textarea
-                      placeholder="Meta description for SEO preview..."
-                      className="w-full px-3 py-2 border rounded-lg text-sm min-h-[80px]"
-                      value={serpMeta.description}
-                      onChange={(e) => setSerpMeta({ ...serpMeta, description: e.target.value })}
-                    />
+                  <PlatformSelector
+                    selected={selectedPlatforms}
+                    onSelect={handlePlatformSelect}
+                  />
+
+                  <ToneStyleSelector
+                    tone={tone}
+                    style={style}
+                    onToneChange={setTone}
+                    onStyleChange={setStyle}
+                  />
+
+                  <KeywordResearch 
+                    onKeywordSelect={(keyword, data) => {
+                      setSeoData({
+                        ...seoData,
+                        primaryKeyword: keyword,
+                        secondaryKeywords: [...new Set([...seoData.secondaryKeywords, keyword])].slice(0, 5)
+                      });
+                      toast({
+                        title: "Keyword added",
+                        description: `Added "${keyword}" with ${data.search_volume.toLocaleString()} monthly searches`,
+                      });
+                    }}
+                  />
+
+                  <TrendsAnalysis 
+                    keywords={[seoData.primaryKeyword, ...seoData.secondaryKeywords].filter(k => k)}
+                  />
+
+                  <SEOSettings value={seoData} onChange={setSeoData} />
+
+                  <div className="space-y-3">
+                    <h4 className="font-semibold">SEO Meta Preview (Optional)</h4>
+                    <div className="space-y-2">
+                      <input
+                        type="text"
+                        placeholder="Meta title for SEO preview..."
+                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        value={serpMeta.title}
+                        onChange={(e) => setSerpMeta({ ...serpMeta, title: e.target.value })}
+                      />
+                      <textarea
+                        placeholder="Meta description for SEO preview..."
+                        className="w-full px-3 py-2 border rounded-lg text-sm min-h-[80px]"
+                        value={serpMeta.description}
+                        onChange={(e) => setSerpMeta({ ...serpMeta, description: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => setActiveStep("review")}
+                    >
+                      Back: Review
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="hero"
+                      className="w-full"
+                      onClick={handleGenerate}
+                      disabled={content.length < 100 || selectedPlatforms.length === 0 || isGenerating || (!isUnlimited && credits < totalCreditsNeeded)}
+                    >
+                      <Sparkles className="w-5 h-5" />
+                      {isGenerating ? "Generating..." : (!isUnlimited && credits < totalCreditsNeeded) ? `Need ${totalCreditsNeeded} Credits` : `Generate (${totalCreditsNeeded} credits)`}
+                    </Button>
                   </div>
                 </div>
 
-                <Button
-                  size="lg"
-                  variant="hero"
-                  className="w-full"
-                  onClick={handleGenerate}
-                  disabled={content.length < 100 || selectedPlatforms.length === 0 || isGenerating || (!isUnlimited && credits < totalCreditsNeeded)}
-                >
-                  <Sparkles className="w-5 h-5" />
-                  {isGenerating ? "Generating..." : (!isUnlimited && credits < totalCreditsNeeded) ? `Need ${totalCreditsNeeded} Credits` : `Generate Content (${totalCreditsNeeded} credits)`}
-                </Button>
-              </div>
-
-              {/* Right Column - Preview */}
-              <div className="space-y-6">
-                <SERPPreview
-                  title={serpMeta.title}
-                  description={serpMeta.description}
-                />
-                
-                {content && generatedContent.length === 0 && !isGenerating && (
-                  <Card className="p-6">
-                    <h3 className="text-xl font-bold mb-4">Scraped Content Preview</h3>
-                    <div className="prose prose-sm max-w-none dark:prose-invert markdown-content">
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {content}
-                      </ReactMarkdown>
-                    </div>
-                  </Card>
-                )}
-                
-                <div>
-                  <h3 className="text-2xl font-bold mb-4">Generated Content</h3>
-                  <PreviewPane
-                    generatedContent={generatedContent}
-                    isGenerating={isGenerating}
+                {/* Right Column - Preview */}
+                <div className="space-y-6">
+                  <SERPPreview
+                    title={serpMeta.title}
+                    description={serpMeta.description}
                   />
+                  
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4">Generated Content</h3>
+                    <PreviewPane
+                      generatedContent={generatedContent}
+                      isGenerating={isGenerating}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </Card>
         </div>
       </section>
