@@ -56,7 +56,21 @@ const LinkedInMockup = ({ content }: { content: string }) => (
 
       {/* Content */}
       <div className="prose prose-sm max-w-none dark:prose-invert mb-4 text-gray-900 dark:text-gray-100">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm]}
+          components={{
+            h1: ({node, ...props}) => <h1 className="text-xl font-bold mb-3 mt-4" {...props} />,
+            h2: ({node, ...props}) => <h2 className="text-lg font-bold mb-2 mt-3" {...props} />,
+            h3: ({node, ...props}) => <h3 className="text-base font-semibold mb-2 mt-2" {...props} />,
+            p: ({node, ...props}) => <p className="mb-3 leading-relaxed" {...props} />,
+            strong: ({node, ...props}) => <strong className="font-bold text-gray-900 dark:text-white" {...props} />,
+            a: ({node, ...props}) => <a className="text-blue-600 dark:text-blue-400 hover:underline font-medium" {...props} />,
+            ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-3 space-y-1" {...props} />,
+            ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-3 space-y-1" {...props} />,
+          }}
+        >
+          {content}
+        </ReactMarkdown>
       </div>
 
       {/* Engagement Stats */}
@@ -98,7 +112,21 @@ const TwitterMockup = ({ content }: { content: string }) => (
             <span className="text-gray-500 dark:text-gray-400">@yourbrand • 2h</span>
           </div>
           <div className="prose prose-sm max-w-none dark:prose-invert text-gray-900 dark:text-white mb-3">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h1: ({node, ...props}) => <h1 className="text-lg font-bold mb-2 mt-3" {...props} />,
+                h2: ({node, ...props}) => <h2 className="text-base font-bold mb-2 mt-2" {...props} />,
+                h3: ({node, ...props}) => <h3 className="text-sm font-semibold mb-1 mt-2" {...props} />,
+                p: ({node, ...props}) => <p className="mb-2 leading-normal" {...props} />,
+                strong: ({node, ...props}) => <strong className="font-bold text-gray-900 dark:text-white" {...props} />,
+                a: ({node, ...props}) => <a className="text-blue-500 hover:underline font-medium" {...props} />,
+                ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2 space-y-1" {...props} />,
+                ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-2 space-y-1" {...props} />,
+              }}
+            >
+              {content}
+            </ReactMarkdown>
           </div>
           <div className="flex items-center justify-between max-w-md text-gray-500 dark:text-gray-400">
             <button className="flex items-center gap-2 hover:text-blue-500 group">
@@ -156,11 +184,13 @@ const InstagramMockup = ({ content }: { content: string }) => (
 
       <div className="font-semibold text-sm mb-2 text-gray-900 dark:text-white">2,847 likes</div>
 
-      <div className="text-sm text-gray-900 dark:text-white">
-        <span className="font-semibold mr-2">yourbrand</span>
-        <span className="prose prose-sm max-w-none dark:prose-invert inline">
-          {content.slice(0, 150)}...
-        </span>
+      <div className="text-sm text-gray-900 dark:text-white space-y-2">
+        <p>
+          <span className="font-bold mr-2">yourbrand</span>
+          <span className="leading-relaxed">
+            {content.slice(0, 150)}...
+          </span>
+        </p>
       </div>
 
       <button className="text-sm text-gray-500 dark:text-gray-400 mt-1">more</button>
@@ -183,7 +213,21 @@ const FacebookMockup = ({ content }: { content: string }) => (
       </div>
 
       <div className="prose prose-sm max-w-none dark:prose-invert mb-3 text-gray-900 dark:text-white">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+        <ReactMarkdown 
+          remarkPlugins={[remarkGfm]}
+          components={{
+            h1: ({node, ...props}) => <h1 className="text-xl font-bold mb-3 mt-4" {...props} />,
+            h2: ({node, ...props}) => <h2 className="text-lg font-bold mb-2 mt-3" {...props} />,
+            h3: ({node, ...props}) => <h3 className="text-base font-semibold mb-2 mt-2" {...props} />,
+            p: ({node, ...props}) => <p className="mb-3 leading-relaxed" {...props} />,
+            strong: ({node, ...props}) => <strong className="font-bold text-gray-900 dark:text-white" {...props} />,
+            a: ({node, ...props}) => <a className="text-blue-600 dark:text-blue-400 hover:underline font-medium" {...props} />,
+            ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-3 space-y-1" {...props} />,
+            ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-3 space-y-1" {...props} />,
+          }}
+        >
+          {content}
+        </ReactMarkdown>
       </div>
 
       <div className="flex items-center gap-6 pt-2 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">
@@ -208,16 +252,16 @@ const TikTokMockup = ({ content }: { content: string }) => (
   <Card className="max-w-sm mx-auto bg-black border-gray-800 aspect-[9/16] relative overflow-hidden">
     <div className="absolute inset-0 bg-gradient-to-br from-purple-900 to-pink-900 opacity-50" />
     <div className="relative h-full flex flex-col justify-end p-4 text-white">
-      <div className="mb-4">
-        <div className="flex items-center gap-2 mb-2">
-          <Avatar className="w-10 h-10 border-2 border-white">YB</Avatar>
-          <span className="font-semibold">@yourbrand</span>
+        <div className="mb-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Avatar className="w-10 h-10 border-2 border-white">YB</Avatar>
+            <span className="font-bold text-base">@yourbrand</span>
+          </div>
+          <div className="text-sm mb-2 leading-relaxed font-medium">
+            {content.slice(0, 100)}...
+          </div>
+          <div className="text-xs opacity-90 font-semibold">#fyp #viral #content</div>
         </div>
-        <div className="text-sm mb-2">
-          {content.slice(0, 100)}...
-        </div>
-        <div className="text-xs opacity-75">#fyp #viral #content</div>
-      </div>
     </div>
     <div className="absolute right-4 bottom-20 flex flex-col gap-6 items-center">
       <div className="text-center">
@@ -248,7 +292,21 @@ const MediumMockup = ({ content }: { content: string }) => (
       </div>
     </div>
     <div className="prose prose-lg max-w-none dark:prose-invert font-serif">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm]}
+        components={{
+          h1: ({node, ...props}) => <h1 className="text-3xl font-bold mb-4 mt-6 font-serif" {...props} />,
+          h2: ({node, ...props}) => <h2 className="text-2xl font-bold mb-3 mt-5 font-serif" {...props} />,
+          h3: ({node, ...props}) => <h3 className="text-xl font-semibold mb-3 mt-4 font-serif" {...props} />,
+          p: ({node, ...props}) => <p className="mb-4 leading-relaxed text-lg font-serif" {...props} />,
+          strong: ({node, ...props}) => <strong className="font-bold text-gray-900 dark:text-white" {...props} />,
+          a: ({node, ...props}) => <a className="text-green-600 dark:text-green-400 hover:underline font-medium border-b border-green-600/30" {...props} />,
+          ul: ({node, ...props}) => <ul className="list-disc pl-6 mb-4 space-y-2" {...props} />,
+          ol: ({node, ...props}) => <ol className="list-decimal pl-6 mb-4 space-y-2" {...props} />,
+        }}
+      >
+        {content}
+      </ReactMarkdown>
     </div>
   </Card>
 );
@@ -270,7 +328,21 @@ const RedditMockup = ({ content }: { content: string }) => (
           <span>3 hours ago</span>
         </div>
         <div className="prose prose-sm max-w-none dark:prose-invert">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+          <ReactMarkdown 
+            remarkPlugins={[remarkGfm]}
+            components={{
+              h1: ({node, ...props}) => <h1 className="text-lg font-bold mb-2 mt-3" {...props} />,
+              h2: ({node, ...props}) => <h2 className="text-base font-bold mb-2 mt-2" {...props} />,
+              h3: ({node, ...props}) => <h3 className="text-sm font-semibold mb-1 mt-2" {...props} />,
+              p: ({node, ...props}) => <p className="mb-3 leading-relaxed" {...props} />,
+              strong: ({node, ...props}) => <strong className="font-bold text-gray-900 dark:text-white" {...props} />,
+              a: ({node, ...props}) => <a className="text-orange-600 dark:text-orange-400 hover:underline font-medium" {...props} />,
+              ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-3 space-y-1" {...props} />,
+              ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-3 space-y-1" {...props} />,
+            }}
+          >
+            {content}
+          </ReactMarkdown>
         </div>
         <div className="flex items-center gap-4 mt-3 text-gray-500 text-sm">
           <button className="flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-gray-800 px-2 py-1 rounded">
@@ -299,7 +371,21 @@ const QuoraMockup = ({ content }: { content: string }) => (
       </div>
     </div>
     <div className="prose prose-sm max-w-none dark:prose-invert">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm]}
+        components={{
+          h1: ({node, ...props}) => <h1 className="text-lg font-bold mb-2 mt-3" {...props} />,
+          h2: ({node, ...props}) => <h2 className="text-base font-bold mb-2 mt-2" {...props} />,
+          h3: ({node, ...props}) => <h3 className="text-sm font-semibold mb-1 mt-2" {...props} />,
+          p: ({node, ...props}) => <p className="mb-3 leading-relaxed" {...props} />,
+          strong: ({node, ...props}) => <strong className="font-bold text-gray-900 dark:text-white" {...props} />,
+          a: ({node, ...props}) => <a className="text-red-600 dark:text-red-400 hover:underline font-medium" {...props} />,
+          ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-3 space-y-1" {...props} />,
+          ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-3 space-y-1" {...props} />,
+        }}
+      >
+        {content}
+      </ReactMarkdown>
     </div>
     <div className="flex items-center gap-6 mt-4 pt-4 border-t text-gray-600 dark:text-gray-400 text-sm">
       <button className="flex items-center gap-2">
@@ -321,7 +407,22 @@ const QuoraMockup = ({ content }: { content: string }) => (
 const BlogMockup = ({ content }: { content: string }) => (
   <Card className="max-w-4xl mx-auto bg-white dark:bg-gray-900 p-8">
     <div className="prose prose-lg max-w-none dark:prose-invert">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm]}
+        components={{
+          h1: ({node, ...props}) => <h1 className="text-3xl font-bold mb-4 mt-6" {...props} />,
+          h2: ({node, ...props}) => <h2 className="text-2xl font-bold mb-3 mt-5" {...props} />,
+          h3: ({node, ...props}) => <h3 className="text-xl font-semibold mb-3 mt-4" {...props} />,
+          p: ({node, ...props}) => <p className="mb-4 leading-relaxed text-base" {...props} />,
+          strong: ({node, ...props}) => <strong className="font-bold text-gray-900 dark:text-white" {...props} />,
+          a: ({node, ...props}) => <a className="text-primary hover:underline font-medium" {...props} />,
+          ul: ({node, ...props}) => <ul className="list-disc pl-6 mb-4 space-y-2" {...props} />,
+          ol: ({node, ...props}) => <ol className="list-decimal pl-6 mb-4 space-y-2" {...props} />,
+          blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-primary/30 pl-4 italic my-4 text-muted-foreground" {...props} />,
+        }}
+      >
+        {content}
+      </ReactMarkdown>
     </div>
   </Card>
 );
@@ -329,7 +430,21 @@ const BlogMockup = ({ content }: { content: string }) => (
 const DefaultMockup = ({ content }: { content: string }) => (
   <Card className="p-6">
     <div className="prose prose-sm max-w-none dark:prose-invert">
-      <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm]}
+        components={{
+          h1: ({node, ...props}) => <h1 className="text-xl font-bold mb-3 mt-4" {...props} />,
+          h2: ({node, ...props}) => <h2 className="text-lg font-bold mb-2 mt-3" {...props} />,
+          h3: ({node, ...props}) => <h3 className="text-base font-semibold mb-2 mt-2" {...props} />,
+          p: ({node, ...props}) => <p className="mb-3 leading-relaxed" {...props} />,
+          strong: ({node, ...props}) => <strong className="font-bold text-gray-900 dark:text-white" {...props} />,
+          a: ({node, ...props}) => <a className="text-primary hover:underline font-medium" {...props} />,
+          ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-3 space-y-1" {...props} />,
+          ol: ({node, ...props}) => <ol className="list-decimal pl-5 mb-3 space-y-1" {...props} />,
+        }}
+      >
+        {content}
+      </ReactMarkdown>
     </div>
   </Card>
 );
