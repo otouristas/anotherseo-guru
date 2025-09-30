@@ -24,5 +24,8 @@ verify_jwt = true
 [functions.job-worker]
 verify_jwt = true
 
+[functions.keyword-clustering]
+verify_jwt = true
+
 [functions.send-contact-email]
 verify_jwt = false

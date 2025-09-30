@@ -22,6 +22,7 @@ import { SEOProjectOnboarding } from "@/components/seo/SEOProjectOnboarding";
 import { ProjectOverview } from "@/components/seo/ProjectOverview";
 import { SEOSidebar } from "@/components/seo/SEOSidebar";
 import { BulkAnalysis } from "@/components/seo/BulkAnalysis";
+import { KeywordClustering } from "@/components/seo/KeywordClustering";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function SEODashboard() {
@@ -136,6 +137,8 @@ function SEODashboardContent() {
         return <BacklinkMonitor projectId={selectedProject} />;
       case "bulk":
         return <BulkAnalysis projectId={selectedProject} />;
+      case "clustering":
+        return <KeywordClustering projectId={selectedProject} />;
       case "audit":
         return <SiteAuditCrawler projectId={selectedProject} />;
       case "technical":

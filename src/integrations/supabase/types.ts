@@ -385,6 +385,50 @@ export type Database = {
         }
         Relationships: []
       }
+      keyword_clusters: {
+        Row: {
+          avg_search_volume: number | null
+          center_keyword: string | null
+          cluster_label: string | null
+          cluster_name: string
+          created_at: string
+          id: string
+          keywords: string[]
+          project_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          avg_search_volume?: number | null
+          center_keyword?: string | null
+          cluster_label?: string | null
+          cluster_name: string
+          created_at?: string
+          id?: string
+          keywords: string[]
+          project_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avg_search_volume?: number | null
+          center_keyword?: string | null
+          cluster_label?: string | null
+          cluster_name?: string
+          created_at?: string
+          id?: string
+          keywords?: string[]
+          project_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "keyword_clusters_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       keyword_tracking: {
         Row: {
           cpc: number | null

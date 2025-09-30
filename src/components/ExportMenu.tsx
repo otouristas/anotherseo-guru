@@ -9,17 +9,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import { exportToCSV, exportToXLSX } from "@/lib/exportHelpers";
 
 interface ExportMenuProps {
   data: any[];
   filename: string;
   type?: "keyword" | "ranking" | "audit" | "competitor";
+  sheetName?: string;
 }
 
-export const ExportMenu = ({ data, filename, type = "keyword" }: ExportMenuProps) => {
+export const ExportMenu = ({ data, filename, type = "keyword", sheetName = "Data" }: ExportMenuProps) => {
   const { toast } = useToast();
 
-  const exportToCSV = () => {
+  const handleExportCSV = () => {
     if (!data || data.length === 0) {
       toast({
         title: "No Data",
@@ -29,26 +31,44 @@ export const ExportMenu = ({ data, filename, type = "keyword" }: ExportMenuProps
       return;
     }
 
-    const headers = Object.keys(data[0]).join(",");
-    const rows = data.map((row) =>
-      Object.values(row)
-        .map((value) => `"${value}"`)
-        .join(",")
-    );
-    const csv = [headers, ...rows].join("\n");
+    try {
+      exportToCSV(data, `${filename}-${new Date().toISOString().split("T")[0]}`);
+      toast({
+        title: "Export Successful",
+        description: "Data exported to CSV",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Export Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
 
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${filename}-${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
+  const handleExportXLSX = async () => {
+    if (!data || data.length === 0) {
+      toast({
+        title: "No Data",
+        description: "There is no data to export",
+        variant: "destructive",
+      });
+      return;
+    }
 
-    toast({
-      title: "Export Successful",
-      description: "Data exported to CSV",
-    });
+    try {
+      await exportToXLSX(data, `${filename}-${new Date().toISOString().split("T")[0]}`, sheetName);
+      toast({
+        title: "Export Successful",
+        description: "Data exported to Excel",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Export Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   const exportToJSON = () => {
@@ -94,9 +114,13 @@ export const ExportMenu = ({ data, filename, type = "keyword" }: ExportMenuProps
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Export Options</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={exportToCSV} className="cursor-pointer">
+        <DropdownMenuItem onClick={handleExportCSV} className="cursor-pointer">
           <FileSpreadsheet className="mr-2 h-4 w-4" />
           Export to CSV
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleExportXLSX} className="cursor-pointer">
+          <FileSpreadsheet className="mr-2 h-4 w-4" />
+          Export to Excel (XLSX)
         </DropdownMenuItem>
         <DropdownMenuItem onClick={exportToJSON} className="cursor-pointer">
           <FileText className="mr-2 h-4 w-4" />

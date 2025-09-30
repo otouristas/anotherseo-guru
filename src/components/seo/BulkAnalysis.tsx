@@ -15,7 +15,7 @@ interface BulkAnalysisProps {
 }
 
 export const BulkAnalysis = ({ projectId }: BulkAnalysisProps) => {
-  const [analysisType, setAnalysisType] = useState<"backlinks" | "keywords">("keywords");
+  const [analysisType, setAnalysisType] = useState<"backlinks" | "keywords" | "clustering">("keywords");
   const [inputText, setInputText] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
@@ -45,6 +45,8 @@ export const BulkAnalysis = ({ projectId }: BulkAnalysisProps) => {
           location: parts[1]?.trim() || "2840", // Default US
         };
       });
+    } else if (analysisType === "clustering") {
+      return lines.map((line) => line.trim());
     } else {
       return lines.map((line) => ({
         domain: line.trim(),
@@ -76,13 +78,15 @@ export const BulkAnalysis = ({ projectId }: BulkAnalysisProps) => {
     try {
       const items = parseInput();
 
+      // For clustering, use keyword_clustering job type directly
+      const jobType = analysisType === "clustering" ? "keyword_clustering" : "bulk_analysis";
+      const inputData = analysisType === "clustering"
+        ? { keywords: items, projectId }
+        : { items, analysisType, project_id: projectId };
+
       const job = await createAndTriggerJob({
-        jobType: "bulk_analysis",
-        inputData: {
-          items,
-          analysisType,
-          project_id: projectId,
-        },
+        jobType: jobType as any,
+        inputData,
         totalItems: items.length,
       });
 
@@ -126,6 +130,7 @@ export const BulkAnalysis = ({ projectId }: BulkAnalysisProps) => {
             <SelectContent>
               <SelectItem value="keywords">Keyword Research</SelectItem>
               <SelectItem value="backlinks">Backlink Analysis</SelectItem>
+              <SelectItem value="clustering">Keyword Clustering</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -136,6 +141,8 @@ export const BulkAnalysis = ({ projectId }: BulkAnalysisProps) => {
             placeholder={
               analysisType === "keywords"
                 ? "Enter one keyword per line, optionally with location code:\nkeyword1, 2840\nkeyword2\nkeyword3, 2826"
+                : analysisType === "clustering"
+                ? "Enter one keyword per line for semantic clustering:\nseo tools\nkeyword research\nbacklink analysis\nrank tracker"
                 : "Enter one domain per line:\nexample.com\ncompetitor.com\nanother-site.com"
             }
             value={inputText}

@@ -50,6 +50,9 @@ serve(async (req) => {
         case "keyword_research":
           result = await processKeywordResearch(job, supabase);
           break;
+        case "keyword_clustering":
+          result = await processKeywordClustering(job, supabase);
+          break;
         case "competitor_analysis":
           result = await processCompetitorAnalysis(job, supabase);
           break;
@@ -293,4 +296,16 @@ async function processBulkAnalysis(job: any, supabase: any) {
     failed: results.filter((r) => !r.success).length,
     results,
   };
+}
+
+async function processKeywordClustering(job: any, supabase: any) {
+  const { keywords, projectId } = job.input_data;
+
+  const response = await supabase.functions.invoke("keyword-clustering", {
+    body: { keywords, projectId },
+  });
+
+  if (response.error) throw response.error;
+
+  return response.data;
 }
