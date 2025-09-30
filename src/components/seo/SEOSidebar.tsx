@@ -14,7 +14,9 @@ import {
   Sparkles,
   Bell,
   Brain,
-  Mic
+  Mic,
+  MapPin,
+  DollarSign
 } from "lucide-react";
 import {
   Sidebar,
@@ -72,6 +74,11 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
 
   const integrationsItems = [
     { id: "integrations", title: "Google Tools", icon: TrendingUp },
+  ];
+
+  const enterpriseItems = [
+    { id: "multi-location", title: "Multi-Location", icon: MapPin },
+    { id: "revenue", title: "Revenue Attribution", icon: DollarSign },
   ];
 
   const isActive = (id: string) => activeTab === id;
@@ -147,6 +154,16 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
           <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Tools</SidebarGroupLabel>
           <SidebarGroupContent>
             {renderMenuItems(integrationsItems)}
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
+            <Sparkles className="w-3 h-3" />
+            Enterprise
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            {renderMenuItems(enterpriseItems)}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

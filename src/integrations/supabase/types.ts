@@ -511,6 +511,71 @@ export type Database = {
         }
         Relationships: []
       }
+      cross_channel_analytics: {
+        Row: {
+          assisted_conversions: number | null
+          channel: string
+          clicks: number | null
+          conversions: number | null
+          cost: number | null
+          cpa: number | null
+          cpc: number | null
+          created_at: string
+          cross_channel_impact: Json | null
+          ctr: number | null
+          id: string
+          impressions: number | null
+          metric_date: string
+          project_id: string | null
+          revenue: number | null
+          roas: number | null
+        }
+        Insert: {
+          assisted_conversions?: number | null
+          channel: string
+          clicks?: number | null
+          conversions?: number | null
+          cost?: number | null
+          cpa?: number | null
+          cpc?: number | null
+          created_at?: string
+          cross_channel_impact?: Json | null
+          ctr?: number | null
+          id?: string
+          impressions?: number | null
+          metric_date: string
+          project_id?: string | null
+          revenue?: number | null
+          roas?: number | null
+        }
+        Update: {
+          assisted_conversions?: number | null
+          channel?: string
+          clicks?: number | null
+          conversions?: number | null
+          cost?: number | null
+          cpa?: number | null
+          cpc?: number | null
+          created_at?: string
+          cross_channel_impact?: Json | null
+          ctr?: number | null
+          id?: string
+          impressions?: number | null
+          metric_date?: string
+          project_id?: string | null
+          revenue?: number | null
+          roas?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cross_channel_analytics_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       google_api_settings: {
         Row: {
           created_at: string
@@ -859,6 +924,68 @@ export type Database = {
           },
         ]
       }
+      multi_location_tracking: {
+        Row: {
+          city: string | null
+          country: string
+          created_at: string
+          gmb_insights: Json | null
+          id: string
+          last_checked: string
+          latitude: number | null
+          local_competitors: string[] | null
+          local_pack_rankings: Json | null
+          local_search_volume: number | null
+          location_name: string
+          longitude: number | null
+          organic_rankings: Json | null
+          project_id: string | null
+          state: string | null
+        }
+        Insert: {
+          city?: string | null
+          country: string
+          created_at?: string
+          gmb_insights?: Json | null
+          id?: string
+          last_checked?: string
+          latitude?: number | null
+          local_competitors?: string[] | null
+          local_pack_rankings?: Json | null
+          local_search_volume?: number | null
+          location_name: string
+          longitude?: number | null
+          organic_rankings?: Json | null
+          project_id?: string | null
+          state?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string
+          created_at?: string
+          gmb_insights?: Json | null
+          id?: string
+          last_checked?: string
+          latitude?: number | null
+          local_competitors?: string[] | null
+          local_pack_rankings?: Json | null
+          local_search_volume?: number | null
+          location_name?: string
+          longitude?: number | null
+          organic_rankings?: Json | null
+          project_id?: string | null
+          state?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "multi_location_tracking_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -932,6 +1059,68 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "ranking_predictions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      revenue_attribution: {
+        Row: {
+          attribution_model: string
+          average_order_value: number | null
+          conversion_rate: number | null
+          conversions: number | null
+          created_at: string
+          customer_lifetime_value: number | null
+          id: string
+          keyword: string
+          page_url: string
+          period_end: string
+          period_start: string
+          project_id: string | null
+          revenue: number | null
+          roi_percentage: number | null
+          traffic_source: string
+        }
+        Insert: {
+          attribution_model: string
+          average_order_value?: number | null
+          conversion_rate?: number | null
+          conversions?: number | null
+          created_at?: string
+          customer_lifetime_value?: number | null
+          id?: string
+          keyword: string
+          page_url: string
+          period_end: string
+          period_start: string
+          project_id?: string | null
+          revenue?: number | null
+          roi_percentage?: number | null
+          traffic_source: string
+        }
+        Update: {
+          attribution_model?: string
+          average_order_value?: number | null
+          conversion_rate?: number | null
+          conversions?: number | null
+          created_at?: string
+          customer_lifetime_value?: number | null
+          id?: string
+          keyword?: string
+          page_url?: string
+          period_end?: string
+          period_start?: string
+          project_id?: string | null
+          revenue?: number | null
+          roi_percentage?: number | null
+          traffic_source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "revenue_attribution_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "seo_projects"
@@ -1253,6 +1442,68 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "voice_search_tracking_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      white_label_reports: {
+        Row: {
+          auto_send: boolean | null
+          brand_colors: Json | null
+          client_logo_url: string | null
+          client_name: string
+          created_at: string
+          id: string
+          last_generated: string | null
+          metrics_included: Json
+          next_scheduled: string | null
+          project_id: string | null
+          recipient_emails: string[] | null
+          report_name: string
+          report_sections: Json
+          report_type: string
+          send_frequency: string | null
+        }
+        Insert: {
+          auto_send?: boolean | null
+          brand_colors?: Json | null
+          client_logo_url?: string | null
+          client_name: string
+          created_at?: string
+          id?: string
+          last_generated?: string | null
+          metrics_included: Json
+          next_scheduled?: string | null
+          project_id?: string | null
+          recipient_emails?: string[] | null
+          report_name: string
+          report_sections: Json
+          report_type: string
+          send_frequency?: string | null
+        }
+        Update: {
+          auto_send?: boolean | null
+          brand_colors?: Json | null
+          client_logo_url?: string | null
+          client_name?: string
+          created_at?: string
+          id?: string
+          last_generated?: string | null
+          metrics_included?: Json
+          next_scheduled?: string | null
+          project_id?: string | null
+          recipient_emails?: string[] | null
+          report_name?: string
+          report_sections?: Json
+          report_type?: string
+          send_frequency?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "white_label_reports_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "seo_projects"

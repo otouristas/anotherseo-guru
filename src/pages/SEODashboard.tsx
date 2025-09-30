@@ -27,6 +27,8 @@ import { ProjectOverview } from "@/components/seo/ProjectOverview";
 import { SEOSidebar } from "@/components/seo/SEOSidebar";
 import { BulkAnalysis } from "@/components/seo/BulkAnalysis";
 import { KeywordClustering } from "@/components/seo/KeywordClustering";
+import { MultiLocationTracker } from "@/components/seo/MultiLocationTracker";
+import { RevenueAttribution } from "@/components/seo/RevenueAttribution";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function SEODashboard() {
@@ -159,6 +161,10 @@ function SEODashboardContent() {
         return <GoogleIntegrations projectId={selectedProject} />;
       case "calendar":
         return <ContentCalendarView projectId={selectedProject} />;
+      case "multi-location":
+        return <MultiLocationTracker projectId={selectedProject} />;
+      case "revenue":
+        return <RevenueAttribution projectId={selectedProject} />;
       default:
         return <ProjectOverview projectId={selectedProject} />;
     }
