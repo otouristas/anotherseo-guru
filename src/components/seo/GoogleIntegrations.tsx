@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { BarChart3, Search, CheckCircle, AlertCircle, ExternalLink } from "lucide-react";
+import { BarChart3, Search, CheckCircle, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface GoogleIntegrationsProps {
   projectId: string;
@@ -16,7 +22,10 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
   const [gaConnected, setGaConnected] = useState(false);
   const [gscPropertyId, setGscPropertyId] = useState("");
   const [gaPropertyId, setGaPropertyId] = useState("");
+  const [gscProperties, setGscProperties] = useState<Array<{ siteUrl: string }>>([]);
+  const [gaProperties, setGaProperties] = useState<Array<{ name: string; displayName: string }>>([]);
   const [loading, setLoading] = useState(true);
+  const [connecting, setConnecting] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -66,41 +75,111 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
     }
   };
 
-  const connectGoogleSearchConsole = async () => {
-    if (!gscPropertyId.trim()) {
-      toast({
-        title: "Property ID Required",
-        description: "Please enter your Google Search Console property URL",
-        variant: "destructive",
-      });
-      return;
-    }
+  const initiateGoogleOAuth = async () => {
+    setConnecting(true);
+    
+    const redirectUri = `${window.location.origin}/google-oauth-callback.html`;
+    const clientId = "536359531915-s1d9kfa7m6mphmc14ri0hrm8425r6p14.apps.googleusercontent.com";
+    
+    const scope = [
+      'https://www.googleapis.com/auth/webmasters.readonly',
+      'https://www.googleapis.com/auth/analytics.readonly',
+    ].join(' ');
 
-    await saveSettings(gscPropertyId, gaPropertyId);
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${clientId}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `response_type=code&` +
+      `scope=${encodeURIComponent(scope)}&` +
+      `access_type=offline&` +
+      `prompt=consent`;
+
+    // Open OAuth window
+    const width = 600;
+    const height = 700;
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
+    
+    const popup = window.open(
+      authUrl,
+      'Google OAuth',
+      `width=${width},height=${height},left=${left},top=${top}`
+    );
+
+    // Listen for OAuth callback
+    const handleOAuthCallback = async (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      
+      if (event.data.type === 'GOOGLE_OAUTH_SUCCESS') {
+        const { code } = event.data;
+        
+        try {
+          const { data, error } = await supabase.functions.invoke('google-oauth-callback', {
+            body: { 
+              code, 
+              projectId,
+              redirectUri 
+            }
+          });
+
+          if (error) throw error;
+
+          setGscProperties(data.gscProperties || []);
+          setGaProperties(data.gaProperties || []);
+          
+          toast({
+            title: "Connected to Google! ✅",
+            description: "Please select your properties below",
+          });
+          
+        } catch (error) {
+          console.error('OAuth callback failed:', error);
+          toast({
+            title: "Connection Failed",
+            description: "Failed to complete Google authentication",
+            variant: "destructive",
+          });
+        } finally {
+          setConnecting(false);
+        }
+        
+        window.removeEventListener('message', handleOAuthCallback);
+        if (popup) popup.close();
+      }
+    };
+
+    window.addEventListener('message', handleOAuthCallback);
+    
+    // Cleanup if popup is closed without completing
+    const checkPopup = setInterval(() => {
+      if (popup && popup.closed) {
+        clearInterval(checkPopup);
+        setConnecting(false);
+        window.removeEventListener('message', handleOAuthCallback);
+      }
+    }, 500);
+  };
+
+  const selectGSCProperty = async (siteUrl: string) => {
+    await saveSettings(siteUrl, gaPropertyId);
+    setGscPropertyId(siteUrl);
+    setGscConnected(true);
     toast({
       title: "Google Search Console Connected! ✅",
-      description: "Settings saved successfully",
+      description: "Property selected successfully",
     });
-    setGscConnected(true);
   };
 
-  const connectGoogleAnalytics = async () => {
-    if (!gaPropertyId.trim()) {
-      toast({
-        title: "Property ID Required",
-        description: "Please enter your Google Analytics 4 property ID",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    await saveSettings(gscPropertyId, gaPropertyId);
+  const selectGAProperty = async (propertyId: string) => {
+    await saveSettings(gscPropertyId, propertyId);
+    setGaPropertyId(propertyId);
+    setGaConnected(true);
     toast({
       title: "Google Analytics Connected! ✅",
-      description: "Settings saved successfully",
+      description: "Property selected successfully",
     });
-    setGaConnected(true);
   };
+
 
   const disconnectGSC = async () => {
     await saveSettings("", gaPropertyId);
@@ -173,27 +252,32 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
               </ul>
             </div>
 
-            <div className="flex gap-4">
-              <Input
-                placeholder="Enter GSC Property URL (e.g., https://example.com)"
-                value={gscPropertyId}
-                onChange={(e) => setGscPropertyId(e.target.value)}
-              />
-              <Button onClick={connectGoogleSearchConsole} className="whitespace-nowrap">
+            {gscProperties.length > 0 ? (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">Select your Search Console property:</p>
+                <Select onValueChange={selectGSCProperty}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a property..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {gscProperties.map((prop) => (
+                      <SelectItem key={prop.siteUrl} value={prop.siteUrl}>
+                        {prop.siteUrl}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : (
+              <Button 
+                onClick={initiateGoogleOAuth} 
+                disabled={connecting}
+                className="w-full"
+              >
                 <Search className="w-4 h-4 mr-2" />
-                Connect GSC
+                {connecting ? 'Connecting...' : 'Connect with Google'}
               </Button>
-            </div>
-
-            <a 
-              href="https://search.google.com/search-console" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-sm text-primary hover:underline flex items-center gap-1"
-            >
-              Don't have Google Search Console? Set it up here
-              <ExternalLink className="w-3 h-3" />
-            </a>
+            )}
           </div>
         ) : (
           <div className="space-y-4">
@@ -261,27 +345,36 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
               </ul>
             </div>
 
-            <div className="flex gap-4">
-              <Input
-                placeholder="Enter GA4 Measurement ID (e.g., G-XXXXXXXXXX)"
-                value={gaPropertyId}
-                onChange={(e) => setGaPropertyId(e.target.value)}
-              />
-              <Button onClick={connectGoogleAnalytics} className="whitespace-nowrap">
+            {gaProperties.length > 0 ? (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">Select your Analytics property:</p>
+                <Select onValueChange={selectGAProperty}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a property..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {gaProperties.map((prop) => (
+                      <SelectItem key={prop.name} value={prop.name}>
+                        {prop.displayName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : gscProperties.length === 0 ? (
+              <Button 
+                onClick={initiateGoogleOAuth} 
+                disabled={connecting}
+                className="w-full"
+              >
                 <BarChart3 className="w-4 h-4 mr-2" />
-                Connect GA4
+                {connecting ? 'Connecting...' : 'Connect with Google'}
               </Button>
-            </div>
-
-            <a 
-              href="https://analytics.google.com/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-sm text-primary hover:underline flex items-center gap-1"
-            >
-              Don't have Google Analytics? Set it up here
-              <ExternalLink className="w-3 h-3" />
-            </a>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Complete Google authentication above to select Analytics properties
+              </p>
+            )}
           </div>
         ) : (
           <div className="space-y-4">

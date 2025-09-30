@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google OAuth Callback</title>
+</head>
+<body>
+  <script>
+    // Extract authorization code from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const error = urlParams.get('error');
+
+    if (code) {
+      // Send code to parent window
+      window.opener.postMessage({
+        type: 'GOOGLE_OAUTH_SUCCESS',
+        code: code
+      }, window.location.origin);
+    } else if (error) {
+      window.opener.postMessage({
+        type: 'GOOGLE_OAUTH_ERROR',
+        error: error
+      }, window.location.origin);
+    }
+
+    // Close the popup
+    window.close();
+  </script>
+</body>
+</html>
