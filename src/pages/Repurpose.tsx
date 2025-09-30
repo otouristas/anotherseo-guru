@@ -24,6 +24,7 @@ import { TrendsAnalysis } from "@/components/TrendsAnalysis";
 import { SEOIntelligenceInfo } from "@/components/SEOIntelligenceInfo";
 import { ContentReview } from "@/components/ContentReview";
 import { ContentTips } from "@/components/ContentTips";
+import { DataForSEOContentTools } from "@/components/DataForSEOContentTools";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -457,6 +458,26 @@ function RepurposeContent() {
                   />
 
                   <SEOSettings value={seoData} onChange={setSeoData} />
+
+                  <DataForSEOContentTools
+                    content={content}
+                    onMetaGenerated={(title, description) => {
+                      setSerpMeta({ title, description });
+                      toast({
+                        title: "Meta tags applied",
+                        description: "SEO meta tags have been set from DataForSEO"
+                      });
+                    }}
+                    onSubtopicsGenerated={(subtopics) => {
+                      setSeoData({
+                        ...seoData,
+                        secondaryKeywords: [...new Set([...seoData.secondaryKeywords, ...subtopics.slice(0, 3)])].slice(0, 5)
+                      });
+                    }}
+                    onContentGenerated={(text) => {
+                      setContent(content + "\n\n" + text);
+                    }}
+                  />
 
                   <div className="space-y-3">
                     <h4 className="font-semibold">SEO Meta Preview (Optional)</h4>

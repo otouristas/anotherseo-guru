@@ -94,6 +94,59 @@ serve(async (req) => {
         }];
         break;
 
+      case 'generate':
+        // Generate text from partial text
+        endpoint = 'https://api.dataforseo.com/v3/content_generation/generate/live';
+        payload = [{
+          text: requestData.text,
+          max_new_tokens: requestData.max_new_tokens || 100,
+          creativity_index: requestData.creativity_index || 0.8,
+          stop_words: requestData.stop_words || [],
+          avoid_starting_words: requestData.avoid_starting_words || []
+        }];
+        break;
+
+      case 'generate_text':
+        // Generate text from topic
+        endpoint = 'https://api.dataforseo.com/v3/content_generation/generate_text/live';
+        payload = [{
+          topic: requestData.topic,
+          word_count: requestData.word_count || 300,
+          sub_topics: requestData.sub_topics || [],
+          description: requestData.description || '',
+          meta_keywords: requestData.meta_keywords || [],
+          creativity_index: requestData.creativity_index || 0.8,
+          include_conclusion: requestData.include_conclusion !== false
+        }];
+        break;
+
+      case 'generate_meta_tags':
+        // Generate SEO meta tags
+        endpoint = 'https://api.dataforseo.com/v3/content_generation/generate_meta_tags/live';
+        payload = [{
+          text: requestData.text,
+          creativity_index: requestData.creativity_index || 0.8
+        }];
+        break;
+
+      case 'generate_sub_topics':
+        // Generate subtopics for a topic
+        endpoint = 'https://api.dataforseo.com/v3/content_generation/generate_sub_topics/live';
+        payload = [{
+          topic: requestData.topic,
+          creativity_index: requestData.creativity_index || 0.9
+        }];
+        break;
+
+      case 'paraphrase':
+        // Paraphrase existing text
+        endpoint = 'https://api.dataforseo.com/v3/content_generation/paraphrase/live';
+        payload = [{
+          text: requestData.text,
+          creativity_index: requestData.creativity_index || 0.8
+        }];
+        break;
+
       default:
         throw new Error(`Invalid action: ${action}`);
     }
