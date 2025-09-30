@@ -134,27 +134,41 @@ export const SEOProjectOnboarding = ({ userId, onComplete }: SEOProjectOnboardin
   const progressPercentage = (step / steps.length) * 100;
 
   return (
-    <Card className="p-8 max-w-3xl mx-auto">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-2">Welcome to Your SEO Suite 🚀</h2>
-        <p className="text-muted-foreground mb-4">Let's set up your first project in 4 easy steps</p>
-        <Progress value={progressPercentage} className="h-2" />
+    <Card className="p-8 max-w-4xl mx-auto shadow-2xl border-primary/20 bg-gradient-to-br from-card to-muted/30">
+      <div className="mb-10">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-3 rounded-full bg-gradient-to-br from-primary to-secondary">
+            <Zap className="w-8 h-8 text-primary-foreground" />
+          </div>
+          <div>
+            <h2 className="text-3xl font-bold">Welcome to Your SEO Suite 🚀</h2>
+            <p className="text-muted-foreground">Let's set up your first project in 4 easy steps</p>
+          </div>
+        </div>
+        <Progress value={progressPercentage} className="h-3" />
+        <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+          <span>Step {step} of {steps.length}</span>
+          <span>{Math.round(progressPercentage)}% Complete</span>
+        </div>
       </div>
 
       {/* Steps Progress */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-4 gap-4 mb-10">
         {steps.map((s) => {
           const Icon = s.icon;
+          const isComplete = step > s.id;
+          const isCurrent = step === s.id;
           return (
             <div key={s.id} className="text-center">
-              <div className={`mx-auto w-12 h-12 rounded-full flex items-center justify-center mb-2 ${
-                step > s.id ? "bg-success text-success-foreground" :
-                step === s.id ? "bg-primary text-primary-foreground" :
+              <div className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-3 transition-all duration-300 ${
+                isComplete ? "bg-gradient-to-br from-success to-success/70 text-success-foreground shadow-lg scale-105" :
+                isCurrent ? "bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-xl scale-110" :
                 "bg-muted text-muted-foreground"
               }`}>
-                {step > s.id ? <CheckCircle className="w-6 h-6" /> : <Icon className="w-6 h-6" />}
+                {isComplete ? <CheckCircle className="w-8 h-8" /> : <Icon className="w-8 h-8" />}
               </div>
-              <p className="text-xs font-medium">{s.title}</p>
+              <p className={`text-sm font-medium ${isCurrent ? "text-primary" : ""}`}>{s.title}</p>
+              <p className="text-xs text-muted-foreground mt-1">{s.description}</p>
             </div>
           );
         })}
@@ -162,31 +176,34 @@ export const SEOProjectOnboarding = ({ userId, onComplete }: SEOProjectOnboardin
 
       {/* Step Content */}
       {step === 1 && (
-        <div className="space-y-4">
-          <div>
-            <h3 className="text-xl font-bold mb-4">Step 1: Create Your SEO Project</h3>
-            <div className="space-y-4">
+        <div className="space-y-6">
+          <div className="bg-gradient-to-br from-primary/5 to-secondary/5 p-6 rounded-xl border border-primary/10">
+            <h3 className="text-2xl font-bold mb-2">Step 1: Create Your SEO Project</h3>
+            <p className="text-muted-foreground mb-6">Set up your project to start tracking and optimizing</p>
+            <div className="space-y-5">
               <div>
-                <label className="text-sm font-medium mb-2 block">Project Name</label>
+                <label className="text-sm font-semibold mb-2 block">Project Name</label>
                 <Input
                   placeholder="e.g., My Business Website"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
+                  className="h-12"
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-2 block">Website Domain</label>
+                <label className="text-sm font-semibold mb-2 block">Website Domain</label>
                 <Input
                   placeholder="e.g., example.com"
                   value={domain}
                   onChange={(e) => setDomain(e.target.value)}
+                  className="h-12"
                 />
               </div>
             </div>
           </div>
-          <Button onClick={createProject} disabled={isLoading} className="w-full" size="lg">
-            {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-            Create Project & Continue
+          <Button onClick={createProject} disabled={isLoading} className="w-full h-12 text-base" size="lg">
+            {isLoading ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Zap className="w-5 h-5 mr-2" />}
+            {isLoading ? "Creating..." : "Create Project & Continue"}
           </Button>
         </div>
       )}
