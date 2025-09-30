@@ -139,7 +139,7 @@ function SEODashboardContent() {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-auto pt-6 sm:pt-8">
+          <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-auto pt-12 sm:pt-16 md:pt-20">
             {selectedProject && (
               <div className="mb-4 md:mb-6">
                 <ProjectSelector
