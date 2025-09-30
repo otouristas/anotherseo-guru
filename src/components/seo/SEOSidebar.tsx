@@ -54,6 +54,7 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
   const rankingItems = [
     { id: "serp", title: "SERP Tracker", icon: Search },
     { id: "keywords", title: "Keywords", icon: Target },
+    { id: "opportunities", title: "Opportunities", icon: Zap },
     { id: "bulk", title: "Bulk Analysis", icon: Upload },
     { id: "clustering", title: "Clustering", icon: Sparkles },
   ];

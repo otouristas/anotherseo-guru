@@ -768,6 +768,71 @@ export type Database = {
         }
         Relationships: []
       }
+      keyword_analysis: {
+        Row: {
+          ai_recommendations: Json | null
+          clicks: number | null
+          cluster_name: string | null
+          created_at: string
+          ctr: number | null
+          difficulty_score: number | null
+          id: string
+          impressions: number | null
+          keyword: string
+          opportunity_type: string | null
+          page_url: string
+          position: number | null
+          potential_score: number | null
+          project_id: string
+          search_volume: number | null
+          updated_at: string
+        }
+        Insert: {
+          ai_recommendations?: Json | null
+          clicks?: number | null
+          cluster_name?: string | null
+          created_at?: string
+          ctr?: number | null
+          difficulty_score?: number | null
+          id?: string
+          impressions?: number | null
+          keyword: string
+          opportunity_type?: string | null
+          page_url: string
+          position?: number | null
+          potential_score?: number | null
+          project_id: string
+          search_volume?: number | null
+          updated_at?: string
+        }
+        Update: {
+          ai_recommendations?: Json | null
+          clicks?: number | null
+          cluster_name?: string | null
+          created_at?: string
+          ctr?: number | null
+          difficulty_score?: number | null
+          id?: string
+          impressions?: number | null
+          keyword?: string
+          opportunity_type?: string | null
+          page_url?: string
+          position?: number | null
+          potential_score?: number | null
+          project_id?: string
+          search_volume?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "keyword_analysis_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       keyword_clusters: {
         Row: {
           avg_search_volume: number | null

@@ -30,6 +30,7 @@ import { KeywordClustering } from "@/components/seo/KeywordClustering";
 import { MultiLocationTracker } from "@/components/seo/MultiLocationTracker";
 import { RevenueAttribution } from "@/components/seo/RevenueAttribution";
 import { ComprehensiveAudit } from "@/components/seo/ComprehensiveAudit";
+import { KeywordOpportunityAnalyzer } from "@/components/seo/KeywordOpportunityAnalyzer";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function SEODashboard() {
@@ -154,6 +155,8 @@ function SEODashboardContent() {
         return <BulkAnalysis projectId={selectedProject} />;
       case "clustering":
         return <KeywordClustering projectId={selectedProject} />;
+      case "opportunities":
+        return <KeywordOpportunityAnalyzer projectId={selectedProject} />;
       case "audit":
         return <SiteAuditCrawler projectId={selectedProject} />;
       case "comprehensive-audit":
