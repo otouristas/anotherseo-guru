@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -18,7 +19,8 @@ import {
   BarChart3,
   Target,
   Activity,
-  History
+  History,
+  Search
 } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { ContentHistory } from "@/components/ContentHistory";
@@ -34,6 +36,7 @@ export default function Dashboard() {
 function DashboardContent() {
   const { user, profile } = useAuth();
   const [usageData, setUsageData] = useState<any>(null);
+  const [seoProjects, setSeoProjects] = useState<any[]>([]);
 
   const planType = profile?.plan_type || "free";
   const isUnlimited = planType === "enterprise";
@@ -61,13 +64,31 @@ function DashboardContent() {
       setUsageData(data);
     }
 
+    async function fetchSeoProjects() {
+      const { data } = await supabase
+        .from("seo_projects")
+        .select("*")
+        .eq("user_id", user?.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+      
+      setSeoProjects(data || []);
+    }
+
     if (user) {
       fetchUsage();
+      fetchSeoProjects();
     }
   }, [user]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+    <>
+      <Helmet>
+        <title>Dashboard - AnotherSEOGuru</title>
+        <meta name="description" content="Manage your SEO projects, track content generation, and monitor your account performance." />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       <section className="py-12 px-4 border-b bg-gradient-to-br from-primary/5 to-secondary/5">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -126,23 +147,90 @@ function DashboardContent() {
           </div>
 
           <Tabs defaultValue="overview">
-            <TabsList className="grid w-full max-w-2xl grid-cols-4">
+            <TabsList className="grid w-full max-w-2xl grid-cols-5">
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="history">Content History</TabsTrigger>
+              <TabsTrigger value="seo">SEO Projects</TabsTrigger>
+              <TabsTrigger value="history">Content</TabsTrigger>
               <TabsTrigger value="account">Account</TabsTrigger>
               <TabsTrigger value="billing">Billing</TabsTrigger>
             </TabsList>
             <TabsContent value="overview" className="space-y-6 mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Quick Actions</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Button asChild variant="hero" className="w-full" size="lg">
-                    <Link to="/repurpose"><Zap className="w-4 h-4 mr-2" />Create New Content</Link>
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Quick Actions</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Button asChild variant="hero" className="w-full" size="lg">
+                      <Link to="/repurpose"><Zap className="w-4 h-4 mr-2" />Create New Content</Link>
+                    </Button>
+                    <Button asChild variant="outline" className="w-full" size="lg">
+                      <Link to="/seo"><Search className="w-4 h-4 mr-2" />Open SEO Suite</Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Recent SEO Projects</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {seoProjects.length > 0 ? (
+                      <div className="space-y-2">
+                        {seoProjects.map((project) => (
+                          <Link
+                            key={project.id}
+                            to="/seo"
+                            className="block p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                          >
+                            <div className="font-medium">{project.name}</div>
+                            <div className="text-sm text-muted-foreground">{project.domain}</div>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Search className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                        <p className="text-sm">No SEO projects yet</p>
+                        <Button asChild variant="link" size="sm" className="mt-2">
+                          <Link to="/seo">Create your first project</Link>
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+            <TabsContent value="seo" className="space-y-6 mt-6">
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold mb-2">SEO Projects</h3>
+                <p className="text-muted-foreground">Manage your SEO projects and tracking</p>
+              </div>
+              {seoProjects.length > 0 ? (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {seoProjects.map((project) => (
+                    <Card key={project.id}>
+                      <CardHeader>
+                        <CardTitle>{project.name}</CardTitle>
+                        <CardDescription>{project.domain}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <Button asChild className="w-full">
+                          <Link to="/seo">Open Project</Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                <Card className="p-12 text-center">
+                  <Search className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-xl font-semibold mb-2">No SEO Projects</h3>
+                  <p className="text-muted-foreground mb-6">Create your first SEO project to start tracking rankings</p>
+                  <Button asChild size="lg">
+                    <Link to="/seo">Create SEO Project</Link>
                   </Button>
-                </CardContent>
-              </Card>
+                </Card>
+              )}
             </TabsContent>
             <TabsContent value="history" className="space-y-6 mt-6">
               <div className="mb-6">
@@ -174,5 +262,6 @@ function DashboardContent() {
       </section>
       <Footer />
     </div>
+    </>
   );
 }

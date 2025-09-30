@@ -9,13 +9,13 @@ export const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2">
-              <img src={logo} alt="Amplify Logo" className="h-8 w-8" />
+              <img src={logo} alt="AnotherSEOGuru Logo" className="h-8 w-8" />
               <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Amplify
+                AnotherSEOGuru
               </span>
             </Link>
             <p className="text-sm text-muted-foreground">
-              Transform your content once, publish everywhere. AI-powered content repurposing for modern creators.
+              Professional SEO tools + AI-powered content creation. Dominate search rankings and scale your content effortlessly.
             </p>
           </div>
 
@@ -78,10 +78,10 @@ export const Footer = () => {
 
         <div className="mt-12 pt-8 border-t text-center">
           <p className="text-sm text-muted-foreground mb-2">
-            © 2025 Amplify. All rights reserved. Built with ❤️ for content creators.
+            © 2025 AnotherSEOGuru. All rights reserved. Built with ❤️ for SEO professionals.
           </p>
           <p className="text-xs text-muted-foreground">
-            Join 1,000+ marketers optimizing their content with AI-powered intelligence
+            Join 5,000+ marketers dominating search rankings with professional SEO tools
           </p>
         </div>
       </div>

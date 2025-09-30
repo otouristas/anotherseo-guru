@@ -18,20 +18,19 @@ export const Hero = () => {
           <div className="space-y-8 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary">
               <Sparkles className="w-4 h-4" />
-              Powered by AI + DataForSEO + Firecrawl
+              Professional SEO Suite + AI Content Engine
             </div>
             
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
-              Repurpose 1 Blog Into{" "}
+              Dominate Search Rankings{" "}
               <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                10 Platform-Optimized Assets
+                & Scale Content
               </span>
-              {" "}in Seconds
+              {" "}Like a Pro
             </h1>
             
             <p className="text-xl text-muted-foreground max-w-2xl">
-              Transform your content into perfect posts for LinkedIn, Twitter, Instagram, Medium, Reddit, and more. 
-              Each optimized with SEO intelligence, keyword research, and 2025 algorithm best practices.
+              Track SERP rankings, analyze competitors, research keywords, monitor backlinks, and generate platform-optimized content—all in one powerful platform.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">

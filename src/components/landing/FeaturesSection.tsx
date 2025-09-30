@@ -4,33 +4,33 @@ import { Badge } from "@/components/ui/badge";
 
 const features = [
   {
-    icon: Sparkles,
-    title: "AI-Powered Rewriting",
-    description: "Advanced prompts trained on 2025 platform algorithms for maximum engagement",
-    tier: "free"
-  },
-  {
     icon: Search,
-    title: "Real-Time SEO Intelligence",
-    description: "DataForSEO integration provides live keyword data, search volumes, and competition analysis",
-    tier: "free"
-  },
-  {
-    icon: Link2,
-    title: "Smart Anchor Link Optimization",
-    description: "Automatically suggests and places internal/external links for maximum SEO impact",
-    tier: "free"
-  },
-  {
-    icon: Target,
-    title: "SERP Preview & Testing",
-    description: "See exactly how your content will appear in Google search results",
+    title: "SERP Position Tracking",
+    description: "Monitor your keyword rankings in real-time with historical data and competitor comparison",
     tier: "free"
   },
   {
     icon: BarChart3,
-    title: "Keyword Research Dashboard",
-    description: "Find high-value keywords with search volume, difficulty, and trend data",
+    title: "Competitor Analysis",
+    description: "Analyze competitor strategies, backlink profiles, and identify content gaps to exploit",
+    tier: "free"
+  },
+  {
+    icon: Target,
+    title: "Advanced Keyword Research",
+    description: "Find high-value keywords with search volume, difficulty, CPC, and search intent classification",
+    tier: "free"
+  },
+  {
+    icon: Link2,
+    title: "Backlink Monitoring",
+    description: "Track your backlink profile, discover opportunities, and monitor competitor link building",
+    tier: "basic"
+  },
+  {
+    icon: Sparkles,
+    title: "AI Content Generation",
+    description: "Create SEO-optimized content for any platform with AI trained on 2025 ranking factors",
     tier: "basic"
   },
   {
