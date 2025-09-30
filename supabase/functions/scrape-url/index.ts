@@ -24,7 +24,7 @@ serve(async (req) => {
 
     console.log('Scraping URL:', url);
 
-    // Use Firecrawl API to scrape the URL
+    // Use Firecrawl API to scrape the URL with extended timeout
     const response = await fetch('https://api.firecrawl.dev/v1/scrape', {
       method: 'POST',
       headers: {
@@ -35,6 +35,8 @@ serve(async (req) => {
         url: url,
         formats: ['markdown', 'html'],
         onlyMainContent: true,
+        timeout: 90000, // 90 seconds timeout
+        waitFor: 5000, // Wait 5 seconds for page to load
       }),
     });
 
