@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Target, Users, Zap, TrendingUp, Search, BarChart3, LinkIcon } from "lucide-react";
