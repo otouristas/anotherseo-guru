@@ -76,8 +76,13 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>© 2025 Amplify. All rights reserved. Built with ❤️ for content creators.</p>
+        <div className="mt-12 pt-8 border-t text-center">
+          <p className="text-sm text-muted-foreground mb-2">
+            © 2025 Amplify. All rights reserved. Built with ❤️ for content creators.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Join 1,000+ marketers optimizing their content with AI-powered intelligence
+          </p>
         </div>
       </div>
     </footer>
