@@ -29,10 +29,12 @@ interface ProjectOverviewProps {
 
 // Google Core Updates with dates
 const googleCoreUpdates = [
+  { date: '2025-03-13', name: 'March 2025 Core Update', impact: 'high' },
+  { date: '2025-01-09', name: 'January 2025 Core Update', impact: 'medium' },
+  { date: '2024-11-11', name: 'November 2024 Core Update', impact: 'high' },
   { date: '2024-08-15', name: 'August 2024 Core Update', impact: 'high' },
   { date: '2024-06-20', name: 'June 2024 Core Update', impact: 'medium' },
   { date: '2024-03-05', name: 'March 2024 Core Update', impact: 'high' },
-  { date: '2023-11-02', name: 'November 2023 Core Update', impact: 'medium' },
 ];
 
 export const ProjectOverview = ({ projectId }: ProjectOverviewProps) => {

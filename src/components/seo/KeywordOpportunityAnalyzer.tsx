@@ -1,27 +1,12 @@
 import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  Target, 
-  TrendingUp, 
-  Zap, 
-  Eye, 
-  Crown, 
-  RefreshCw,
-  ChevronDown,
-  ChevronUp,
-  Lightbulb,
-  BarChart3
-} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Loader2, Search, TrendingUp, Target, Globe, Sparkles, FileText, BarChart3, ExternalLink } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface KeywordOpportunityAnalyzerProps {
   projectId: string;
@@ -44,19 +29,18 @@ interface KeywordAnalysis {
 }
 
 export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnalyzerProps) => {
-  const [keywords, setKeywords] = useState<KeywordAnalysis[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const [summary, setSummary] = useState<any>(null);
-  const [selectedCluster, setSelectedCluster] = useState<string>('all');
-  const [selectedOpportunity, setSelectedOpportunity] = useState<string>('all');
+  const [opportunities, setOpportunities] = useState<any[]>([]);
+  const [groupBy, setGroupBy] = useState<'keyword' | 'page'>('page');
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    loadAnalysis();
+    loadOpportunities();
   }, [projectId]);
 
-  const loadAnalysis = async () => {
+  const loadOpportunities = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -66,357 +50,368 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
         .order('potential_score', { ascending: false });
 
       if (error) throw error;
-
-      if (data && data.length > 0) {
-        setKeywords(data);
-        calculateSummary(data);
-      }
-    } catch (error) {
-      console.error('Error loading analysis:', error);
+      setOpportunities(data || []);
+    } catch (error: any) {
+      console.error('Error loading opportunities:', error);
+      toast({
+        title: "Error loading opportunities",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  };
-
-  const calculateSummary = (data: KeywordAnalysis[]) => {
-    const summary = {
-      totalKeywords: data.length,
-      totalPages: new Set(data.map(k => k.page_url)).size,
-      totalClusters: new Set(data.map(k => k.cluster_name)).size,
-      highPotential: data.filter(k => k.opportunity_type === 'high-potential-low-competition').length,
-      quickWins: data.filter(k => k.opportunity_type === 'quick-win').length,
-      highImpressions: data.filter(k => k.opportunity_type === 'high-impressions-low-ctr').length,
-      topPosition: data.filter(k => k.opportunity_type === 'top-position-low-ctr').length,
-      avgPotentialScore: data.reduce((sum, k) => sum + k.potential_score, 0) / data.length,
-    };
-    setSummary(summary);
   };
 
   const runAnalysis = async () => {
     setAnalyzing(true);
     try {
       const { data, error } = await supabase.functions.invoke('keyword-opportunity-analyzer', {
-        body: { projectId }
+        body: { project_id: projectId }
       });
 
       if (error) throw error;
 
       toast({
-        title: "✅ Analysis Complete!",
-        description: data.message,
+        title: "Analysis Complete",
+        description: `Analyzed ${data.total_keywords} keywords across ${data.total_pages} pages`
       });
 
-      await loadAnalysis();
+      await loadOpportunities();
     } catch (error: any) {
-      console.error('Analysis error:', error);
+      console.error('Error running analysis:', error);
       toast({
         title: "Analysis Failed",
-        description: error.message || "Failed to analyze keywords",
-        variant: "destructive",
+        description: error.message,
+        variant: "destructive"
       });
     } finally {
       setAnalyzing(false);
     }
   };
 
-  const getOpportunityIcon = (type: string) => {
-    switch (type) {
-      case 'high-potential-low-competition':
-        return <Target className="w-4 h-4 text-green-500" />;
-      case 'quick-win':
-        return <Zap className="w-4 h-4 text-yellow-500" />;
-      case 'high-impressions-low-ctr':
-        return <Eye className="w-4 h-4 text-blue-500" />;
-      case 'top-position-low-ctr':
-        return <Crown className="w-4 h-4 text-purple-500" />;
-      default:
-        return <BarChart3 className="w-4 h-4 text-gray-500" />;
+  const optimizeContent = async (pageUrl: string, keywords: string[]) => {
+    navigate('/repurpose', { 
+      state: { 
+        url: pageUrl,
+        keywords: keywords,
+        mode: 'seo-optimization'
+      }
+    });
+  };
+
+  const auditUrl = async (pageUrl: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('seo-content-analyzer', {
+        body: { 
+          url: pageUrl,
+          project_id: projectId 
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "URL Audit Complete",
+        description: "Check the recommendations below"
+      });
+
+      return data;
+    } catch (error: any) {
+      toast({
+        title: "Audit Failed",
+        description: error.message,
+        variant: "destructive"
+      });
     }
   };
 
-  const getOpportunityLabel = (type: string) => {
-    switch (type) {
-      case 'high-potential-low-competition':
-        return 'High Potential / Low Competition';
-      case 'quick-win':
-        return 'Quick Win';
-      case 'high-impressions-low-ctr':
-        return 'High Impressions / Low CTR';
-      case 'top-position-low-ctr':
-        return 'Top Position / Low CTR';
-      case 'medium-potential':
-        return 'Medium Potential';
-      default:
-        return 'Low Priority';
+  // Group data by page or keyword
+  const groupedData = groupBy === 'page' 
+    ? opportunities.reduce((acc: any, item) => {
+        const page = item.page_url;
+        if (!acc[page]) {
+          acc[page] = {
+            page_url: page,
+            keywords: [],
+            total_impressions: 0,
+            total_clicks: 0,
+            avg_position: 0,
+            avg_potential_score: 0,
+            clusters: new Set()
+          };
+        }
+        acc[page].keywords.push(item);
+        acc[page].total_impressions += item.impressions || 0;
+        acc[page].total_clicks += item.clicks || 0;
+        acc[page].avg_position += item.position || 0;
+        acc[page].avg_potential_score += item.potential_score || 0;
+        if (item.cluster_name) acc[page].clusters.add(item.cluster_name);
+        return acc;
+      }, {})
+    : opportunities.reduce((acc: any, item) => {
+        const kw = item.keyword;
+        if (!acc[kw]) {
+          acc[kw] = {
+            keyword: kw,
+            pages: [],
+            total_impressions: item.impressions || 0,
+            total_clicks: item.clicks || 0,
+            avg_position: item.position || 0,
+            potential_score: item.potential_score || 0,
+            cluster_name: item.cluster_name
+          };
+        } else {
+          acc[kw].total_impressions += item.impressions || 0;
+          acc[kw].total_clicks += item.clicks || 0;
+        }
+        acc[kw].pages.push(item);
+        return acc;
+      }, {});
+
+  Object.values(groupedData).forEach((group: any) => {
+    if (groupBy === 'page') {
+      const count = group.keywords.length;
+      group.avg_position = count > 0 ? group.avg_position / count : 0;
+      group.avg_potential_score = count > 0 ? group.avg_potential_score / count : 0;
+      group.clusters = Array.from(group.clusters);
     }
-  };
-
-  const getPotentialColor = (score: number) => {
-    if (score >= 0.7) return 'text-green-600 font-bold';
-    if (score >= 0.5) return 'text-yellow-600 font-semibold';
-    return 'text-gray-600';
-  };
-
-  // Filter keywords
-  const filteredKeywords = keywords.filter(k => {
-    if (selectedCluster !== 'all' && k.cluster_name !== selectedCluster) return false;
-    if (selectedOpportunity !== 'all' && k.opportunity_type !== selectedOpportunity) return false;
-    return true;
   });
 
-  // Group by cluster
-  const clusters = Array.from(new Set(filteredKeywords.map(k => k.cluster_name)))
-    .map(clusterName => ({
-      name: clusterName,
-      keywords: filteredKeywords.filter(k => k.cluster_name === clusterName)
-    }))
-    .sort((a, b) => {
-      const aAvg = a.keywords.reduce((sum, k) => sum + k.potential_score, 0) / a.keywords.length;
-      const bAvg = b.keywords.reduce((sum, k) => sum + k.potential_score, 0) / b.keywords.length;
-      return bAvg - aAvg;
-    });
+  const groupedArray = Object.values(groupedData);
 
-  if (loading) {
-    return <div className="p-8 text-center text-muted-foreground">Loading analysis...</div>;
-  }
+  const totalKeywords = opportunities.length;
+  const totalPages = new Set(opportunities.map(o => o.page_url)).size;
+  const totalClusters = new Set(opportunities.map(o => o.cluster_name).filter(Boolean)).size;
+  const highOpportunities = opportunities.filter(o => o.opportunity_type === 'high_potential_low_competition').length;
+  const avgPotentialScore = opportunities.length > 0 
+    ? (opportunities.reduce((sum, o) => sum + (o.potential_score || 0), 0) / opportunities.length * 100).toFixed(0)
+    : 0;
 
-  if (keywords.length === 0) {
-    return (
-      <Card className="p-8 text-center">
-        <Target className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-        <h3 className="text-lg font-semibold mb-2">No Keyword Analysis Yet</h3>
-        <p className="text-muted-foreground mb-4">
-          Run the analysis to discover high-potential keywords and optimization opportunities
-        </p>
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold">Keyword Opportunities</h2>
+          <p className="text-muted-foreground">AI-powered keyword clustering and optimization recommendations</p>
+        </div>
         <Button onClick={runAnalysis} disabled={analyzing}>
           {analyzing ? (
             <>
-              <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Analyzing...
             </>
           ) : (
             <>
-              <Target className="w-4 h-4 mr-2" />
+              <Sparkles className="mr-2 h-4 w-4" />
               Run Analysis
             </>
           )}
         </Button>
-      </Card>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold">Keyword Opportunity Analysis</h2>
-          <p className="text-sm text-muted-foreground">
-            AI-powered analysis using Ahrefs-style scoring methodology
-          </p>
-        </div>
-        <Button onClick={runAnalysis} disabled={analyzing} size="sm">
-          <RefreshCw className={`w-4 h-4 mr-2 ${analyzing ? 'animate-spin' : ''}`} />
-          {analyzing ? 'Analyzing...' : 'Refresh Analysis'}
-        </Button>
       </div>
 
-      {/* Summary Cards */}
-      {summary && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="p-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <Card>
+          <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-2">
-              <Target className="w-5 h-5 text-green-500" />
-              <span className="text-sm text-muted-foreground">High Potential</span>
+              <Search className="w-4 h-4 text-blue-500" />
+              <div className="text-2xl font-bold">{totalKeywords}</div>
             </div>
-            <div className="text-2xl font-bold">{summary.highPotential}</div>
-            <div className="text-xs text-muted-foreground">Low competition</div>
-          </Card>
-
-          <Card className="p-4">
+            <div className="text-xs text-muted-foreground">Total Keywords</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-2">
-              <Zap className="w-5 h-5 text-yellow-500" />
-              <span className="text-sm text-muted-foreground">Quick Wins</span>
+              <FileText className="w-4 h-4 text-purple-500" />
+              <div className="text-2xl font-bold">{totalPages}</div>
             </div>
-            <div className="text-2xl font-bold">{summary.quickWins}</div>
-            <div className="text-xs text-muted-foreground">Page 1, position 4-10</div>
-          </Card>
-
-          <Card className="p-4">
+            <div className="text-xs text-muted-foreground">Pages Analyzed</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-2">
-              <Eye className="w-5 h-5 text-blue-500" />
-              <span className="text-sm text-muted-foreground">High Impressions</span>
+              <Target className="w-4 h-4 text-orange-500" />
+              <div className="text-2xl font-bold">{totalClusters}</div>
             </div>
-            <div className="text-2xl font-bold">{summary.highImpressions}</div>
-            <div className="text-xs text-muted-foreground">Low CTR opportunities</div>
-          </Card>
-
-          <Card className="p-4">
+            <div className="text-xs text-muted-foreground">Keyword Clusters</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="w-5 h-5 text-purple-500" />
-              <span className="text-sm text-muted-foreground">Avg Score</span>
+              <TrendingUp className="w-4 h-4 text-green-500" />
+              <div className="text-2xl font-bold">{highOpportunities}</div>
             </div>
-            <div className="text-2xl font-bold">{(summary.avgPotentialScore * 100).toFixed(0)}%</div>
-            <div className="text-xs text-muted-foreground">Potential score</div>
-          </Card>
-        </div>
-      )}
-
-      {/* Filters */}
-      <div className="flex gap-4">
-        <select 
-          className="px-4 py-2 border rounded-lg bg-background"
-          value={selectedCluster}
-          onChange={(e) => setSelectedCluster(e.target.value)}
-        >
-          <option value="all">All Clusters ({clusters.length})</option>
-          {Array.from(new Set(keywords.map(k => k.cluster_name))).map(cluster => (
-            <option key={cluster} value={cluster}>{cluster}</option>
-          ))}
-        </select>
-
-        <select 
-          className="px-4 py-2 border rounded-lg bg-background"
-          value={selectedOpportunity}
-          onChange={(e) => setSelectedOpportunity(e.target.value)}
-        >
-          <option value="all">All Opportunities</option>
-          <option value="high-potential-low-competition">High Potential / Low Competition</option>
-          <option value="quick-win">Quick Wins</option>
-          <option value="high-impressions-low-ctr">High Impressions / Low CTR</option>
-          <option value="top-position-low-ctr">Top Position / Low CTR</option>
-        </select>
+            <div className="text-xs text-muted-foreground">High Opportunities</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-2 mb-2">
+              <BarChart3 className="w-4 h-4 text-cyan-500" />
+              <div className="text-2xl font-bold">{avgPotentialScore}</div>
+            </div>
+            <div className="text-xs text-muted-foreground">Avg Potential Score</div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Clustered Keywords */}
-      <Accordion type="multiple" className="space-y-4">
-        {clusters.map((cluster, idx) => {
-          const avgScore = cluster.keywords.reduce((sum, k) => sum + k.potential_score, 0) / cluster.keywords.length;
-          
-          return (
-            <AccordionItem key={idx} value={`cluster-${idx}`} className="border rounded-lg">
-              <Card>
-                <AccordionTrigger className="px-6 py-4 hover:no-underline">
-                  <div className="flex items-center justify-between w-full pr-4">
-                    <div className="flex items-center gap-4">
-                      <div>
-                        <h3 className="text-lg font-semibold text-left">{cluster.name}</h3>
-                        <p className="text-sm text-muted-foreground text-left">
-                          {cluster.keywords.length} keywords • Avg Score: {(avgScore * 100).toFixed(0)}%
-                        </p>
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-muted-foreground">Group by:</span>
+        <Tabs value={groupBy} onValueChange={(v: any) => setGroupBy(v)} className="w-auto">
+          <TabsList>
+            <TabsTrigger value="page">Page</TabsTrigger>
+            <TabsTrigger value="keyword">Keyword</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      ) : groupedArray.length === 0 ? (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p className="text-muted-foreground">No opportunities found yet. Run an analysis to get started.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {groupBy === 'page' ? (
+            groupedArray.map((group: any, idx) => (
+              <Card key={idx} className="overflow-hidden">
+                <CardHeader className="bg-primary/5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Globe className="w-5 h-5 text-primary shrink-0" />
+                        <CardTitle className="text-lg break-all">{group.page_url}</CardTitle>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline">{group.keywords.length} keywords</Badge>
+                        <Badge variant="outline">Score: {(group.avg_potential_score * 100).toFixed(0)}</Badge>
+                        <Badge variant="outline">Pos: {group.avg_position.toFixed(1)}</Badge>
+                        <Badge variant="outline">{group.total_impressions.toLocaleString()} impressions</Badge>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {cluster.keywords.some(k => k.opportunity_type === 'high-potential-low-competition') && (
-                        <Badge variant="default" className="bg-green-500">
-                          <Target className="w-3 h-3 mr-1" />
-                          High Potential
-                        </Badge>
-                      )}
-                      {cluster.keywords.some(k => k.opportunity_type === 'quick-win') && (
-                        <Badge variant="default" className="bg-yellow-500">
-                          <Zap className="w-3 h-3 mr-1" />
-                          Quick Wins
-                        </Badge>
-                      )}
+                    <div className="flex gap-2 shrink-0">
+                      <Button size="sm" onClick={() => optimizeContent(group.page_url, group.keywords.map((k: any) => k.keyword))}>
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Optimize Content
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => auditUrl(group.page_url)}>
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Audit URL
+                      </Button>
                     </div>
                   </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="px-6 pb-4 space-y-3">
-                    {cluster.keywords.map((keyword, kidx) => (
-                      <Card key={kidx} className="p-4 bg-accent/5">
-                        <div className="space-y-3">
-                          {/* Keyword Header */}
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                {getOpportunityIcon(keyword.opportunity_type)}
-                                <span className="font-semibold">{keyword.keyword}</span>
-                                <Badge variant="outline" className="text-xs">
-                                  {getOpportunityLabel(keyword.opportunity_type)}
-                                </Badge>
-                              </div>
-                              <p className="text-sm text-muted-foreground truncate">
-                                {keyword.page_url}
-                              </p>
-                            </div>
-                            <div className="text-right">
-                              <div className={`text-xl font-bold ${getPotentialColor(keyword.potential_score)}`}>
-                                {(keyword.potential_score * 100).toFixed(0)}%
-                              </div>
-                              <div className="text-xs text-muted-foreground">Potential</div>
-                            </div>
-                          </div>
-
-                          {/* Metrics */}
-                          <div className="grid grid-cols-5 gap-4 text-sm">
-                            <div>
-                              <div className="text-muted-foreground">Position</div>
-                              <div className="font-semibold">#{keyword.position.toFixed(1)}</div>
-                            </div>
-                            <div>
-                              <div className="text-muted-foreground">Impressions</div>
-                              <div className="font-semibold">{keyword.impressions.toLocaleString()}</div>
-                            </div>
-                            <div>
-                              <div className="text-muted-foreground">Clicks</div>
-                              <div className="font-semibold">{keyword.clicks}</div>
-                            </div>
-                            <div>
-                              <div className="text-muted-foreground">CTR</div>
-                              <div className="font-semibold">{(keyword.ctr * 100).toFixed(2)}%</div>
-                            </div>
-                            <div>
-                              <div className="text-muted-foreground">Difficulty</div>
-                              <div className="font-semibold">{(keyword.difficulty_score * 100).toFixed(0)}/100</div>
-                            </div>
-                          </div>
-
-                          {/* AI Recommendations */}
-                          {keyword.ai_recommendations && (
-                            <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/20">
-                              <div className="flex items-center gap-2 mb-3">
-                                <Lightbulb className="w-5 h-5 text-primary" />
-                                <span className="font-semibold text-primary">AI Recommendations</span>
-                              </div>
-                              <div className="space-y-2 text-sm">
-                                <div>
-                                  <span className="font-medium">Primary Action:</span>{' '}
-                                  <span className="text-muted-foreground">
-                                    {keyword.ai_recommendations.primary_action}
-                                  </span>
-                                </div>
-                                <div>
-                                  <span className="font-medium">Content Strategy:</span>{' '}
-                                  <span className="text-muted-foreground">
-                                    {keyword.ai_recommendations.content_strategy}
-                                  </span>
-                                </div>
-                                <div>
-                                  <span className="font-medium">Technical SEO:</span>{' '}
-                                  <span className="text-muted-foreground">
-                                    {keyword.ai_recommendations.technical_seo}
-                                  </span>
-                                </div>
-                                <div>
-                                  <span className="font-medium">Quick Win:</span>{' '}
-                                  <span className="text-muted-foreground">
-                                    {keyword.ai_recommendations.quick_win}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          )}
+                </CardHeader>
+                <CardContent className="pt-4">
+                  {group.clusters.length > 0 && (
+                    <div className="mb-4">
+                      <div className="text-sm font-medium mb-2">Clusters:</div>
+                      <div className="flex flex-wrap gap-2">
+                        {group.clusters.map((cluster: string, i: number) => (
+                          <Badge key={i} variant="secondary">{cluster}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-2">Keyword</th>
+                          <th className="text-left py-2">Type</th>
+                          <th className="text-right py-2">Score</th>
+                          <th className="text-right py-2">Position</th>
+                          <th className="text-right py-2">Impressions</th>
+                          <th className="text-right py-2">Clicks</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {group.keywords.map((kw: any, i: number) => (
+                          <tr key={i} className="border-b last:border-0">
+                            <td className="py-2 font-medium">{kw.keyword}</td>
+                            <td className="py-2">
+                              <Badge variant={kw.opportunity_type === 'high_potential_low_competition' ? 'default' : 'secondary'} className="text-xs">
+                                {kw.opportunity_type?.replace(/_/g, ' ')}
+                              </Badge>
+                            </td>
+                            <td className="py-2 text-right">{(kw.potential_score * 100).toFixed(0)}</td>
+                            <td className="py-2 text-right">{kw.position?.toFixed(1)}</td>
+                            <td className="py-2 text-right">{kw.impressions?.toLocaleString()}</td>
+                            <td className="py-2 text-right">{kw.clicks}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  {group.keywords[0]?.ai_recommendations && (
+                    <div className="mt-4 p-3 bg-primary/5 rounded-lg">
+                      <div className="flex items-start gap-2">
+                        <Sparkles className="w-4 h-4 text-primary mt-1 shrink-0" />
+                        <div className="flex-1">
+                          <div className="font-medium text-sm mb-1">AI Recommendations</div>
+                          <ul className="text-sm text-muted-foreground space-y-1">
+                            {JSON.parse(group.keywords[0].ai_recommendations).recommendations?.map((rec: string, i: number) => (
+                              <li key={i}>• {rec}</li>
+                            ))}
+                          </ul>
                         </div>
-                      </Card>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            groupedArray.map((group: any, idx) => (
+              <Card key={idx}>
+                <CardHeader>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Search className="w-5 h-5 text-primary" />
+                        <CardTitle className="text-lg">{group.keyword}</CardTitle>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {group.cluster_name && <Badge variant="secondary">{group.cluster_name}</Badge>}
+                        <Badge variant="outline">Score: {(group.potential_score * 100).toFixed(0)}</Badge>
+                        <Badge variant="outline">{group.total_impressions.toLocaleString()} impressions</Badge>
+                        <Badge variant="outline">{group.pages.length} pages</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {group.pages.map((page: any, i: number) => (
+                      <div key={i} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium truncate mb-1">{page.page_url}</div>
+                          <div className="flex gap-3 text-xs text-muted-foreground">
+                            <span>Position: {page.position?.toFixed(1)}</span>
+                            <span>Impressions: {page.impressions?.toLocaleString()}</span>
+                            <span>Clicks: {page.clicks}</span>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="ghost" onClick={() => optimizeContent(page.page_url, [group.keyword])}>
+                          <Sparkles className="w-4 h-4" />
+                        </Button>
+                      </div>
                     ))}
                   </div>
-                </AccordionContent>
+                </CardContent>
               </Card>
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
+            ))
+          )}
+        </div>
+      )}
     </div>
   );
 };

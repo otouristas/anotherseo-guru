@@ -11,30 +11,15 @@ serve(async (req) => {
   }
 
   try {
-    const { content, keywords } = await req.json();
+    const { url, project_id } = await req.json();
     
-    // Input validation
-    if (!content || typeof content !== 'string') {
+    if (!url || typeof url !== 'string') {
       return new Response(
-        JSON.stringify({ error: 'Content is required and must be a string' }),
+        JSON.stringify({ error: 'URL is required and must be a string' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
-    
-    if (content.length > 100000) {
-      return new Response(
-        JSON.stringify({ error: 'Content exceeds maximum length of 100,000 characters' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-    
-    if (keywords && !Array.isArray(keywords)) {
-      return new Response(
-        JSON.stringify({ error: 'Keywords must be an array' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-    
+
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
     if (!lovableApiKey) {
       console.error('LOVABLE_API_KEY not configured');
@@ -42,6 +27,23 @@ serve(async (req) => {
         JSON.stringify({ error: 'Service configuration error' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
+    }
+
+    // Scrape the URL content
+    let content = '';
+    try {
+      const scrapeResponse = await fetch(url);
+      if (scrapeResponse.ok) {
+        const html = await scrapeResponse.text();
+        // Basic HTML text extraction
+        content = html.replace(/<[^>]*>/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .substring(0, 10000);
+      }
+    } catch (scrapeError) {
+      console.error('Error scraping URL:', scrapeError);
+      content = 'Unable to fetch page content';
     }
 
     // Analyze content using Lovable AI
@@ -55,31 +57,32 @@ serve(async (req) => {
         model: 'google/gemini-2.5-flash',
         messages: [{
           role: 'system',
-          content: `You are an expert SEO content analyzer. Analyze content for:
-1. Readability (Flesch Reading Ease score 0-100)
-2. SEO optimization (keyword usage, structure, meta)
-3. Engagement potential (hooks, calls-to-action, value)
-4. Keyword density for: ${keywords?.join(', ') || 'N/A'}
-5. Extract key entities (people, places, organizations)
-6. Identify main topics and themes
-7. Provide actionable recommendations
+          content: `You are an expert SEO auditor. Analyze the page content and provide:
+1. Technical SEO issues (meta tags, headings, structure)
+2. Content quality issues (readability, depth, value)
+3. Keyword optimization opportunities
+4. Internal linking suggestions
+5. E-E-A-T signals present or missing
+6. Core Web Vitals considerations
+7. Mobile-friendliness issues
+8. Schema markup recommendations
 
 Return JSON only with structure:
 {
-  "readabilityScore": number,
-  "seoScore": number,
-  "engagementScore": number,
-  "keywordDensity": number,
-  "wordCount": number,
-  "entities": ["entity1", "entity2"],
-  "topics": ["topic1", "topic2"],
-  "recommendations": ["rec1", "rec2"],
-  "internalLinkSuggestions": ["suggestion1"],
-  "eeatSignals": ["signal1", "signal2"]
+  "technical_issues": ["issue1", "issue2"],
+  "content_issues": ["issue1", "issue2"],
+  "keyword_opportunities": ["opp1", "opp2"],
+  "internal_linking": ["suggestion1", "suggestion2"],
+  "eeat_signals": ["signal1", "signal2"],
+  "core_web_vitals": ["issue1", "issue2"],
+  "mobile_issues": ["issue1", "issue2"],
+  "schema_recommendations": ["rec1", "rec2"],
+  "priority_actions": ["action1", "action2", "action3"],
+  "overall_score": 75
 }`
         }, {
           role: 'user',
-          content: `Analyze this content:\n\n${content.substring(0, 10000)}`
+          content: `Analyze this page:\nURL: ${url}\n\nContent:\n${content.substring(0, 8000)}`
         }],
         temperature: 0.3
       }),
@@ -95,6 +98,9 @@ Return JSON only with structure:
 
     const data = await response.json();
     const analysis = JSON.parse(data.choices[0].message.content);
+    
+    analysis.url = url;
+    analysis.analyzed_at = new Date().toISOString();
 
     return new Response(JSON.stringify(analysis), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -103,7 +109,6 @@ Return JSON only with structure:
   } catch (error) {
     console.error('Error in seo-content-analyzer:', error);
     
-    // Don't leak sensitive information in error messages
     const errorMessage = error instanceof Error && error.message.includes('API') 
       ? 'Service temporarily unavailable' 
       : 'Analysis failed';
