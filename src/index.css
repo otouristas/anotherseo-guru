@@ -57,6 +57,18 @@ All colors MUST be HSL.
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
+    /* Platform Colors */
+    --platform-linkedin: 201 100% 35%;
+    --platform-twitter: 203 89% 53%;
+    --platform-instagram: 330 80% 50%;
+    --platform-reddit: 16 100% 50%;
+    --platform-medium: 0 0% 0%;
+    --platform-quora: 357 75% 53%;
+    --platform-youtube: 0 100% 50%;
+    --platform-tiktok: 349 100% 50%;
+    --platform-newsletter: 262 83% 58%;
+    --platform-blog: 262 83% 58%;
+
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
@@ -117,6 +129,19 @@ All colors MUST be HSL.
     --shadow-medium: 0 4px 16px hsl(0 0% 0% / 0.4);
     --shadow-strong: 0 8px 32px hsl(0 0% 0% / 0.5);
     --shadow-glow: 0 0 40px hsl(262 83% 58% / 0.4);
+    
+    /* Platform Colors */
+    --platform-linkedin: 201 100% 45%;
+    --platform-twitter: 203 89% 63%;
+    --platform-instagram: 330 80% 60%;
+    --platform-reddit: 16 100% 60%;
+    --platform-medium: 0 0% 90%;
+    --platform-quora: 357 75% 63%;
+    --platform-youtube: 0 100% 60%;
+    --platform-tiktok: 349 100% 60%;
+    --platform-newsletter: 262 83% 68%;
+    --platform-blog: 262 83% 68%;
+    
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
