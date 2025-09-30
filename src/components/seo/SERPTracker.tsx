@@ -16,6 +16,7 @@ interface SERPTrackerProps {
 export const SERPTracker = ({ projectId }: SERPTrackerProps) => {
   const [keyword, setKeyword] = useState("");
   const [rankings, setRankings] = useState<any[]>([]);
+  const [savedKeywords, setSavedKeywords] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [project, setProject] = useState<any>(null);
   const { toast } = useToast();
@@ -23,6 +24,7 @@ export const SERPTracker = ({ projectId }: SERPTrackerProps) => {
   useEffect(() => {
     loadProject();
     loadRankings();
+    loadSavedKeywords();
   }, [projectId]);
 
   const loadProject = async () => {
@@ -42,6 +44,15 @@ export const SERPTracker = ({ projectId }: SERPTrackerProps) => {
       .order('checked_at', { ascending: false })
       .limit(50);
     setRankings(data || []);
+  };
+
+  const loadSavedKeywords = async () => {
+    const { data } = await supabase
+      .from('keyword_analysis')
+      .select('*')
+      .eq('project_id', projectId)
+      .order('potential_score', { ascending: false });
+    setSavedKeywords(data || []);
   };
 
   const trackKeyword = async () => {
@@ -136,6 +147,56 @@ export const SERPTracker = ({ projectId }: SERPTrackerProps) => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Saved Keywords from GSC */}
+      {savedKeywords.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="w-5 h-5" />
+              Keywords from Google Search Console ({savedKeywords.length})
+            </CardTitle>
+            <CardDescription>
+              Quick-track keywords already identified in your GSC data
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {savedKeywords.slice(0, 12).map((kw, idx) => (
+                <div
+                  key={idx}
+                  className="p-3 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
+                  onClick={() => {
+                    setKeyword(kw.keyword);
+                    trackKeyword();
+                  }}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1 min-w-0 pr-2">
+                      <div className="font-medium text-sm truncate">{kw.keyword}</div>
+                      <Badge variant="outline" className="text-xs mt-1">
+                        {kw.cluster_name || 'Unclustered'}
+                      </Badge>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="text-xs font-bold">#{Math.round(kw.position)}</div>
+                      <div className="text-xs text-muted-foreground">{kw.impressions} imp</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">
+                      Score: {(kw.potential_score * 100).toFixed(0)}
+                    </span>
+                    <Badge variant={kw.opportunity_type === 'high_potential_low_competition' ? 'default' : 'secondary'} className="text-xs">
+                      {kw.opportunity_type?.replace(/_/g, ' ').toUpperCase() || 'Track'}
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid gap-4">
         {uniqueKeywords.map((kw) => {
