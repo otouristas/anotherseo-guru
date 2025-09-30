@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Copy, Download, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { BlogIcon, MediumIcon, LinkedInIcon, RedditIcon, QuoraIcon, TwitterIcon, InstagramIcon, YoutubeIcon, NewsletterIcon, TikTokIcon } from "@/components/PlatformLogos";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { PlatformMockup } from "@/components/PlatformMockups";
 import { useState } from "react";
 
 interface GeneratedContent {
@@ -155,13 +154,12 @@ export const PreviewPane = ({ generatedContent, isGenerating }: PreviewPaneProps
                 </div>
               </div>
             
-              <Card className="p-6 bg-gradient-to-br from-card to-muted/20">
-                <div className="prose prose-sm max-w-none dark:prose-invert markdown-content">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {content.content}
-                  </ReactMarkdown>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-sm font-semibold mb-3 text-muted-foreground">Platform Preview</h4>
+                  <PlatformMockup platform={content.platform} content={content.content} />
                 </div>
-              </Card>
+              </div>
             </TabsContent>
           );
         })}
