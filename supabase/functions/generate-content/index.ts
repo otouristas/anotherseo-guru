@@ -110,208 +110,242 @@ Use a ${tone} tone and ${style} writing style.`;
 }
 
 function getPlatformPrompt(platform: string, content: string, seoData: any): string {
+  // Format anchor links for prompt injection
   const anchorsText = seoData?.anchors?.length > 0 
-    ? JSON.stringify(seoData.anchors) 
-    : '[]';
+    ? seoData.anchors.map((a: any) => `[${a.anchor}] -> ${a.url}`).join(', ')
+    : 'none';
   
-  // Enhanced SEO context for data-driven prompts
-  const seoContext = `
-SEO Intelligence:
-- Primary Keyword: "${seoData?.primaryKeyword || 'N/A'}"
-- Secondary Keywords: ${seoData?.secondaryKeywords?.join(', ') || 'N/A'}
-- Target Word Count: ${seoData?.targetWordCount || 800} words
-- Anchor Links: ${anchorsText}
-
-CRITICAL: Use these keywords naturally and strategically throughout the content. Consider search intent and user value.`;
+  // Format keywords
+  const keywords = [seoData?.primaryKeyword, ...(seoData?.secondaryKeywords || [])]
+    .filter(Boolean)
+    .join(', ');
   
   const prompts: Record<string, string> = {
-    'seo-blog': `You are an expert SEO content writer trained in 2025 best practices. Rewrite the following content to be optimized for search engines, user experience, and E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness).
-${seoContext}
+    'seo-blog': `Act as a Senior SEO & CRO Content Strategist. 
+You will transform the provided content into a fully optimized blog article.
 
-Original Content:
-${content}
+Guidelines:
+- Target keyword(s): ${keywords || 'N/A'}
+- Insert internal/external links with proper anchor text: ${anchorsText}
+- Follow SEO structure: H1 (main keyword), H2 (supporting topics), H3 (FAQs).
+- Optimize for Featured Snippets & People Also Ask.
+- Add meta title (<= 60 chars) and meta description (<= 155 chars).
+- Tone: authoritative, yet conversational.
+- Format with bullet points, tables, and schema-ready FAQ sections.
+- Target length: ${seoData?.targetWordCount || 800} words
+- Include E-E-A-T signals (expertise, experience, authority, trustworthiness)
+- Use semantic keyword variations and LSI keywords
+- Suggest schema markup opportunities (FAQ, HowTo, Article)
 
-2025 SEO Requirements:
-- Semantic keyword integration: Use primary + secondary keywords naturally, including LSI (Latent Semantic Indexing) variations
-- Content structure: Logical H1 > H2 > H3 hierarchy with keyword-rich headings
-- Featured snippet optimization: Include concise answers in first 2-3 paragraphs
-- Internal linking: Naturally incorporate these anchor links: ${anchorsText}
-- Meta tags: Generate SEO title (50-60 chars) + compelling meta description (140-160 chars)
-- Word count: Target ${seoData?.targetWordCount || 800} words for topical authority
-- E-E-A-T signals: Demonstrate expertise, include data/statistics, maintain authoritative tone
-- User intent: Address searcher's query comprehensively
-- Readability: Use short paragraphs (2-3 sentences), bullet points, and clear transitions
-- Schema opportunities: Suggest FAQ, HowTo, or Article schema where applicable
+Content: ${content}
 
-Provide the fully optimized content with meta tags, headings, and strategic keyword placement.`,
+Provide the fully optimized blog article with proper heading structure, meta tags, and strategic keyword placement.`,
 
-    'medium': `You are a creative content writer specialized in Medium's storytelling format and algorithmic preferences for 2025.
-${seoContext}
+    'medium': `You are an experienced Medium writer. 
+Repurpose the content into a Medium-style post that is engaging and thought-provoking.
 
-Original Content:
-${content}
+Guidelines:
+- Use storytelling and personal tone
+- Add strong intro hook (first 2 lines must stop scroll)
+- Add subheadings every 300 words for scannability
+- Include call-to-discussion at the end
+- Subtle SEO, but prioritize shareability and readability
+- Target keywords: ${keywords || 'N/A'}
+- Weave in these links naturally: ${anchorsText}
+- Use relevant Medium tags
+- Reading time: 5-8 minutes (1,400-2,000 words)
+- Include thought-provoking questions and relatable examples
+- Use bold text and italics for emphasis
 
-Medium Algorithm Optimization (2025):
-- Hook: Start with a question, bold statement, or story that triggers curiosity
-- Reading time: Aim for 5-8 minute read (1,400-2,000 words) for best distribution
-- Subheadings: Use descriptive H2s every 3-4 paragraphs to improve scannability
-- Keyword placement: Naturally use primary keyword in title, subtitle, first paragraph, and 2-3 H2s
-- Internal linking: Weave in anchor links contextually: ${anchorsText}
-- Visual breaks: Suggest image placements every 300-400 words
-- Engagement signals: Include thought-provoking questions, relatable examples, or controversial angles
-- Lists & formatting: Use numbered lists, bold key phrases, italics for emphasis
-- Conclusion: End with actionable insight + open-ended question to drive comments
-- SEO for Medium: Optimize for both Google and Medium's internal search
+Content: ${content}
 
-Provide a Medium article optimized for maximum distribution and engagement.`,
+Provide a complete Medium article with engaging narrative flow.`,
 
-    'linkedin': `You are a LinkedIn content strategist specializing in high-engagement professional posts for 2025.
-${seoContext}
+    'linkedin': `You are a Senior LinkedIn Content Strategist. 
+Rewrite the content into a LinkedIn post.
 
-Original Content:
-${content}
+Guidelines:
+- Start with a bold statement or question to hook
+- Short paragraphs, max 3 lines each
+- Use storytelling + insights
+- Use emojis sparingly (max 2-3)
+- Target keywords: ${keywords || 'N/A'}
+- Include 1 link from: ${anchorsText}
+- Post length: 1,300-2,000 characters for maximum reach
+- Use "I/we" perspective for authenticity
+- Provide 3-5 actionable insights
+- End with a call to engage (ask readers to comment/share)
+- Add 3-5 relevant hashtags at the end
+- Include credibility signals (data, experience, results)
 
-LinkedIn Algorithm & Best Practices (2025):
-- Hook (Line 1): Start with bold statement, question, or statistic that stops the scroll
-- Post length: 1,300-2,000 characters for maximum reach (LinkedIn favors substantial posts)
-- Formatting: Use single-line breaks, emojis sparingly (1-3 max), and white space strategically
-- Storytelling: Use "I/we" perspective, personal anecdotes, or case studies for authenticity
-- Keyword integration: Naturally use "${seoData?.primaryKeyword || 'N/A'}" for LinkedIn search visibility
-- Value delivery: Provide 3-5 actionable insights, not just theory
-- Link strategy: Include 1 link from ${anchorsText} (LinkedIn deprioritizes multi-link posts)
-- Engagement triggers: End with thoughtful question or controversial (but professional) take
-- Hashtags: Use 3-5 relevant hashtags at the end (including primary keyword variations)
-- Call-to-action: Invite comments, shares, or connections
-- Credibility signals: Reference data, experience, or results to establish authority
+Content: ${content}
 
-Provide a LinkedIn post formatted for maximum visibility and professional engagement.`,
+Provide a LinkedIn post optimized for maximum visibility and engagement.`,
 
-    'reddit': `You are a community-savvy writer. Convert content into a Reddit post:
+    'reddit': `Act as a Senior Redditor who knows how to spark discussions and provide value. 
+Rewrite the content for Reddit.
 
-Original Content:
-${content}
-
-Requirements:
-- Casual, peer-to-peer tone
-- Start with a question or relatable hook
+Guidelines:
+- Avoid sounding like marketing; be authentic, transparent, and helpful
+- Provide practical value, answer questions, or share a guide
+- Use casual formatting (bullet points, bold text sparingly)
+- End with an open-ended question to encourage comments
+- Target keywords: ${keywords || 'N/A'}
+- No external links in main body (suggest putting link in comments: ${anchorsText})
+- Use peer-to-peer tone, conversational style
 - Short paragraphs, easy to scan
-- Keyword: "${seoData?.primaryKeyword || 'N/A'}"
-- Insert links from ${anchorsText} only if natural (avoid spam)
-- Add CTA to spark discussion
-- Be authentic and helpful
+- Be authentic and helpful, not promotional
+- Start with a question or relatable hook
 
-Provide a Reddit-friendly post.`,
+Content: ${content}
 
-    'quora': `You are a knowledgeable expert on Quora. Rewrite content as an authoritative answer:
+Provide a Reddit-friendly post that sparks genuine discussion.`,
 
-Original Content:
-${content}
+    'quora': `Act as a Senior Thought Leader answering a Quora question. 
+Repurpose the content into a Quora answer.
 
-Requirements:
+Guidelines:
 - Start with a clear, direct answer
 - Structure with bullets or subheadings
 - Authority-driven, concise tone
-- Primary keyword: "${seoData?.primaryKeyword || 'N/A'}"
+- Target keywords: ${keywords || 'N/A'}
 - Include links naturally: ${anchorsText}
 - Back up claims with logic or examples
+- Keep answer 500–800 words max
 - Provide actionable takeaway
+- Use data/statistics where possible
+- Optimize for featured answers
+- Include subtle CTA at the end
 
-Provide a comprehensive Quora answer.`,
+Content: ${content}
 
-    'twitter': `You are a viral Twitter/X thread expert optimized for 2025's algorithm changes.
-${seoContext}
+Provide a comprehensive Quora answer that demonstrates expertise.`,
 
-Original Content:
-${content}
+    'twitter': `Act as a Senior Twitter Growth Expert. 
+Repurpose the content into a high-impact Twitter thread.
 
-Twitter/X Algorithm Optimization (2025):
-- Hook tweet (1/n): Start with a bold claim, surprising fact, or pattern interrupt (aim for replies/retweets)
-- Thread length: 7-10 tweets for best distribution (X favors longer threads in 2025)
-- Character count: Use 200-250 characters per tweet (not maxing out improves readability)
-- Formatting: Use line breaks, bullet points (•), and strategic emojis (1-2 per tweet)
-- Keyword strategy: Include "${seoData?.primaryKeyword || 'N/A'}" in tweet 1 and 2-3 others for searchability
-- Engagement hooks: Add questions, polls, or "RT if you agree" in middle tweets
-- Link placement: Include link from ${anchorsText} in a dedicated tweet (not the hook)
-- Visual suggestions: Recommend image/graphic placements for key tweets
-- Hashtags: Use 1-2 specific hashtags max (X algorithm deprioritizes hashtag-heavy posts)
-- Final CTA: End with question, poll, or "Follow for more" to drive engagement
-- Numbering: Use 1/n format for each tweet
+Guidelines:
+- Hook tweet = bold, curiosity-driven (max 240 chars)
+- Break content into 7–10 short tweets (1 idea each)
+- Target keywords: ${keywords || 'N/A'}
+- Use thread numbering (1/n, 2/n, etc.)
+- Character count: 200-250 per tweet for readability
+- Use line breaks, bullet points (•), and strategic emojis (1-2 per tweet)
+- Include link from ${anchorsText} in a dedicated tweet (not the hook)
+- Add questions or "RT if you agree" in middle tweets
+- Use 1-2 specific hashtags max
+- End with CTA: "Follow for more" or engaging question
+- Use conversational tone with authority
 
-Provide a complete Twitter thread formatted for maximum viral potential and algorithmic favor.`,
+Content: ${content}
 
-    'instagram': `You are an Instagram content creator optimized for 2025's discovery and engagement algorithms.
-${seoContext}
+Provide a complete Twitter thread optimized for virality and engagement.`,
 
-Original Content:
-${content}
+    'instagram': `Act as a Senior Instagram Content Strategist. 
+Repurpose the content for Instagram posts and Reels.
 
-Instagram Algorithm Best Practices (2025):
-- Hook (First Line): Must grab attention immediately (appears above "more" button)
-- Caption length: 1,500-2,000 characters for best reach (Instagram favors substantial captions)
-- Storytelling: Use first-person narrative, relatable situations, or transformation stories
-- Formatting: Short paragraphs (1-2 sentences), strategic line breaks, and white space
-- Emoji strategy: 5-10 relevant emojis throughout (not just decorative, but contextual)
-- Keyword optimization: Use "${seoData?.primaryKeyword || 'N/A'}" in first 125 characters for search
-- Value delivery: Include 3-5 actionable tips, insights, or lessons
-- Link strategy: If using link from ${anchorsText}, mention "Link in bio" or "Link in story"
-- Hashtags: Use 20-30 hashtags (mix of high, medium, low competition) AFTER caption, separated by line breaks
-- Hashtag strategy: Include branded, niche, and primary keyword variations
-- CTA: End with engaging question, "Save for later", "Tag someone who needs this", or "Share to your story"
-- Alternative text suggestion: Provide alt text for accessibility and SEO
+Guidelines:
+- Hook first slide/line: bold statement or question
+- Use emojis, short sentences, high impact visual suggestions
+- Include CTA: Save, Share, Comment
+- Target keywords: ${keywords || 'N/A'}
+- Caption length: 1,500-2,000 characters for best reach
+- Use storytelling and first-person narrative
+- Short paragraphs (1-2 sentences), strategic line breaks
+- 5-10 relevant emojis throughout (contextual, not decorative)
+- If carousel: suggest captions per slide (5-7 slides)
+- If Reel: suggest narration script (30-60 seconds)
+- Mention "Link in bio" if using: ${anchorsText}
+- Add 20-30 hashtags at end (mix of high, medium, low competition)
+- Include branded, niche, and keyword variation hashtags
+- CTA: "Save this", "Tag someone", "Share to story"
 
-Provide a complete Instagram caption optimized for discovery, saves, and shares.`,
+Content: ${content}
 
-    'youtube': `Create YouTube video description from this content:
+Provide complete Instagram content (caption + hashtags + visual suggestions).`,
 
-Original Content:
-${content}
+    'facebook': `Act as a Senior Facebook Content Strategist. 
+Repurpose the content for Facebook posts and ads.
 
-Requirements:
-- Compelling first 2 lines (visible before "show more")
-- Detailed description of video content
-- Use "${seoData?.primaryKeyword || 'N/A'}" for SEO
-- Include timestamps if applicable
-- Add links naturally: ${anchorsText}
-- Social media links section
-- Relevant hashtags (3-5)
-- Call to action (subscribe, comment, etc.)
+Guidelines:
+- Tone: conversational, engaging, community-driven
+- Post length: 80–150 words for feed; up to 300 for groups
+- Include 1–2 questions or CTAs to encourage comments/shares
+- Target keywords: ${keywords || 'N/A'}
+- Incorporate links naturally: ${anchorsText}
+- Include emojis subtly (max 2–3 per post)
+- For ads: bold, curiosity-driven headline
+- For ads: concise, benefit-focused description
+- Use short paragraphs for mobile readability
+- Include visual suggestions (image/video type)
+- End with engaging question or CTA
+- Optimize for shares and comments
 
-Provide a complete YouTube description.`,
+Content: ${content}
 
-    'newsletter': `Create newsletter content from this content:
+Provide Facebook post optimized for engagement (specify if Feed, Group, or Ad format).`,
 
-Original Content:
-${content}
+    'youtube': `Act as a Senior Video Content Strategist. 
+Repurpose the content into a YouTube Short script.
 
-Requirements:
-- Catchy subject line suggestion
+Guidelines:
+- Hook in first 5 seconds
+- Duration: 45–60 seconds
+- Break into intro, 3 key points, outro CTA
+- Conversational & energetic tone
+- Target keywords: ${keywords || 'N/A'}
+- Include compelling description (first 2 lines visible before "show more")
+- Add timestamps if applicable
+- Include links: ${anchorsText}
+- Add social media links section
+- Use 3-5 relevant hashtags
+- CTA: Subscribe or link in description
+- Suggest B-roll, text overlays, visual ideas
+
+Content: ${content}
+
+Provide complete YouTube script + description optimized for engagement.`,
+
+    'tiktok': `Act as a Senior TikTok Growth Content Strategist.
+Repurpose the content into a TikTok script optimized for engagement.
+
+Guidelines:
+- Hook: first 3 seconds must grab attention
+- Script length: 45–60 seconds (~100–150 words)
+- Break content into short, punchy sentences suitable for captions & voiceover
+- Suggest visual ideas per line: text overlays, B-roll, transitions, effects
+- Target keywords: ${keywords || 'N/A'}
+- Include CTA at end: Follow, Like, or Link in bio
+- Suggest trending audio/music style
+- Tone: energetic, relatable, entertaining, yet authoritative
+- Use text overlay suggestions for key points
+- Include hook variations (test A/B)
+- Add 5-8 relevant hashtags
+
+Content: ${content}
+
+Provide complete TikTok script with visual suggestions and trending audio recommendations.`,
+
+    'newsletter': `Act as a Senior Email Marketing Strategist.
+Create newsletter content from this content.
+
+Guidelines:
+- Catchy subject line suggestion (<50 chars)
 - Personal greeting
 - Clear sections with subheadings
 - Conversational, friendly tone
-- Use "${seoData?.primaryKeyword || 'N/A'}" naturally
-- Include links: ${anchorsText}
+- Target keywords: ${keywords || 'N/A'}
+- Include links naturally: ${anchorsText}
 - Add value with tips or insights
-- Strong CTA
+- Strong CTA (clear next action)
 - Professional sign-off
+- P.S. section with extra value or urgency
+- Mobile-friendly formatting (short paragraphs)
+- Optimize for opens, clicks, and replies
 
-Provide complete newsletter content.`,
+Content: ${content}
 
-    'tiktok': `Create TikTok video script from this content:
-
-Original Content:
-${content}
-
-Requirements:
-- Hook in first 3 seconds
-- 30-60 second script
-- Fast-paced, energetic delivery
-- Use "${seoData?.primaryKeyword || 'N/A'}" naturally
-- Include text overlay suggestions
-- Trending sounds/music suggestions
-- Call to action at the end
-- 5-8 relevant hashtags
-
-Provide a complete TikTok script.`
+Provide complete newsletter content with subject line, body, and CTA.`
   };
 
   return prompts[platform] || `Adapt this content for ${platform}:\n\n${content}`;
