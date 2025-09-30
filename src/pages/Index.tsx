@@ -28,10 +28,10 @@ export default function Index() {
         <Hero />
         <ProblemSection />
         <HowItWorksSection />
-        <PlatformShowcase />
         <FeaturesSection />
-        <TestimonialsSection />
         <PricingSection />
+        <PlatformShowcase />
+        <TestimonialsSection />
         <FAQSection />
         <CTASection />
         <Footer />

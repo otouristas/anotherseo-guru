@@ -1,8 +1,9 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
@@ -18,8 +19,20 @@ import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
+import { SEOAIChatbot } from "@/components/SEOAIChatbot";
+import { CookieConsent } from "@/components/CookieConsent";
 
 const queryClient = new QueryClient();
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -29,6 +42,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <ScrollToTop />
             <Header />
             <Routes>
             <Route path="/" element={<Index />} />
@@ -44,6 +58,8 @@ const App = () => (
             <Route path="/terms" element={<Terms />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <SEOAIChatbot />
+          <CookieConsent />
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
