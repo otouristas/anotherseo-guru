@@ -576,6 +576,62 @@ export type Database = {
           },
         ]
       }
+      ga4_analytics: {
+        Row: {
+          avg_session_duration: number | null
+          bounce_rate: number | null
+          channel: string
+          conversions: number | null
+          created_at: string
+          date: string
+          engagement_rate: number | null
+          id: string
+          page_path: string
+          page_views: number | null
+          project_id: string
+          sessions: number | null
+          users: number | null
+        }
+        Insert: {
+          avg_session_duration?: number | null
+          bounce_rate?: number | null
+          channel: string
+          conversions?: number | null
+          created_at?: string
+          date: string
+          engagement_rate?: number | null
+          id?: string
+          page_path: string
+          page_views?: number | null
+          project_id: string
+          sessions?: number | null
+          users?: number | null
+        }
+        Update: {
+          avg_session_duration?: number | null
+          bounce_rate?: number | null
+          channel?: string
+          conversions?: number | null
+          created_at?: string
+          date?: string
+          engagement_rate?: number | null
+          id?: string
+          page_path?: string
+          page_views?: number | null
+          project_id?: string
+          sessions?: number | null
+          users?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ga4_analytics_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       google_api_settings: {
         Row: {
           created_at: string
@@ -612,6 +668,53 @@ export type Database = {
             foreignKeyName: "google_api_settings_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: true
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gsc_analytics: {
+        Row: {
+          clicks: number | null
+          created_at: string
+          ctr: number | null
+          date: string
+          id: string
+          impressions: number | null
+          keyword: string
+          page_url: string
+          position: number | null
+          project_id: string
+        }
+        Insert: {
+          clicks?: number | null
+          created_at?: string
+          ctr?: number | null
+          date: string
+          id?: string
+          impressions?: number | null
+          keyword: string
+          page_url: string
+          position?: number | null
+          project_id: string
+        }
+        Update: {
+          clicks?: number | null
+          created_at?: string
+          ctr?: number | null
+          date?: string
+          id?: string
+          impressions?: number | null
+          keyword?: string
+          page_url?: string
+          position?: number | null
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gsc_analytics_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
             referencedRelation: "seo_projects"
             referencedColumns: ["id"]
           },

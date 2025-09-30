@@ -87,6 +87,33 @@ serve(async (req) => {
     };
 
     if (analyticsData.rows && analyticsData.rows.length > 0) {
+      // Store data in database
+      const today = new Date().toISOString().split('T')[0];
+      const gscRecords = analyticsData.rows.map((row: any) => ({
+        project_id: projectId,
+        keyword: row.keys[0],
+        page_url: row.keys[1],
+        clicks: row.clicks || 0,
+        impressions: row.impressions || 0,
+        ctr: row.ctr || 0,
+        position: row.position || 0,
+        date: today
+      }));
+
+      // Insert data in batches to avoid timeout
+      const batchSize = 1000;
+      for (let i = 0; i < gscRecords.length; i += batchSize) {
+        const batch = gscRecords.slice(i, i + batchSize);
+        await supabase
+          .from('gsc_analytics')
+          .upsert(batch, {
+            onConflict: 'project_id,keyword,page_url,date',
+            ignoreDuplicates: false
+          });
+      }
+
+      console.log(`Stored ${gscRecords.length} GSC records in database`);
+
       // Calculate totals
       analyticsData.rows.forEach((row: any) => {
         processedData.totalClicks += row.clicks || 0;

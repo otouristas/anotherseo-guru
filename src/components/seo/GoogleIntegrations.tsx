@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { GoogleAnalyticsDashboard } from "./GoogleAnalyticsDashboard";
 
 interface GoogleIntegrationsProps {
   projectId: string;
@@ -405,40 +406,11 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
         )}
       </Card>
 
-      {/* Combined Insights */}
-      {gscConnected && gaConnected && (
-        <Card className="p-6 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
-          <h3 className="text-lg font-semibold mb-4">🎯 AI-Powered SEO Recommendations</h3>
-          <div className="space-y-3">
-            <div className="flex items-start gap-3 p-3 bg-background rounded-lg">
-              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
-              <div>
-                <p className="font-medium">Focus on high-impression, low-CTR keywords</p>
-                <p className="text-sm text-muted-foreground">
-                  15 keywords with 500+ impressions but CTR below 2%. Optimize meta titles and descriptions to boost clicks.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 p-3 bg-background rounded-lg">
-              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
-              <div>
-                <p className="font-medium">Improve bounce rate on top landing pages</p>
-                <p className="text-sm text-muted-foreground">
-                  3 landing pages have 70%+ bounce rate. Add internal links and improve content relevance to user intent.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3 p-3 bg-background rounded-lg">
-              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5" />
-              <div>
-                <p className="font-medium">Target keywords in position 4-10</p>
-                <p className="text-sm text-muted-foreground">
-                  8 keywords on page 1 but not in top 3. Small optimizations could dramatically increase traffic.
-                </p>
-              </div>
-            </div>
-          </div>
-        </Card>
+      {/* Analytics Dashboard */}
+      {(gscConnected || gaConnected) && (
+        <>
+          <GoogleAnalyticsDashboard projectId={projectId} />
+        </>
       )}
     </div>
   );

@@ -104,6 +104,39 @@ serve(async (req) => {
     };
 
     if (analyticsData.rows && analyticsData.rows.length > 0) {
+      // Store data in database
+      const today = new Date().toISOString().split('T')[0];
+      const ga4Records = analyticsData.rows.map((row: any) => {
+        const metrics = row.metricValues;
+        return {
+          project_id: projectId,
+          page_path: row.dimensionValues[0]?.value || '/',
+          channel: row.dimensionValues[1]?.value || 'Unknown',
+          users: parseInt(metrics[0]?.value || '0'),
+          sessions: parseInt(metrics[1]?.value || '0'),
+          page_views: parseInt(metrics[2]?.value || '0'),
+          avg_session_duration: parseFloat(metrics[3]?.value || '0'),
+          bounce_rate: parseFloat(metrics[4]?.value || '0'),
+          engagement_rate: parseFloat(metrics[5]?.value || '0'),
+          conversions: parseFloat(metrics[6]?.value || '0'),
+          date: today
+        };
+      });
+
+      // Insert data in batches to avoid timeout
+      const batchSize = 1000;
+      for (let i = 0; i < ga4Records.length; i += batchSize) {
+        const batch = ga4Records.slice(i, i + batchSize);
+        await supabase
+          .from('ga4_analytics')
+          .upsert(batch, {
+            onConflict: 'project_id,page_path,channel,date',
+            ignoreDuplicates: false
+          });
+      }
+
+      console.log(`Stored ${ga4Records.length} GA4 records in database`);
+
       // Calculate totals from row data
       analyticsData.rows.forEach((row: any) => {
         const metrics = row.metricValues;
