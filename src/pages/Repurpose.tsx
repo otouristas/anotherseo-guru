@@ -22,6 +22,8 @@ import { URLScraper } from "@/components/URLScraper";
 import { KeywordResearch } from "@/components/KeywordResearch";
 import { TrendsAnalysis } from "@/components/TrendsAnalysis";
 import { SEOIntelligenceInfo } from "@/components/SEOIntelligenceInfo";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface GeneratedContent {
   platform: string;
@@ -366,6 +368,17 @@ function RepurposeContent() {
                   title={serpMeta.title}
                   description={serpMeta.description}
                 />
+                
+                {content && generatedContent.length === 0 && !isGenerating && (
+                  <Card className="p-6">
+                    <h3 className="text-xl font-bold mb-4">Scraped Content Preview</h3>
+                    <div className="prose prose-sm max-w-none dark:prose-invert markdown-content">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {content}
+                      </ReactMarkdown>
+                    </div>
+                  </Card>
+                )}
                 
                 <div>
                   <h3 className="text-2xl font-bold mb-4">Generated Content</h3>
