@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Repurpose from "./pages/Repurpose";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import SEODashboard from "./pages/SEODashboard";
 import Pricing from "./pages/Pricing";
 import Checkout from "./pages/Checkout";
 import About from "./pages/About";
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/repurpose" element={<Repurpose />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/seo" element={<SEODashboard />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/about" element={<About />} />

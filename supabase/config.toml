@@ -8,3 +8,12 @@ verify_jwt = false
 
 [functions.dataforseo-research]
 verify_jwt = false
+
+[functions.seo-content-analyzer]
+verify_jwt = false
+
+[functions.serp-tracker]
+verify_jwt = false
+
+[functions.competitor-analyzer]
+verify_jwt = false

@@ -14,6 +14,180 @@ export type Database = {
   }
   public: {
     Tables: {
+      backlink_analysis: {
+        Row: {
+          anchor_text: string | null
+          domain_authority: number | null
+          first_seen: string | null
+          id: string
+          is_dofollow: boolean | null
+          last_checked: string
+          link_type: string | null
+          project_id: string | null
+          source_domain: string
+          source_url: string | null
+          status: string | null
+          target_url: string | null
+        }
+        Insert: {
+          anchor_text?: string | null
+          domain_authority?: number | null
+          first_seen?: string | null
+          id?: string
+          is_dofollow?: boolean | null
+          last_checked?: string
+          link_type?: string | null
+          project_id?: string | null
+          source_domain: string
+          source_url?: string | null
+          status?: string | null
+          target_url?: string | null
+        }
+        Update: {
+          anchor_text?: string | null
+          domain_authority?: number | null
+          first_seen?: string | null
+          id?: string
+          is_dofollow?: boolean | null
+          last_checked?: string
+          link_type?: string | null
+          project_id?: string | null
+          source_domain?: string
+          source_url?: string | null
+          status?: string | null
+          target_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "backlink_analysis_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competitor_analysis: {
+        Row: {
+          backlinks_count: number | null
+          competitor_domain: string
+          content_score: number | null
+          created_at: string
+          domain_authority: number | null
+          id: string
+          keyword: string
+          last_checked: string
+          position: number | null
+          project_id: string | null
+          referring_domains: number | null
+          traffic_estimate: number | null
+        }
+        Insert: {
+          backlinks_count?: number | null
+          competitor_domain: string
+          content_score?: number | null
+          created_at?: string
+          domain_authority?: number | null
+          id?: string
+          keyword: string
+          last_checked?: string
+          position?: number | null
+          project_id?: string | null
+          referring_domains?: number | null
+          traffic_estimate?: number | null
+        }
+        Update: {
+          backlinks_count?: number | null
+          competitor_domain?: string
+          content_score?: number | null
+          created_at?: string
+          domain_authority?: number | null
+          id?: string
+          keyword?: string
+          last_checked?: string
+          position?: number | null
+          project_id?: string | null
+          referring_domains?: number | null
+          traffic_estimate?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "competitor_analysis_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_calendar: {
+        Row: {
+          assigned_to: string | null
+          content_brief: string | null
+          content_type: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          priority: string | null
+          project_id: string | null
+          published_date: string | null
+          scheduled_date: string | null
+          secondary_keywords: string[] | null
+          status: string | null
+          target_keyword: string | null
+          title: string
+          updated_at: string
+          url: string | null
+          word_count_target: number | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          content_brief?: string | null
+          content_type?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          priority?: string | null
+          project_id?: string | null
+          published_date?: string | null
+          scheduled_date?: string | null
+          secondary_keywords?: string[] | null
+          status?: string | null
+          target_keyword?: string | null
+          title: string
+          updated_at?: string
+          url?: string | null
+          word_count_target?: number | null
+        }
+        Update: {
+          assigned_to?: string | null
+          content_brief?: string | null
+          content_type?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          priority?: string | null
+          project_id?: string | null
+          published_date?: string | null
+          scheduled_date?: string | null
+          secondary_keywords?: string[] | null
+          status?: string | null
+          target_keyword?: string | null
+          title?: string
+          updated_at?: string
+          url?: string | null
+          word_count_target?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_calendar_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       content_history: {
         Row: {
           created_at: string
@@ -53,6 +227,54 @@ export type Database = {
         }
         Relationships: []
       }
+      content_scores: {
+        Row: {
+          content_id: string | null
+          created_at: string
+          engagement_score: number | null
+          entities: Json | null
+          id: string
+          keyword_density: number | null
+          readability_score: number | null
+          recommendations: string[] | null
+          seo_score: number | null
+          topics: Json | null
+          url: string | null
+          user_id: string
+          word_count: number | null
+        }
+        Insert: {
+          content_id?: string | null
+          created_at?: string
+          engagement_score?: number | null
+          entities?: Json | null
+          id?: string
+          keyword_density?: number | null
+          readability_score?: number | null
+          recommendations?: string[] | null
+          seo_score?: number | null
+          topics?: Json | null
+          url?: string | null
+          user_id: string
+          word_count?: number | null
+        }
+        Update: {
+          content_id?: string | null
+          created_at?: string
+          engagement_score?: number | null
+          entities?: Json | null
+          id?: string
+          keyword_density?: number | null
+          readability_score?: number | null
+          recommendations?: string[] | null
+          seo_score?: number | null
+          topics?: Json | null
+          url?: string | null
+          user_id?: string
+          word_count?: number | null
+        }
+        Relationships: []
+      }
       credit_costs: {
         Row: {
           cost: number
@@ -73,6 +295,156 @@ export type Database = {
           platform?: string
         }
         Relationships: []
+      }
+      keyword_tracking: {
+        Row: {
+          cpc: number | null
+          created_at: string
+          difficulty: number | null
+          id: string
+          keyword: string
+          lsi_keywords: string[] | null
+          project_id: string | null
+          related_questions: string[] | null
+          search_intent: string | null
+          search_volume: number | null
+          seasonal_trend: string | null
+          updated_at: string
+        }
+        Insert: {
+          cpc?: number | null
+          created_at?: string
+          difficulty?: number | null
+          id?: string
+          keyword: string
+          lsi_keywords?: string[] | null
+          project_id?: string | null
+          related_questions?: string[] | null
+          search_intent?: string | null
+          search_volume?: number | null
+          seasonal_trend?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cpc?: number | null
+          created_at?: string
+          difficulty?: number | null
+          id?: string
+          keyword?: string
+          lsi_keywords?: string[] | null
+          project_id?: string | null
+          related_questions?: string[] | null
+          search_intent?: string | null
+          search_volume?: number | null
+          seasonal_trend?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "keyword_tracking_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      link_opportunities: {
+        Row: {
+          contact_email: string | null
+          created_at: string
+          domain: string
+          domain_authority: number | null
+          id: string
+          notes: string | null
+          opportunity_type: string | null
+          project_id: string | null
+          relevance_score: number | null
+          status: string | null
+          url: string | null
+        }
+        Insert: {
+          contact_email?: string | null
+          created_at?: string
+          domain: string
+          domain_authority?: number | null
+          id?: string
+          notes?: string | null
+          opportunity_type?: string | null
+          project_id?: string | null
+          relevance_score?: number | null
+          status?: string | null
+          url?: string | null
+        }
+        Update: {
+          contact_email?: string | null
+          created_at?: string
+          domain?: string
+          domain_authority?: number | null
+          id?: string
+          notes?: string | null
+          opportunity_type?: string | null
+          project_id?: string | null
+          relevance_score?: number | null
+          status?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "link_opportunities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      local_seo_tracking: {
+        Row: {
+          average_rating: number | null
+          checked_at: string
+          gmb_listing_id: string | null
+          id: string
+          keyword: string
+          local_pack_position: number | null
+          location: string
+          organic_position: number | null
+          project_id: string | null
+          reviews_count: number | null
+        }
+        Insert: {
+          average_rating?: number | null
+          checked_at?: string
+          gmb_listing_id?: string | null
+          id?: string
+          keyword: string
+          local_pack_position?: number | null
+          location: string
+          organic_position?: number | null
+          project_id?: string | null
+          reviews_count?: number | null
+        }
+        Update: {
+          average_rating?: number | null
+          checked_at?: string
+          gmb_listing_id?: string | null
+          id?: string
+          keyword?: string
+          local_pack_position?: number | null
+          location?: string
+          organic_position?: number | null
+          project_id?: string | null
+          reviews_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "local_seo_tracking_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -103,6 +475,83 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      seo_projects: {
+        Row: {
+          created_at: string
+          domain: string
+          id: string
+          name: string
+          target_language: string | null
+          target_location: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          domain: string
+          id?: string
+          name: string
+          target_language?: string | null
+          target_location?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          domain?: string
+          id?: string
+          name?: string
+          target_language?: string | null
+          target_location?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      serp_rankings: {
+        Row: {
+          checked_at: string
+          featured_snippet: boolean | null
+          id: string
+          keyword: string
+          local_pack: boolean | null
+          page_title: string | null
+          position: number | null
+          project_id: string | null
+          url: string | null
+        }
+        Insert: {
+          checked_at?: string
+          featured_snippet?: boolean | null
+          id?: string
+          keyword: string
+          local_pack?: boolean | null
+          page_title?: string | null
+          position?: number | null
+          project_id?: string | null
+          url?: string | null
+        }
+        Update: {
+          checked_at?: string
+          featured_snippet?: boolean | null
+          id?: string
+          keyword?: string
+          local_pack?: boolean | null
+          page_title?: string | null
+          position?: number | null
+          project_id?: string | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "serp_rankings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscriptions: {
         Row: {
@@ -147,6 +596,62 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      technical_seo_audits: {
+        Row: {
+          canonical_url: string | null
+          checked_at: string
+          core_web_vitals: Json | null
+          has_ssl: boolean | null
+          id: string
+          issues: Json | null
+          meta_robots: string | null
+          mobile_friendly: boolean | null
+          page_speed_score: number | null
+          page_url: string
+          project_id: string | null
+          recommendations: string[] | null
+          schema_markup: string[] | null
+        }
+        Insert: {
+          canonical_url?: string | null
+          checked_at?: string
+          core_web_vitals?: Json | null
+          has_ssl?: boolean | null
+          id?: string
+          issues?: Json | null
+          meta_robots?: string | null
+          mobile_friendly?: boolean | null
+          page_speed_score?: number | null
+          page_url: string
+          project_id?: string | null
+          recommendations?: string[] | null
+          schema_markup?: string[] | null
+        }
+        Update: {
+          canonical_url?: string | null
+          checked_at?: string
+          core_web_vitals?: Json | null
+          has_ssl?: boolean | null
+          id?: string
+          issues?: Json | null
+          meta_robots?: string | null
+          mobile_friendly?: boolean | null
+          page_speed_score?: number | null
+          page_url?: string
+          project_id?: string | null
+          recommendations?: string[] | null
+          schema_markup?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "technical_seo_audits_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
             referencedColumns: ["id"]
           },
         ]
