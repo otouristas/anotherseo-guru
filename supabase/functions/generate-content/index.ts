@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { content, platforms, tone, style } = await req.json();
+    const { content, platforms, tone, style, seoData } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
@@ -23,11 +23,8 @@ serve(async (req) => {
     const generatedContent = [];
 
     for (const platform of platforms) {
-      const systemPrompt = `You are a professional content writer specializing in ${platform} content. 
-Your task is to adapt content for ${platform} while maintaining the core message but optimizing for the platform's style and audience.
-Use a ${tone} tone and ${style} writing style.`;
-
-      const userPrompt = getPlatformPrompt(platform, content, tone, style);
+      const systemPrompt = getSystemPrompt(platform, tone, style);
+      const userPrompt = getPlatformPrompt(platform, content, seoData);
 
       const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
@@ -88,75 +85,116 @@ Use a ${tone} tone and ${style} writing style.`;
   }
 });
 
-function getPlatformPrompt(platform: string, content: string, tone: string, style: string): string {
+function getSystemPrompt(platform: string, tone: string, style: string): string {
+  const basePrompt = `You are a professional content writer specializing in ${platform} content optimization.
+Your task is to adapt content for ${platform} while maintaining the core message but optimizing for the platform's style and audience.
+Use a ${tone} tone and ${style} writing style.`;
+
+  return basePrompt;
+}
+
+function getPlatformPrompt(platform: string, content: string, seoData: any): string {
+  const anchorsText = seoData?.anchors?.length > 0 
+    ? JSON.stringify(seoData.anchors) 
+    : '[]';
+  
   const prompts: Record<string, string> = {
-    'seo-blog': `Transform this content into a comprehensive SEO-optimized blog post:
-- Use proper heading hierarchy (H2, H3)
-- Include relevant keywords naturally
-- Add meta description suggestions
-- Create engaging introduction and conclusion
-- Aim for 800-1200 words
-- Include internal linking suggestions
+    'seo-blog': `You are an expert SEO content writer. Rewrite the following content so it is optimized for search engines and readability:
 
-Original content:
-${content}`,
+Original Content:
+${content}
 
-    'medium': `Adapt this content for Medium readers:
-- Start with a compelling hook
-- Use personal storytelling elements
-- Include relatable examples
-- Break into digestible sections
-- Add thought-provoking questions
-- End with a memorable takeaway
+Requirements:
+- Use primary keyword: "${seoData?.primaryKeyword || 'N/A'}" and secondary keywords "${seoData?.secondaryKeywords?.join(', ') || 'N/A'}".
+- Logical heading structure: H1, H2, H3.
+- Include anchor links naturally: ${anchorsText}
+- Generate meta title (≤60 chars) + meta description (140–160 chars).
+- Aim for ${seoData?.targetWordCount || 800} words.
+- Professional, friendly tone.
 
-Original content:
-${content}`,
+Provide the rewritten content with proper SEO optimization, including the anchor links where they fit naturally.`,
 
-    'linkedin': `Transform this into a professional LinkedIn post:
-- Start with attention-grabbing opening
+    'medium': `You are a creative content writer skilled in Medium storytelling. Rewrite the content into a Medium post:
+
+Original Content:
+${content}
+
+Requirements:
+- Narrative, engaging opening hook
+- Conversational tone with smooth transitions
+- Natural keyword use: "${seoData?.primaryKeyword || 'N/A'}"
+- Include anchor links naturally: ${anchorsText}
+- Add pull-quotes or emphasis for key points
+- Engaging conclusion with takeaway
+
+Provide an engaging Medium-style article.`,
+
+    'linkedin': `You are a thought-leadership writer for LinkedIn. Convert the content into a professional post:
+
+Original Content:
+${content}
+
+Requirements:
+- Hook/insight opening that grabs attention
+- Professional but approachable tone
+- Logical structure with clear sections
+- Use "${seoData?.primaryKeyword || 'N/A'}" naturally
+- Add anchor links where appropriate: ${anchorsText}
+- Conclude with key takeaway + call-to-action
 - Use line breaks for readability
-- Include professional insights
-- Add 3-5 relevant hashtags
-- End with a question to drive engagement
-- Keep it under 1300 characters
 
-Original content:
-${content}`,
+Provide a LinkedIn post optimized for engagement.`,
 
-    'reddit': `Adapt this for Reddit discussion:
-- Use conversational, authentic tone
-- Break down into clear points
-- Include relevant context
-- Invite discussion and questions
-- Avoid promotional language
-- Keep it genuine and helpful
+    'reddit': `You are a community-savvy writer. Convert content into a Reddit post:
 
-Original content:
-${content}`,
+Original Content:
+${content}
 
-    'quora': `Transform this into a Quora answer:
-- Start with direct answer to implied question
-- Provide expert insights
-- Use clear structure with bullet points
-- Back up with examples or data
-- Keep it authoritative yet accessible
-- End with actionable takeaway
+Requirements:
+- Casual, peer-to-peer tone
+- Start with a question or relatable hook
+- Short paragraphs, easy to scan
+- Keyword: "${seoData?.primaryKeyword || 'N/A'}"
+- Insert links from ${anchorsText} only if natural (avoid spam)
+- Add CTA to spark discussion
+- Be authentic and helpful
 
-Original content:
-${content}`,
+Provide a Reddit-friendly post.`,
+
+    'quora': `You are a knowledgeable expert on Quora. Rewrite content as an authoritative answer:
+
+Original Content:
+${content}
+
+Requirements:
+- Start with a clear, direct answer
+- Structure with bullets or subheadings
+- Authority-driven, concise tone
+- Primary keyword: "${seoData?.primaryKeyword || 'N/A'}"
+- Include links naturally: ${anchorsText}
+- Back up claims with logic or examples
+- Provide actionable takeaway
+
+Provide a comprehensive Quora answer.`,
 
     'twitter': `Create a Twitter/X thread from this content:
+
+Original Content:
+${content}
+
+Requirements:
 - Break into 5-8 tweets
 - Each tweet under 280 characters
-- Use thread numbering (1/n)
-- Start with hook tweet
+- Use thread numbering (1/n, 2/n, etc.)
+- Start with attention-grabbing hook tweet
 - Include line breaks for readability
 - End with CTA or question
 - Add 2-3 relevant hashtags in final tweet
+- Use "${seoData?.primaryKeyword || 'N/A'}" naturally
 
-Original content:
-${content}`
+Provide a complete Twitter thread.`
   };
+
 
   return prompts[platform] || `Adapt this content for ${platform}:\n\n${content}`;
 }

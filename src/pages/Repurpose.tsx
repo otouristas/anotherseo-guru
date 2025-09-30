@@ -2,10 +2,14 @@ import { useState } from "react";
 import { ContentInput } from "@/components/ContentInput";
 import { PlatformSelector } from "@/components/PlatformSelector";
 import { ToneStyleSelector } from "@/components/ToneStyleSelector";
+import { SEOSettings, SEOData } from "@/components/SEOSettings";
+import { SERPPreview } from "@/components/SERPPreview";
+import { FileUpload } from "@/components/FileUpload";
 import { PreviewPane } from "@/components/PreviewPane";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Sparkles, Zap } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Sparkles, Zap, FileText, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -19,6 +23,13 @@ const Repurpose = () => {
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [tone, setTone] = useState("professional");
   const [style, setStyle] = useState("narrative");
+  const [seoData, setSeoData] = useState<SEOData>({
+    primaryKeyword: "",
+    secondaryKeywords: [],
+    targetWordCount: 1000,
+    anchors: []
+  });
+  const [serpMeta, setSerpMeta] = useState({ title: "", description: "" });
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
@@ -58,7 +69,8 @@ const Repurpose = () => {
           content,
           platforms: selectedPlatforms,
           tone,
-          style
+          style,
+          seoData
         }
       });
 
@@ -95,13 +107,13 @@ const Repurpose = () => {
         <div className="container mx-auto max-w-4xl text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary">
             <Zap className="w-4 h-4" />
-            AI-Powered Content Transformation
+            AI-Powered Content Transformation with SEO
           </div>
           <h1 className="text-4xl md:text-5xl font-bold">
             Repurpose Your Content
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Transform your original content into platform-optimized versions with AI-powered rewriting
+            Transform your original content into platform-optimized versions with AI-powered rewriting, SEO optimization, and anchor link integration
           </p>
         </div>
       </section>
@@ -112,8 +124,32 @@ const Repurpose = () => {
           <Card className="p-8 md:p-12 shadow-strong">
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Left Column - Input & Controls */}
-              <div className="space-y-8">
-                <ContentInput value={content} onChange={setContent} />
+              <div className="space-y-6">
+                <Tabs defaultValue="type" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="type">
+                      <FileText className="w-4 h-4 mr-2" />
+                      Type Content
+                    </TabsTrigger>
+                    <TabsTrigger value="upload">
+                      <Upload className="w-4 h-4 mr-2" />
+                      Upload File
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="type" className="mt-4">
+                    <ContentInput value={content} onChange={setContent} />
+                  </TabsContent>
+                  
+                  <TabsContent value="upload" className="mt-4">
+                    <FileUpload onFileContent={setContent} />
+                    {content && (
+                      <div className="mt-4 p-3 bg-success/10 border border-success/20 rounded-lg text-sm">
+                        ✓ File loaded: {content.length} characters
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
 
                 <PlatformSelector
                   selected={selectedPlatforms}
@@ -126,6 +162,27 @@ const Repurpose = () => {
                   onToneChange={setTone}
                   onStyleChange={setStyle}
                 />
+
+                <SEOSettings value={seoData} onChange={setSeoData} />
+
+                <div className="space-y-3">
+                  <h4 className="font-semibold">SEO Meta Preview (Optional)</h4>
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      placeholder="Meta title for SEO preview..."
+                      className="w-full px-3 py-2 border rounded-lg text-sm"
+                      value={serpMeta.title}
+                      onChange={(e) => setSerpMeta({ ...serpMeta, title: e.target.value })}
+                    />
+                    <textarea
+                      placeholder="Meta description for SEO preview..."
+                      className="w-full px-3 py-2 border rounded-lg text-sm min-h-[80px]"
+                      value={serpMeta.description}
+                      onChange={(e) => setSerpMeta({ ...serpMeta, description: e.target.value })}
+                    />
+                  </div>
+                </div>
 
                 <Button
                   size="lg"
@@ -140,12 +197,19 @@ const Repurpose = () => {
               </div>
 
               {/* Right Column - Preview */}
-              <div className="lg:sticky lg:top-8 h-fit">
-                <h3 className="text-2xl font-bold mb-4">Live Preview</h3>
-                <PreviewPane
-                  generatedContent={generatedContent}
-                  isGenerating={isGenerating}
+              <div className="space-y-6">
+                <SERPPreview
+                  title={serpMeta.title}
+                  description={serpMeta.description}
                 />
+                
+                <div>
+                  <h3 className="text-2xl font-bold mb-4">Generated Content</h3>
+                  <PreviewPane
+                    generatedContent={generatedContent}
+                    isGenerating={isGenerating}
+                  />
+                </div>
               </div>
             </div>
           </Card>
