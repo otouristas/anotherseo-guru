@@ -141,19 +141,48 @@ async function getKeywordData(domain: string) {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    console.log('Fetching keyword data for domain:', domain);
+
+    // Call DataForSEO with correct action parameter
     const { data, error } = await supabase.functions.invoke('dataforseo-research', {
       body: { 
-        domain,
-        type: 'domain_overview'
+        action: 'serp_analysis',
+        keyword: domain,
+        location: 'United States'
       }
     });
 
-    if (error) throw error;
+    if (error) {
+      console.error('DataForSEO error:', error);
+      throw error;
+    }
+
+    console.log('DataForSEO response:', data);
+
+    // Parse DataForSEO response
+    const tasks = data?.tasks || [];
+    const ranking: any[] = [];
+    const gaps: any[] = [];
+    const opportunities: any[] = [];
+
+    if (tasks.length > 0 && tasks[0].result) {
+      const items = tasks[0].result[0]?.items || [];
+      items.forEach((item: any, index: number) => {
+        if (item.type === 'organic') {
+          ranking.push({
+            keyword: item.title || '',
+            position: index + 1,
+            url: item.url || '',
+            domain: item.domain || ''
+          });
+        }
+      });
+    }
 
     return {
-      ranking: data?.keywords || [],
-      gaps: data?.keyword_gaps || [],
-      opportunities: data?.opportunities || []
+      ranking,
+      gaps,
+      opportunities
     };
   } catch (error) {
     console.error('Keyword data error:', error);
@@ -163,6 +192,8 @@ async function getKeywordData(domain: string) {
 
 async function getPerformanceData(projectId: string, supabase: any) {
   try {
+    console.log('Fetching performance data for project:', projectId);
+
     // Fetch GSC and GA4 settings
     const { data: settings } = await supabase
       .from('google_api_settings')
@@ -171,43 +202,92 @@ async function getPerformanceData(projectId: string, supabase: any) {
       .maybeSingle();
 
     if (!settings?.credentials_json) {
+      console.log('No Google credentials found');
       return {
-        gsc: { available: false },
-        ga4: { available: false },
+        gsc: { available: false, message: 'Not connected' },
+        ga4: { available: false, message: 'Not connected' },
         core_web_vitals: null
       };
     }
 
-    // Note: In production, you'd use the stored credentials to fetch real GSC/GA4 data
-    // For now, returning placeholder structure
-    return {
-      gsc: {
-        available: !!settings.google_search_console_site_url,
-        impressions: 0,
-        clicks: 0,
-        ctr: 0,
-        position: 0,
-        top_queries: []
-      },
-      ga4: {
-        available: !!settings.google_analytics_property_id,
-        users: 0,
-        sessions: 0,
-        bounce_rate: 0,
-        engagement_rate: 0,
-        top_pages: []
-      },
-      core_web_vitals: {
-        lcp: null,
-        fid: null,
-        cls: null
-      }
+    const results: any = {
+      gsc: { available: false },
+      ga4: { available: false },
+      core_web_vitals: null
     };
+
+    // Fetch GSC data if connected
+    if (settings.google_search_console_site_url) {
+      try {
+        console.log('Fetching GSC data...');
+        const { data: gscData, error: gscError } = await supabase.functions.invoke('fetch-gsc-data', {
+          body: { 
+            projectId,
+            siteUrl: settings.google_search_console_site_url
+          }
+        });
+
+        if (!gscError && gscData?.success) {
+          results.gsc = {
+            available: true,
+            ...gscData.data
+          };
+          console.log('GSC data fetched successfully');
+        } else {
+          console.error('GSC fetch error:', gscError);
+          results.gsc = {
+            available: false,
+            error: gscError?.message || 'Failed to fetch GSC data'
+          };
+        }
+      } catch (error) {
+        console.error('GSC fetch exception:', error);
+        results.gsc = {
+          available: false,
+          error: error instanceof Error ? error.message : 'GSC fetch failed'
+        };
+      }
+    }
+
+    // Fetch GA4 data if connected
+    if (settings.google_analytics_property_id) {
+      try {
+        console.log('Fetching GA4 data...');
+        const { data: ga4Data, error: ga4Error } = await supabase.functions.invoke('fetch-ga4-data', {
+          body: { 
+            projectId,
+            propertyId: settings.google_analytics_property_id
+          }
+        });
+
+        if (!ga4Error && ga4Data?.success) {
+          results.ga4 = {
+            available: true,
+            ...ga4Data.data
+          };
+          console.log('GA4 data fetched successfully');
+        } else {
+          console.error('GA4 fetch error:', ga4Error);
+          results.ga4 = {
+            available: false,
+            error: ga4Error?.message || 'Failed to fetch GA4 data'
+          };
+        }
+      } catch (error) {
+        console.error('GA4 fetch exception:', error);
+        results.ga4 = {
+          available: false,
+          error: error instanceof Error ? error.message : 'GA4 fetch failed'
+        };
+      }
+    }
+
+    return results;
   } catch (error) {
     console.error('Performance data error:', error);
     return {
-      gsc: { available: false },
-      ga4: { available: false },
+      gsc: { available: false, error: 'Failed to fetch performance data' },
+      ga4: { available: false, error: 'Failed to fetch performance data' },
       core_web_vitals: null
     };
   }

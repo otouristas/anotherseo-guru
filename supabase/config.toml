@@ -71,3 +71,9 @@ verify_jwt = false
 
 [functions.comprehensive-audit]
 verify_jwt = false
+
+[functions.fetch-gsc-data]
+verify_jwt = false
+
+[functions.fetch-ga4-data]
+verify_jwt = false
