@@ -29,6 +29,7 @@ import { BulkAnalysis } from "@/components/seo/BulkAnalysis";
 import { KeywordClustering } from "@/components/seo/KeywordClustering";
 import { MultiLocationTracker } from "@/components/seo/MultiLocationTracker";
 import { RevenueAttribution } from "@/components/seo/RevenueAttribution";
+import { ComprehensiveAudit } from "@/components/seo/ComprehensiveAudit";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function SEODashboard() {
@@ -155,6 +156,9 @@ function SEODashboardContent() {
         return <KeywordClustering projectId={selectedProject} />;
       case "audit":
         return <SiteAuditCrawler projectId={selectedProject} />;
+      case "comprehensive-audit":
+        const project = projects.find(p => p.id === selectedProject);
+        return <ComprehensiveAudit projectId={selectedProject} domain={project?.domain || ''} />;
       case "technical":
         return <TechnicalAudit projectId={selectedProject} />;
       case "integrations":

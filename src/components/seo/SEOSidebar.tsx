@@ -16,7 +16,8 @@ import {
   Brain,
   Mic,
   MapPin,
-  DollarSign
+  DollarSign,
+  FileSearch
 } from "lucide-react";
 import {
   Sidebar,
@@ -68,7 +69,8 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
 
   const technicalItems = [
     { id: "backlinks", title: "Backlinks", icon: Link2 },
-    { id: "audit", title: "Site Audit", icon: Globe },
+    { id: "comprehensive-audit", title: "Full Audit", icon: FileSearch },
+    { id: "audit", title: "Site Crawler", icon: Globe },
     { id: "technical", title: "Technical SEO", icon: Zap },
   ];
 
