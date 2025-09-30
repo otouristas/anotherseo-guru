@@ -80,7 +80,7 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
 
   return (
     <Sidebar className={collapsed ? "w-16" : "w-64 border-r shadow-sm"} collapsible="icon">
-      <SidebarContent className="mt-2">
+      <SidebarContent className="mt-20 pt-4">
         <SidebarGroup>
           <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Main</SidebarGroupLabel>
           <SidebarGroupContent>
