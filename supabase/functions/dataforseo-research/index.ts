@@ -222,6 +222,28 @@ serve(async (req) => {
         payload = [];
         break;
 
+      case 'onpage_duplicate_content':
+        // OnPage API - Duplicate Content
+        endpoint = 'https://api.dataforseo.com/v3/on_page/duplicate_content';
+        payload = [{
+          id: requestData.task_id,
+          url: requestData.url,
+          similarity: requestData.similarity || 6,
+          limit: requestData.limit || 100
+        }];
+        break;
+
+      case 'onpage_links':
+        // OnPage API - Links Analysis
+        endpoint = 'https://api.dataforseo.com/v3/on_page/links';
+        payload = [{
+          id: requestData.task_id,
+          page_from: requestData.page_from,
+          filters: requestData.filters,
+          limit: requestData.limit || 100
+        }];
+        break;
+
       default:
         throw new Error(`Invalid action: ${action}`);
     }

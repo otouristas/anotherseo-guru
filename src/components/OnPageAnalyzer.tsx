@@ -5,7 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { FileSearch, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Slider } from "@/components/ui/slider";
+import { FileSearch, Loader2, CheckCircle, AlertCircle, Copy, Link as LinkIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -15,6 +17,12 @@ export function OnPageAnalyzer() {
   const [domain, setDomain] = useState("");
   const [taskId, setTaskId] = useState("");
   const [summary, setSummary] = useState<any>(null);
+  const [duplicateUrl, setDuplicateUrl] = useState("");
+  const [similarity, setSimilarity] = useState([6]);
+  const [duplicates, setDuplicates] = useState<any>(null);
+  const [pageFrom, setPageFrom] = useState("");
+  const [linkType, setLinkType] = useState("all");
+  const [links, setLinks] = useState<any>(null);
   
   const { toast } = useToast();
 
@@ -115,6 +123,105 @@ export function OnPageAnalyzer() {
     }
   };
 
+  const analyzeDuplicateContent = async () => {
+    if (!taskId || !duplicateUrl) {
+      toast({
+        title: "Missing information",
+        description: "Please provide both Task ID and URL",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('dataforseo-research', {
+        body: {
+          action: 'onpage_duplicate_content',
+          task_id: taskId,
+          url: duplicateUrl,
+          similarity: similarity[0],
+          limit: 50
+        }
+      });
+
+      if (error) throw error;
+
+      const result = data?.tasks?.[0]?.result?.[0];
+      if (result) {
+        setDuplicates(result);
+        toast({
+          title: "Duplicate content analysis complete!",
+          description: `Found ${result.items?.[0]?.total_count || 0} duplicate pages`
+        });
+      }
+    } catch (error) {
+      console.error('Duplicate content error:', error);
+      toast({
+        title: "Analysis failed",
+        description: error instanceof Error ? error.message : "Failed to analyze duplicate content",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const analyzeLinks = async () => {
+    if (!taskId || !pageFrom) {
+      toast({
+        title: "Missing information",
+        description: "Please provide both Task ID and page path",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const filters: any[] = [];
+      if (linkType === 'internal') {
+        filters.push(["direction", "=", "internal"]);
+      } else if (linkType === 'external') {
+        filters.push(["direction", "=", "external"]);
+      } else if (linkType === 'dofollow') {
+        filters.push(["dofollow", "=", true]);
+      } else if (linkType === 'nofollow') {
+        filters.push(["dofollow", "=", false]);
+      }
+
+      const { data, error } = await supabase.functions.invoke('dataforseo-research', {
+        body: {
+          action: 'onpage_links',
+          task_id: taskId,
+          page_from: pageFrom,
+          filters: filters.length > 0 ? filters : undefined,
+          limit: 100
+        }
+      });
+
+      if (error) throw error;
+
+      const result = data?.tasks?.[0]?.result?.[0];
+      if (result) {
+        setLinks(result);
+        toast({
+          title: "Links analysis complete!",
+          description: `Found ${result.total_items_count || 0} links`
+        });
+      }
+    } catch (error) {
+      console.error('Links analysis error:', error);
+      toast({
+        title: "Analysis failed",
+        description: error instanceof Error ? error.message : "Failed to analyze links",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Card className="p-6">
       <div className="space-y-6">
@@ -128,27 +235,45 @@ export function OnPageAnalyzer() {
           </p>
         </div>
 
-        {/* Start Crawl */}
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="crawl-domain">Website Domain</Label>
-            <Input
-              id="crawl-domain"
-              placeholder="e.g., example.com"
-              value={domain}
-              onChange={(e) => setDomain(e.target.value)}
-            />
-          </div>
+        <Tabs defaultValue="crawl" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="crawl">
+              <FileSearch className="w-4 h-4 mr-1" />
+              Crawl
+            </TabsTrigger>
+            <TabsTrigger value="duplicates">
+              <Copy className="w-4 h-4 mr-1" />
+              Duplicates
+            </TabsTrigger>
+            <TabsTrigger value="links">
+              <LinkIcon className="w-4 h-4 mr-1" />
+              Links
+            </TabsTrigger>
+          </TabsList>
 
-          <Button
-            onClick={startCrawl}
-            disabled={loading || polling || !domain}
-            className="w-full"
-          >
-            {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileSearch className="w-4 h-4 mr-2" />}
-            Start OnPage Crawl
-          </Button>
-        </div>
+          {/* Crawl Tab */}
+          <TabsContent value="crawl" className="space-y-4"
+            >
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="crawl-domain">Website Domain</Label>
+                <Input
+                  id="crawl-domain"
+                  placeholder="e.g., example.com"
+                  value={domain}
+                  onChange={(e) => setDomain(e.target.value)}
+                />
+              </div>
+
+              <Button
+                onClick={startCrawl}
+                disabled={loading || polling || !domain}
+                className="w-full"
+              >
+                {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FileSearch className="w-4 h-4 mr-2" />}
+                Start OnPage Crawl
+              </Button>
+            </div>
 
         {/* Task ID Display */}
         {taskId && (
@@ -171,6 +296,189 @@ export function OnPageAnalyzer() {
         {/* Summary Results */}
         {summary && (
           <div className="space-y-4 p-4 bg-success/10 border border-success/20 rounded-lg">
+            {/* ... keep existing summary display code ... */}
+          </div>
+        )}
+      </TabsContent>
+
+          {/* Duplicate Content Tab */}
+          <TabsContent value="duplicates" className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Find pages with similar content using SimHash algorithm (0-10 scale)
+            </p>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="dup-taskid">Task ID</Label>
+                <Input
+                  id="dup-taskid"
+                  placeholder="Paste your crawl task ID"
+                  value={taskId}
+                  onChange={(e) => setTaskId(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="dup-url">Page URL</Label>
+                <Input
+                  id="dup-url"
+                  placeholder="https://example.com/page"
+                  value={duplicateUrl}
+                  onChange={(e) => setDuplicateUrl(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Similarity Threshold: {similarity[0]}/10</Label>
+                <Slider
+                  value={similarity}
+                  onValueChange={setSimilarity}
+                  min={0}
+                  max={10}
+                  step={1}
+                  className="w-full"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Higher = more similar (10 = identical)
+                </p>
+              </div>
+
+              <Button
+                onClick={analyzeDuplicateContent}
+                disabled={loading || !taskId || !duplicateUrl}
+                className="w-full"
+              >
+                {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Copy className="w-4 h-4 mr-2" />}
+                Find Duplicate Content
+              </Button>
+            </div>
+
+            {/* Duplicate Results */}
+            {duplicates && (
+              <div className="space-y-3 p-4 bg-muted/50 border rounded-lg">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-semibold">Duplicate Pages</Label>
+                  <Badge>{duplicates.items?.[0]?.total_count || 0} found</Badge>
+                </div>
+
+                <div className="space-y-2 max-h-80 overflow-y-auto">
+                  {duplicates.items?.[0]?.pages?.map((dup: any, idx: number) => (
+                    <div key={idx} className="p-3 bg-background border rounded text-xs space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Badge variant="secondary">
+                          Similarity: {dup.similarity}/10
+                        </Badge>
+                        <Badge variant={dup.page?.[0]?.checks?.duplicate_content ? 'destructive' : 'default'}>
+                          {dup.page?.[0]?.checks?.duplicate_content ? 'Duplicate' : 'Similar'}
+                        </Badge>
+                      </div>
+                      <div className="font-medium truncate">
+                        {dup.page?.[0]?.meta?.title || 'No title'}
+                      </div>
+                      <div className="text-muted-foreground truncate">
+                        {dup.page?.[0]?.url}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Links Tab */}
+          <TabsContent value="links" className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Analyze internal and external links on your pages
+            </p>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="links-taskid">Task ID</Label>
+                <Input
+                  id="links-taskid"
+                  placeholder="Paste your crawl task ID"
+                  value={taskId}
+                  onChange={(e) => setTaskId(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="page-from">Page Path (from root)</Label>
+                <Input
+                  id="page-from"
+                  placeholder="e.g., /about or /blog/post"
+                  value={pageFrom}
+                  onChange={(e) => setPageFrom(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Link Type Filter</Label>
+                <div className="grid grid-cols-5 gap-2">
+                  {['all', 'internal', 'external', 'dofollow', 'nofollow'].map((type) => (
+                    <Button
+                      key={type}
+                      size="sm"
+                      variant={linkType === type ? 'default' : 'outline'}
+                      onClick={() => setLinkType(type)}
+                      className="text-xs"
+                    >
+                      {type}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              <Button
+                onClick={analyzeLinks}
+                disabled={loading || !taskId || !pageFrom}
+                className="w-full"
+              >
+                {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <LinkIcon className="w-4 h-4 mr-2" />}
+                Analyze Links
+              </Button>
+            </div>
+
+            {/* Links Results */}
+            {links && (
+              <div className="space-y-3 p-4 bg-muted/50 border rounded-lg">
+                <div className="flex items-center justify-between">
+                  <Label className="text-sm font-semibold">Links Found</Label>
+                  <Badge>{links.total_items_count || 0} total</Badge>
+                </div>
+
+                <div className="space-y-2 max-h-80 overflow-y-auto">
+                  {links.items?.slice(0, 50).map((link: any, idx: number) => (
+                    <div key={idx} className="p-3 bg-background border rounded text-xs space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline">{link.type}</Badge>
+                        <Badge variant={link.direction === 'internal' ? 'default' : 'secondary'}>
+                          {link.direction}
+                        </Badge>
+                        {link.dofollow ? (
+                          <Badge variant="default">dofollow</Badge>
+                        ) : (
+                          <Badge variant="destructive">nofollow</Badge>
+                        )}
+                        {link.is_broken && <Badge variant="destructive">broken</Badge>}
+                      </div>
+                      <div className="font-medium truncate">
+                        {link.text || link.image_alt || 'No text'}
+                      </div>
+                      <div className="text-muted-foreground truncate">
+                        → {link.link_to}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+
+        {/* Summary still available when outside tabs */}
+        {summary && (
+          <div className="space-y-4 p-4 bg-success/10 border border-success/20 rounded-lg mt-6">
             <div className="flex items-center justify-between">
               <Label className="text-sm font-semibold">Crawl Summary</Label>
               <Badge variant={summary.crawl_progress === 'finished' ? 'default' : 'secondary'}>
