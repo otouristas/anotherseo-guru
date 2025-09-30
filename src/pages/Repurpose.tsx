@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Zap, FileText, Upload } from "lucide-react";
+import { Sparkles, Zap, FileText, Upload, Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,6 +18,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Link } from "react-router-dom";
 import { platforms } from "@/components/PlatformSelector";
 import { CreditDisplay } from "@/components/CreditDisplay";
+import { URLScraper } from "@/components/URLScraper";
 
 interface GeneratedContent {
   platform: string;
@@ -212,7 +213,7 @@ function RepurposeContent() {
             Repurpose Your Content
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Transform your original content into platform-optimized versions with AI-powered rewriting, SEO optimization, and anchor link integration
+            Transform your original content into platform-optimized versions with AI-powered rewriting, SEO optimization, and smart web scraping
           </p>
           <div className="flex items-center justify-center gap-4 pt-2">
             <Badge variant={planType === "free" ? "secondary" : "default"}>
@@ -243,19 +244,42 @@ function RepurposeContent() {
                 <CreditDisplay credits={credits} planType={planType} />
                 
                 <Tabs defaultValue="type" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2">
+                  <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="type">
                       <FileText className="w-4 h-4 mr-2" />
-                      Type Content
+                      Type
+                    </TabsTrigger>
+                    <TabsTrigger value="scrape">
+                      <Globe className="w-4 h-4 mr-2" />
+                      Scrape URL
                     </TabsTrigger>
                     <TabsTrigger value="upload">
                       <Upload className="w-4 h-4 mr-2" />
-                      Upload File
+                      Upload
                     </TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="type" className="mt-4">
                     <ContentInput value={content} onChange={setContent} />
+                  </TabsContent>
+                  
+                  <TabsContent value="scrape" className="mt-4">
+                    <URLScraper 
+                      onContentScraped={(scrapedContent, metadata) => {
+                        setContent(scrapedContent);
+                        if (metadata?.title) {
+                          setSerpMeta(prev => ({ ...prev, title: metadata.title || '' }));
+                        }
+                        if (metadata?.description) {
+                          setSerpMeta(prev => ({ ...prev, description: metadata.description || '' }));
+                        }
+                      }} 
+                    />
+                    {content && (
+                      <div className="mt-4 p-3 bg-success/10 border border-success/20 rounded-lg text-sm">
+                        ✓ Content scraped: {content.length} characters
+                      </div>
+                    )}
                   </TabsContent>
                   
                   <TabsContent value="upload" className="mt-4">

@@ -2,3 +2,6 @@ project_id = "cabzhcbnxbnhjannbpxj"
 
 [functions.generate-content]
 verify_jwt = false
+
+[functions.scrape-url]
+verify_jwt = false
