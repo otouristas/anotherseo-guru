@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Loader2, Copy, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { BlogIcon, MediumIcon, LinkedInIcon, RedditIcon, QuoraIcon, TwitterIcon } from "@/components/PlatformLogos";
+import { BlogIcon, MediumIcon, LinkedInIcon, RedditIcon, QuoraIcon, TwitterIcon, InstagramIcon, YoutubeIcon, NewsletterIcon, TikTokIcon } from "@/components/PlatformLogos";
 
 interface GeneratedContent {
   platform: string;
@@ -23,6 +23,10 @@ const platformIcons: Record<string, React.ComponentType<{ className?: string }>>
   "reddit": RedditIcon,
   "quora": QuoraIcon,
   "twitter": TwitterIcon,
+  "instagram": InstagramIcon,
+  "youtube": YoutubeIcon,
+  "newsletter": NewsletterIcon,
+  "tiktok": TikTokIcon,
 };
 
 export const PreviewPane = ({ generatedContent, isGenerating }: PreviewPaneProps) => {

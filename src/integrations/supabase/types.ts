@@ -14,9 +14,31 @@ export type Database = {
   }
   public: {
     Tables: {
+      credit_costs: {
+        Row: {
+          cost: number
+          created_at: string
+          id: string
+          platform: string
+        }
+        Insert: {
+          cost?: number
+          created_at?: string
+          id?: string
+          platform: string
+        }
+        Update: {
+          cost?: number
+          created_at?: string
+          id?: string
+          platform?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
+          credits: number
           first_name: string | null
           id: string
           last_name: string | null
@@ -25,6 +47,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          credits?: number
           first_name?: string | null
           id: string
           last_name?: string | null
@@ -33,6 +56,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          credits?: number
           first_name?: string | null
           id?: string
           last_name?: string | null
@@ -92,6 +116,7 @@ export type Database = {
         Row: {
           content_generated_count: number
           created_at: string
+          credits_used: number
           id: string
           month_year: string
           platforms_used_count: number
@@ -101,6 +126,7 @@ export type Database = {
         Insert: {
           content_generated_count?: number
           created_at?: string
+          credits_used?: number
           id?: string
           month_year: string
           platforms_used_count?: number
@@ -110,6 +136,7 @@ export type Database = {
         Update: {
           content_generated_count?: number
           created_at?: string
+          credits_used?: number
           id?: string
           month_year?: string
           platforms_used_count?: number
@@ -131,7 +158,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      deduct_credits: {
+        Args: { credits_to_deduct: number; user_id_param: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

@@ -16,6 +16,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Link } from "react-router-dom";
+import { platforms } from "@/components/PlatformSelector";
+import { CreditDisplay } from "@/components/CreditDisplay";
 
 interface GeneratedContent {
   platform: string;
@@ -45,35 +47,23 @@ function RepurposeContent() {
   const [serpMeta, setSerpMeta] = useState({ title: "", description: "" });
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [usageCount, setUsageCount] = useState(0);
+  const [credits, setCredits] = useState(0);
   const { toast } = useToast();
 
-  const planType = profile?.subscriptions?.[0]?.plan_type || "free";
-  const planLimits = {
-    free: { posts: 1, platforms: 2 },
-    basic: { posts: Infinity, platforms: 5 },
-    pro: { posts: Infinity, platforms: Infinity },
-  };
-  const limits = planLimits[planType as keyof typeof planLimits];
-  const canGenerate = planType === "free" ? usageCount < limits.posts : true;
-  const maxPlatforms = limits.platforms;
+  const planType = profile?.plan_type || "free";
+  const isUnlimited = planType === 'pro';
+  
+  // Calculate total credits needed for selected platforms
+  const totalCreditsNeeded = selectedPlatforms.reduce((sum, platformId) => {
+    const platform = platforms.find(p => p.id === platformId);
+    return sum + (platform?.credits || 1);
+  }, 0);
 
   useEffect(() => {
-    if (profile && user) {
-      const currentMonth = new Date().toISOString().slice(0, 7);
-      supabase
-        .from("usage_tracking")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("month_year", currentMonth)
-        .maybeSingle()
-        .then(({ data }) => {
-          if (data) {
-            setUsageCount(data.content_generated_count);
-          }
-        });
+    if (profile) {
+      setCredits(profile.credits || 0);
     }
-  }, [profile, user]);
+  }, [profile]);
 
   const handlePlatformSelect = (platformId: string) => {
     setSelectedPlatforms((prev) =>
@@ -84,11 +74,11 @@ function RepurposeContent() {
   };
 
   const handleGenerate = async () => {
-    if (!canGenerate) {
+    if (!isUnlimited && credits < totalCreditsNeeded) {
       toast({
         variant: "destructive",
-        title: "Limit reached",
-        description: "You've reached your monthly limit. Upgrade to continue.",
+        title: "Not enough credits",
+        description: `You need ${totalCreditsNeeded} credits but only have ${credits}. Upgrade to get more.`,
         action: (
           <Link to="/pricing">
             <Button variant="outline" size="sm">Upgrade</Button>
@@ -116,23 +106,21 @@ function RepurposeContent() {
       return;
     }
 
-    if (selectedPlatforms.length > maxPlatforms) {
-      toast({
-        variant: "destructive",
-        title: "Too many platforms",
-        description: `Your plan allows ${maxPlatforms} platforms. Upgrade for more.`,
-        action: (
-          <Link to="/pricing">
-            <Button variant="outline" size="sm">Upgrade</Button>
-          </Link>
-        ),
-      });
-      return;
-    }
-
     setIsGenerating(true);
 
     try {
+      // Deduct credits first
+      if (!isUnlimited) {
+        const { data: deductResult, error: deductError } = await supabase.rpc('deduct_credits', {
+          user_id_param: user?.id,
+          credits_to_deduct: totalCreditsNeeded
+        });
+
+        if (deductError || !deductResult) {
+          throw new Error("Failed to deduct credits. Please try again.");
+        }
+      }
+
       const { data, error } = await supabase.functions.invoke('generate-content', {
         body: {
           content,
@@ -153,6 +141,11 @@ function RepurposeContent() {
 
       setGeneratedContent(data.generatedContent);
 
+      // Update credits locally
+      if (!isUnlimited) {
+        setCredits(credits - totalCreditsNeeded);
+      }
+
       // Track usage
       const currentMonth = new Date().toISOString().slice(0, 7);
       const { data: existingUsage } = await supabase
@@ -168,6 +161,7 @@ function RepurposeContent() {
           .update({
             content_generated_count: existingUsage.content_generated_count + 1,
             platforms_used_count: Math.max(existingUsage.platforms_used_count, selectedPlatforms.length),
+            credits_used: existingUsage.credits_used + totalCreditsNeeded,
           })
           .eq("id", existingUsage.id);
       } else {
@@ -176,14 +170,13 @@ function RepurposeContent() {
           month_year: currentMonth,
           content_generated_count: 1,
           platforms_used_count: selectedPlatforms.length,
+          credits_used: totalCreditsNeeded,
         });
       }
 
-      setUsageCount(usageCount + 1);
-
       toast({
         title: "Content Generated! ✨",
-        description: `Successfully created ${selectedPlatforms.length} platform version${selectedPlatforms.length > 1 ? "s" : ""}`,
+        description: `Successfully created ${selectedPlatforms.length} platform version${selectedPlatforms.length > 1 ? "s" : ""}. Used ${totalCreditsNeeded} credits.`,
       });
     } catch (error) {
       console.error('Generation error:', error);
@@ -192,6 +185,15 @@ function RepurposeContent() {
         description: error instanceof Error ? error.message : "Failed to generate content. Please try again.",
         variant: "destructive",
       });
+      
+      // Refund credits on error if they were deducted
+      if (!isUnlimited && credits < (profile?.credits || 0)) {
+        await supabase
+          .from("profiles")
+          .update({ credits: (profile?.credits || 0) })
+          .eq("id", user?.id);
+        setCredits(profile?.credits || 0);
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -216,14 +218,17 @@ function RepurposeContent() {
             <Badge variant={planType === "free" ? "secondary" : "default"}>
               {planType.toUpperCase()} PLAN
             </Badge>
-            {planType === "free" && (
-              <span className="text-sm text-muted-foreground">
-                {usageCount}/{limits.posts} generations used ·{" "}
-                <Link to="/pricing" className="text-primary hover:underline">
-                  Upgrade
-                </Link>
-              </span>
-            )}
+            <span className="text-sm text-muted-foreground">
+              {isUnlimited ? '∞' : credits} credits available
+              {planType === "free" && (
+                <>
+                  {" "}·{" "}
+                  <Link to="/pricing" className="text-primary hover:underline">
+                    Upgrade for more
+                  </Link>
+                </>
+              )}
+            </span>
           </div>
         </div>
       </section>
@@ -235,6 +240,8 @@ function RepurposeContent() {
             <div className="grid lg:grid-cols-2 gap-8">
               {/* Left Column - Input & Controls */}
               <div className="space-y-6">
+                <CreditDisplay credits={credits} planType={planType} />
+                
                 <Tabs defaultValue="type" className="w-full">
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="type">
@@ -299,10 +306,10 @@ function RepurposeContent() {
                   variant="hero"
                   className="w-full"
                   onClick={handleGenerate}
-                  disabled={content.length < 100 || selectedPlatforms.length === 0 || isGenerating || !canGenerate}
+                  disabled={content.length < 100 || selectedPlatforms.length === 0 || isGenerating || (!isUnlimited && credits < totalCreditsNeeded)}
                 >
                   <Sparkles className="w-5 h-5" />
-                  {isGenerating ? "Generating..." : !canGenerate ? "Upgrade to Continue" : "Generate Optimized Content"}
+                  {isGenerating ? "Generating..." : (!isUnlimited && credits < totalCreditsNeeded) ? `Need ${totalCreditsNeeded} Credits` : `Generate Content (${totalCreditsNeeded} credits)`}
                 </Button>
               </div>
 

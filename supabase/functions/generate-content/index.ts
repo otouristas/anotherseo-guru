@@ -25,6 +25,9 @@ serve(async (req) => {
     for (const platform of platforms) {
       const systemPrompt = getSystemPrompt(platform, tone, style);
       const userPrompt = getPlatformPrompt(platform, content, seoData);
+      const model = getModelForPlatform(platform);
+
+      console.log(`Using model ${model} for platform ${platform}`);
 
       const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
@@ -33,7 +36,7 @@ serve(async (req) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
+          model,
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: userPrompt }
@@ -84,6 +87,19 @@ serve(async (req) => {
     );
   }
 });
+
+function getModelForPlatform(platform: string): string {
+  // Use Pro for complex SEO content
+  if (platform === 'seo-blog') {
+    return 'google/gemini-2.5-pro';
+  }
+  // Use lite for simple formats
+  if (platform === 'twitter' || platform === 'instagram' || platform === 'tiktok') {
+    return 'google/gemini-2.5-flash-lite';
+  }
+  // Use flash for everything else
+  return 'google/gemini-2.5-flash';
+}
 
 function getSystemPrompt(platform: string, tone: string, style: string): string {
   const basePrompt = `You are a professional content writer specializing in ${platform} content optimization.
@@ -192,9 +208,76 @@ Requirements:
 - Add 2-3 relevant hashtags in final tweet
 - Use "${seoData?.primaryKeyword || 'N/A'}" naturally
 
-Provide a complete Twitter thread.`
-  };
+Provide a complete Twitter thread.`,
 
+    'instagram': `Create Instagram caption from this content:
+
+Original Content:
+${content}
+
+Requirements:
+- Engaging opening line that hooks followers
+- 3-5 paragraph caption with line breaks
+- Include storytelling or personal touch
+- Use "${seoData?.primaryKeyword || 'N/A'}" naturally
+- Add 15-25 relevant hashtags at the end
+- Include emoji naturally (don't overdo it)
+- End with call to action or question
+
+Provide a complete Instagram caption.`,
+
+    'youtube': `Create YouTube video description from this content:
+
+Original Content:
+${content}
+
+Requirements:
+- Compelling first 2 lines (visible before "show more")
+- Detailed description of video content
+- Use "${seoData?.primaryKeyword || 'N/A'}" for SEO
+- Include timestamps if applicable
+- Add links naturally: ${anchorsText}
+- Social media links section
+- Relevant hashtags (3-5)
+- Call to action (subscribe, comment, etc.)
+
+Provide a complete YouTube description.`,
+
+    'newsletter': `Create newsletter content from this content:
+
+Original Content:
+${content}
+
+Requirements:
+- Catchy subject line suggestion
+- Personal greeting
+- Clear sections with subheadings
+- Conversational, friendly tone
+- Use "${seoData?.primaryKeyword || 'N/A'}" naturally
+- Include links: ${anchorsText}
+- Add value with tips or insights
+- Strong CTA
+- Professional sign-off
+
+Provide complete newsletter content.`,
+
+    'tiktok': `Create TikTok video script from this content:
+
+Original Content:
+${content}
+
+Requirements:
+- Hook in first 3 seconds
+- 30-60 second script
+- Fast-paced, energetic delivery
+- Use "${seoData?.primaryKeyword || 'N/A'}" naturally
+- Include text overlay suggestions
+- Trending sounds/music suggestions
+- Call to action at the end
+- 5-8 relevant hashtags
+
+Provide a complete TikTok script.`
+  };
 
   return prompts[platform] || `Adapt this content for ${platform}:\n\n${content}`;
 }

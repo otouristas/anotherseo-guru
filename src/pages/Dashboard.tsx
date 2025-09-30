@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { User, CreditCard, BarChart3, FileText } from "lucide-react";
+import { Coins, User, CreditCard, BarChart3, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { CreditDisplay } from "@/components/CreditDisplay";
 
 export default function Dashboard() {
   return (
@@ -35,15 +36,9 @@ function DashboardContent() {
   }, [user]);
 
   const subscription = profile?.subscriptions?.[0];
-  const planType = subscription?.plan_type || "free";
-
-  const planLimits = {
-    free: { posts: 1, platforms: 2 },
-    basic: { posts: Infinity, platforms: 5 },
-    pro: { posts: Infinity, platforms: Infinity },
-  };
-
-  const limits = planLimits[planType as keyof typeof planLimits];
+  const planType = profile?.plan_type || "free";
+  const credits = profile?.credits || 0;
+  const isUnlimited = planType === 'pro';
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-accent/20">
@@ -91,13 +86,38 @@ function DashboardContent() {
 
               <Card>
                 <CardHeader>
+                  <CardTitle className="text-sm font-medium">Available Credits</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2">
+                    <Coins className="w-5 h-5 text-primary" />
+                    <p className="text-3xl font-bold">{isUnlimited ? '∞' : credits}</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {isUnlimited ? "Unlimited" : "Credits remaining"}
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm font-medium">Credits Used</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-3xl font-bold">{usage?.credits_used || 0}</p>
+                  <p className="text-xs text-muted-foreground mt-1">This month</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card>
+                <CardHeader>
                   <CardTitle className="text-sm font-medium">Content Generated</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-3xl font-bold">{usage?.content_generated_count || 0}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {planType === "free" ? `Limit: ${limits.posts} this month` : "Unlimited"}
-                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">Pieces this month</p>
                 </CardContent>
               </Card>
 
@@ -107,9 +127,7 @@ function DashboardContent() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-3xl font-bold">{usage?.platforms_used_count || 0}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Available: {limits.platforms === Infinity ? "All" : limits.platforms}
-                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">Different platforms</p>
                 </CardContent>
               </Card>
             </div>
