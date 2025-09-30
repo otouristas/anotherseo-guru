@@ -24,6 +24,7 @@ export const Header = () => {
     { href: "/", label: "Home" },
     { href: "/repurpose", label: "Repurpose" },
     { href: "/seo", label: "SEO Suite" },
+    { href: "/jobs", label: "Jobs" },
     { href: "/pricing", label: "Pricing" },
     { href: "/help", label: "Help" },
     { href: "/about", label: "About" },

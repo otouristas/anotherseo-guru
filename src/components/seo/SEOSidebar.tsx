@@ -9,7 +9,8 @@ import {
   Zap, 
   TrendingUp, 
   Calendar,
-  Settings
+  Settings,
+  Upload
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
@@ -39,6 +40,7 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
     { id: "serp", title: "SERP Tracker", icon: Search },
     { id: "keywords", title: "Keywords", icon: Target },
     { id: "competitors", title: "Competitors", icon: BarChart3 },
+    { id: "bulk", title: "Bulk Analysis", icon: Upload },
   ];
 
   const contentItems = [

@@ -19,6 +19,7 @@ import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Help from "./pages/Help";
+import Jobs from "./pages/Jobs";
 import NotFound from "./pages/NotFound";
 import { SEOAIChatbot } from "@/components/SEOAIChatbot";
 import { CookieConsent } from "@/components/CookieConsent";
@@ -58,6 +59,7 @@ const App = () => (
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/help" element={<Help />} />
+            <Route path="/jobs" element={<Jobs />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <SEOAIChatbot />

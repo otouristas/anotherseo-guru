@@ -21,6 +21,7 @@ import { GoogleIntegrations } from "@/components/seo/GoogleIntegrations";
 import { SEOProjectOnboarding } from "@/components/seo/SEOProjectOnboarding";
 import { ProjectOverview } from "@/components/seo/ProjectOverview";
 import { SEOSidebar } from "@/components/seo/SEOSidebar";
+import { BulkAnalysis } from "@/components/seo/BulkAnalysis";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function SEODashboard() {
@@ -133,6 +134,8 @@ function SEODashboardContent() {
         return <ContentScoring projectId={selectedProject} />;
       case "backlinks":
         return <BacklinkMonitor projectId={selectedProject} />;
+      case "bulk":
+        return <BulkAnalysis projectId={selectedProject} />;
       case "audit":
         return <SiteAuditCrawler projectId={selectedProject} />;
       case "technical":

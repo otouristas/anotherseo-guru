@@ -21,5 +21,8 @@ verify_jwt = true
 [functions.seo-ai-chat]
 verify_jwt = true
 
+[functions.job-worker]
+verify_jwt = true
+
 [functions.send-contact-email]
 verify_jwt = false

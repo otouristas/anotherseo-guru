@@ -337,6 +337,54 @@ export type Database = {
           },
         ]
       }
+      jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          input_data: Json
+          job_type: Database["public"]["Enums"]["job_type"]
+          progress: number | null
+          result_data: Json | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["job_status"]
+          total_items: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          input_data: Json
+          job_type: Database["public"]["Enums"]["job_type"]
+          progress?: number | null
+          result_data?: Json | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["job_status"]
+          total_items?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          input_data?: Json
+          job_type?: Database["public"]["Enums"]["job_type"]
+          progress?: number | null
+          result_data?: Json | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["job_status"]
+          total_items?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       keyword_tracking: {
         Row: {
           cpc: number | null
@@ -749,7 +797,21 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      job_status:
+        | "pending"
+        | "processing"
+        | "completed"
+        | "failed"
+        | "cancelled"
+      job_type:
+        | "backlinks_analysis"
+        | "traffic_analysis"
+        | "keyword_research"
+        | "keyword_clustering"
+        | "competitor_analysis"
+        | "serp_tracking"
+        | "bulk_analysis"
+        | "pdf_report"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -876,6 +938,18 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      job_status: ["pending", "processing", "completed", "failed", "cancelled"],
+      job_type: [
+        "backlinks_analysis",
+        "traffic_analysis",
+        "keyword_research",
+        "keyword_clustering",
+        "competitor_analysis",
+        "serp_tracking",
+        "bulk_analysis",
+        "pdf_report",
+      ],
+    },
   },
 } as const
