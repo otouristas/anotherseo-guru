@@ -82,6 +82,7 @@ serve(async (req) => {
         },
       }, {
         onConflict: 'project_id',
+        ignoreDuplicates: false,
       });
 
     if (upsertError) {

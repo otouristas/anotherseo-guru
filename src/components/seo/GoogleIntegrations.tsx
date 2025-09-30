@@ -356,7 +356,7 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
                   <SelectContent>
                     {gaProperties.map((prop) => (
                       <SelectItem key={prop.name} value={prop.name}>
-                        {prop.displayName}
+                        {prop.displayName} ({prop.name})
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -372,16 +372,27 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
                 {connecting ? 'Connecting...' : 'Connect with Google'}
               </Button>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                Complete Google authentication above to select Analytics properties
-              </p>
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">✅ OAuth completed! Now select your Analytics property above.</p>
+                <Button 
+                  onClick={initiateGoogleOAuth} 
+                  variant="outline"
+                  className="w-full"
+                >
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  Reconnect
+                </Button>
+              </div>
             )}
           </div>
         ) : (
           <div className="space-y-4">
             <div className="bg-green-500/10 p-4 rounded-lg">
               <p className="text-sm">
-                <span className="font-medium">Connected Property:</span> {gaPropertyId}
+                <span className="font-medium">Connected Property:</span> {gaPropertyId.split('/').pop()}
+              </p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {gaProperties.find(p => p.name === gaPropertyId)?.displayName || gaPropertyId}
               </p>
               <p className="text-sm text-muted-foreground mt-2">
                 Last synced: Just now • Next sync: In 1 hour

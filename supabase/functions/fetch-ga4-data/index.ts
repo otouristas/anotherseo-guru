@@ -38,6 +38,13 @@ serve(async (req) => {
       throw new Error('Property ID not configured');
     }
 
+    // Ensure property ID is in correct format (properties/XXXXXXXXX)
+    if (!targetPropertyId.startsWith('properties/')) {
+      throw new Error(`Invalid property ID format: ${targetPropertyId}. Expected format: properties/XXXXXXXXX`);
+    }
+
+    console.log('Using GA4 property ID:', targetPropertyId);
+
     // Check if token is expired and refresh if needed
     let accessToken = credentials.access_token;
     if (credentials.expires_at && Date.now() >= credentials.expires_at) {
@@ -83,7 +90,19 @@ serve(async (req) => {
     if (!dataResponse.ok) {
       const errorText = await dataResponse.text();
       console.error('GA4 API error:', dataResponse.status, errorText);
-      throw new Error(`GA4 API error: ${dataResponse.status} - ${errorText}`);
+      console.error('Request details:', {
+        endpoint: dataEndpoint,
+        propertyId: targetPropertyId,
+        dateRanges: dataPayload.dateRanges
+      });
+      
+      if (dataResponse.status === 403) {
+        throw new Error('Permission denied. Please ensure the Google Analytics property has the correct permissions and the OAuth consent includes analytics.readonly scope.');
+      } else if (dataResponse.status === 404) {
+        throw new Error(`Property not found: ${targetPropertyId}. Please verify the property ID is correct.`);
+      }
+      
+      throw new Error(`GA4 API error (${dataResponse.status}): ${errorText}`);
     }
 
     const analyticsData = await dataResponse.json();
