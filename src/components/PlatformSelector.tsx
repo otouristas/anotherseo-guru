@@ -2,21 +2,22 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BlogIcon, MediumIcon, LinkedInIcon, RedditIcon, QuoraIcon, TwitterIcon } from "@/components/PlatformLogos";
 
 export type Platform = {
   id: string;
   name: string;
-  icon: string;
+  icon: React.ComponentType<{ className?: string }>;
   description: string;
 };
 
 const platforms: Platform[] = [
-  { id: "seo-blog", name: "SEO Blog", icon: "📝", description: "Long-form, keyword-rich content" },
-  { id: "medium", name: "Medium", icon: "📖", description: "Personal storytelling format" },
-  { id: "linkedin", name: "LinkedIn", icon: "💼", description: "Professional thought-leadership" },
-  { id: "reddit", name: "Reddit", icon: "🗨️", description: "Casual, discussion-oriented" },
-  { id: "quora", name: "Quora", icon: "❓", description: "Concise, authority-driven answers" },
-  { id: "twitter", name: "Twitter/X", icon: "🐦", description: "Short, punchy threads" },
+  { id: "seo-blog", name: "SEO Blog", icon: BlogIcon, description: "Long-form, keyword-rich content" },
+  { id: "medium", name: "Medium", icon: MediumIcon, description: "Personal storytelling format" },
+  { id: "linkedin", name: "LinkedIn", icon: LinkedInIcon, description: "Professional thought-leadership" },
+  { id: "reddit", name: "Reddit", icon: RedditIcon, description: "Casual, discussion-oriented" },
+  { id: "quora", name: "Quora", icon: QuoraIcon, description: "Concise, authority-driven answers" },
+  { id: "twitter", name: "Twitter/X", icon: TwitterIcon, description: "Short, punchy threads" },
 ];
 
 interface PlatformSelectorProps {
@@ -49,7 +50,9 @@ export const PlatformSelector = ({ selected, onSelect }: PlatformSelectorProps) 
               )}
               
               <div className="space-y-2">
-                <div className="text-3xl">{platform.icon}</div>
+                <div className="text-primary">
+                  <platform.icon className="w-8 h-8" />
+                </div>
                 <h4 className="font-semibold">{platform.name}</h4>
                 <p className="text-xs text-muted-foreground">{platform.description}</p>
               </div>

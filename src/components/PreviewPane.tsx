@@ -1,7 +1,10 @@
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Loader2, Copy, Download } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { BlogIcon, MediumIcon, LinkedInIcon, RedditIcon, QuoraIcon, TwitterIcon } from "@/components/PlatformLogos";
 
 interface GeneratedContent {
   platform: string;
@@ -13,16 +16,42 @@ interface PreviewPaneProps {
   isGenerating: boolean;
 }
 
-const platformIcons: Record<string, string> = {
-  "seo-blog": "📝",
-  "medium": "📖",
-  "linkedin": "💼",
-  "reddit": "🗨️",
-  "quora": "❓",
-  "twitter": "🐦",
+const platformIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  "seo-blog": BlogIcon,
+  "medium": MediumIcon,
+  "linkedin": LinkedInIcon,
+  "reddit": RedditIcon,
+  "quora": QuoraIcon,
+  "twitter": TwitterIcon,
 };
 
 export const PreviewPane = ({ generatedContent, isGenerating }: PreviewPaneProps) => {
+  const { toast } = useToast();
+
+  const copyToClipboard = (content: string, platform: string) => {
+    navigator.clipboard.writeText(content);
+    toast({
+      title: "Copied!",
+      description: `${platform} content copied to clipboard`,
+    });
+  };
+
+  const downloadContent = (content: string, platform: string) => {
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${platform}-content.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Downloaded!",
+      description: `${platform} content downloaded`,
+    });
+  };
   if (isGenerating) {
     return (
       <Card className="p-12 flex flex-col items-center justify-center min-h-[400px] bg-gradient-to-br from-card to-muted/20">
@@ -51,36 +80,61 @@ export const PreviewPane = ({ generatedContent, isGenerating }: PreviewPaneProps
     <Card className="p-6 min-h-[400px]">
       <Tabs defaultValue={generatedContent[0]?.platform} className="w-full">
         <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
-          {generatedContent.map((content) => (
-            <TabsTrigger key={content.platform} value={content.platform} className="gap-2">
-              <span>{platformIcons[content.platform]}</span>
-              {content.platform.split('-').map(word => 
-                word.charAt(0).toUpperCase() + word.slice(1)
-              ).join(' ')}
-            </TabsTrigger>
-          ))}
+          {generatedContent.map((content) => {
+            const IconComponent = platformIcons[content.platform];
+            return (
+              <TabsTrigger key={content.platform} value={content.platform} className="gap-2">
+                {IconComponent && <IconComponent className="w-4 h-4" />}
+                {content.platform.split('-').map(word => 
+                  word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' ')}
+              </TabsTrigger>
+            );
+          })}
         </TabsList>
 
-        {generatedContent.map((content) => (
-          <TabsContent key={content.platform} value={content.platform} className="space-y-4 mt-6">
-            <div className="flex items-center justify-between">
-              <Badge variant="secondary" className="text-sm">
-                {platformIcons[content.platform]} {content.platform.split('-').map(word => 
-                  word.charAt(0).toUpperCase() + word.slice(1)
-                ).join(' ')} Version
-              </Badge>
-              <span className="text-sm text-muted-foreground">
-                {content.content.length} characters
-              </span>
-            </div>
-            
-            <div className="prose prose-sm max-w-none">
-              <div className="whitespace-pre-wrap text-foreground leading-relaxed">
-                {content.content}
+        {generatedContent.map((content) => {
+          const IconComponent = platformIcons[content.platform];
+          return (
+            <TabsContent key={content.platform} value={content.platform} className="space-y-4 mt-6">
+              <div className="flex items-center justify-between">
+                <Badge variant="secondary" className="text-sm flex items-center gap-2">
+                  {IconComponent && <IconComponent className="w-4 h-4" />}
+                  {content.platform.split('-').map(word => 
+                    word.charAt(0).toUpperCase() + word.slice(1)
+                  ).join(' ')} Version
+                </Badge>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    {content.content.length} characters
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => copyToClipboard(content.content, content.platform)}
+                  >
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => downloadContent(content.content, content.platform)}
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Download
+                  </Button>
+                </div>
               </div>
-            </div>
-          </TabsContent>
-        ))}
+            
+              <div className="prose prose-sm max-w-none">
+                <div className="whitespace-pre-wrap text-foreground leading-relaxed p-4 bg-muted/30 rounded-lg">
+                  {content.content}
+                </div>
+              </div>
+            </TabsContent>
+          );
+        })}
       </Tabs>
     </Card>
   );
