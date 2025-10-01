@@ -32,6 +32,7 @@ import { MultiLocationTracker } from "@/components/seo/MultiLocationTracker";
 import { RevenueAttribution } from "@/components/seo/RevenueAttribution";
 import { ComprehensiveAudit } from "@/components/seo/ComprehensiveAudit";
 import { KeywordOpportunityAnalyzer } from "@/components/seo/KeywordOpportunityAnalyzer";
+import { SiteAuditDashboard } from "@/components/seo/SiteAuditDashboard";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function SEODashboard() {
@@ -164,7 +165,8 @@ function SEODashboardContent() {
       case "opportunities":
         return <KeywordOpportunityAnalyzer projectId={selectedProject} />;
       case "audit":
-        return <SiteAuditCrawler projectId={selectedProject} />;
+        const projectForAudit = projects.find(p => p.id === selectedProject);
+        return <SiteAuditDashboard projectId={selectedProject} domain={projectForAudit?.domain || ''} />;
       case "comprehensive-audit":
         const project = projects.find(p => p.id === selectedProject);
         return <ComprehensiveAudit projectId={selectedProject} domain={project?.domain || ''} />;
