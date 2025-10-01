@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Sparkles, TrendingUp, FileText, Link2, Code, BarChart3, Loader2, Check, X, ChevronRight } from "lucide-react";
+import { Sparkles, TrendingUp, FileText, Link2, Code, ChartBar as BarChart3, Loader as Loader2, Check, X, ChevronRight } from "lucide-react";
 import {
   Accordion,
   AccordionContent,

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Database, Download, Trash2, Loader2, AlertTriangle } from "lucide-react";
+import { Database, Download, Trash2, Loader as Loader2, TriangleAlert as AlertTriangle } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,

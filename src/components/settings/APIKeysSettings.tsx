@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Key, Plus, Trash2, Eye, EyeOff, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { Key, Plus, Trash2, Eye, EyeOff, Loader as Loader2, CircleCheck as CheckCircle, CircleAlert as AlertCircle } from "lucide-react";
 import {
   Select,
   SelectContent,

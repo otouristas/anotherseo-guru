@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { User, Loader2, Mail } from "lucide-react";
+import { User, Loader as Loader2, Mail } from "lucide-react";
 
 export const ProfileSettings = () => {
   const { user } = useAuth();

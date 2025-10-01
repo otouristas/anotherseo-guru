@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Palette, Loader2, Sun, Moon, Monitor } from "lucide-react";
+import { Palette, Loader as Loader2, Sun, Moon, Monitor } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
   Select,
