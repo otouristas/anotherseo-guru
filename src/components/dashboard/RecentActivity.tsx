@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock, Search, FileText, Zap, CheckCircle2 } from "lucide-react";
+import { Clock, Search, FileText, Zap, CircleCheck as CheckCircle2 } from "lucide-react";
 
 interface Activity {
   type: string;

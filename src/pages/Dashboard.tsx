@@ -10,16 +10,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Crown,
-  Activity,
-  Calendar,
-  Rocket,
-  Settings,
-  AlertCircle,
-  TrendingUp,
-  Search
-} from "lucide-react";
+import { Crown, Activity, Calendar, Rocket, Settings, CircleAlert as AlertCircle, TrendingUp, Search } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";

@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart3, Download } from "lucide-react";
+import { ChartBar as BarChart3, Download } from "lucide-react";
 import {
   Area,
   AreaChart,
