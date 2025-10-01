@@ -113,18 +113,18 @@ serve(async (req) => {
         // Classify opportunity type
         let opportunityType = 'low';
         if (potentialScore >= 0.7) {
-          opportunityType = 'high-potential-low-competition';
+          opportunityType = 'high_potential_low_competition';
         } else if (potentialScore >= 0.5) {
-          opportunityType = 'medium-potential';
+          opportunityType = 'medium_potential';
         }
 
         // Additional analysis flags
         if (keyword.position >= 4 && keyword.position <= 10 && searchVolume > 100) {
-          opportunityType = 'quick-win'; // Page 1 but not top 3
+          opportunityType = 'quick_win'; // Page 1 but not top 3
         } else if (searchVolume > 500 && keyword.ctr < 0.02) {
-          opportunityType = 'high-impressions-low-ctr'; // High visibility, low CTR
+          opportunityType = 'high_impressions_low_ctr'; // High visibility, low CTR
         } else if (keyword.position <= 3 && keyword.ctr < 0.05) {
-          opportunityType = 'top-position-low-ctr'; // Top ranking but poor CTR
+          opportunityType = 'top_position_low_ctr'; // Top ranking but poor CTR
         }
 
         analysisResults.push({
@@ -199,10 +199,10 @@ serve(async (req) => {
     const summary = {
       totalKeywords: analysisResults.length,
       totalPages: pageGroups.size,
-      highPotential: analysisResults.filter(k => k.opportunity_type === 'high-potential-low-competition').length,
-      quickWins: analysisResults.filter(k => k.opportunity_type === 'quick-win').length,
-      highImpressions: analysisResults.filter(k => k.opportunity_type === 'high-impressions-low-ctr').length,
-      topPosition: analysisResults.filter(k => k.opportunity_type === 'top-position-low-ctr').length,
+      highPotential: analysisResults.filter(k => k.opportunity_type === 'high_potential_low_competition').length,
+      quickWins: analysisResults.filter(k => k.opportunity_type === 'quick_win').length,
+      highImpressions: analysisResults.filter(k => k.opportunity_type === 'high_impressions_low_ctr').length,
+      topPosition: analysisResults.filter(k => k.opportunity_type === 'top_position_low_ctr').length,
       avgPotentialScore: analysisResults.reduce((sum, k) => sum + k.potential_score, 0) / analysisResults.length,
     };
 
