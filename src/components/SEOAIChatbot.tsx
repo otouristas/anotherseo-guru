@@ -4,9 +4,11 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, X, Send, Loader2, Sparkles, TrendingUp, Link2, Search } from "lucide-react";
+import { MessageSquare, X, Send, Loader2, Sparkles, TrendingUp, Link2, Search, Download, Maximize2, Minimize2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: "user" | "assistant";
@@ -37,11 +39,14 @@ const quickPrompts = [
 ];
 
 export const SEOAIChatbot = () => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [sessionId] = useState(() => `session-${Date.now()}`);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "👋 Hi! I'm your SEO AI Assistant, trained on AnotherSEOGuru's complete platform.\n\nI can help you with:\n• Keyword Research & Clustering\n• SERP Tracking & Analysis\n• Backlink Strategies\n• Content Optimization\n• Technical SEO Audits\n• Google Integrations\n\nClick a quick prompt below or ask me anything!",
+      content: "👋 Hi! I'm your **Super-Intelligent SEO AI Assistant**, trained on AnotherSEOGuru's complete platform with access to your project data.\n\n**I can help you with:**\n• Keyword Research & Clustering\n• SERP Tracking & Analysis  \n• Backlink Strategies\n• Content Optimization\n• Technical SEO Audits\n• Google Integrations\n• **Personalized recommendations based on YOUR data**\n\nClick a quick prompt below or ask me anything!",
     },
   ]);
   const [input, setInput] = useState("");
@@ -61,14 +66,57 @@ export const SEOAIChatbot = () => {
     if (!textToSend.trim() || isLoading) return;
 
     const userMessage: Message = { role: "user", content: textToSend };
-    setMessages((prev) => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     setInput("");
     setIsLoading(true);
     setShowQuickPrompts(false);
 
     try {
+      let projectContext = null;
+      if (user) {
+        const { data: projects } = await supabase
+          .from("seo_projects")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        if (projects && projects.length > 0) {
+          const projectIds = projects.map((p) => p.id);
+          const { data: keywords } = await supabase
+            .from("keyword_analysis")
+            .select("keyword, search_volume, difficulty")
+            .in("project_id", projectIds)
+            .order("created_at", { ascending: false })
+            .limit(20);
+
+          const { data: recommendations } = await supabase
+            .from("ai_recommendations")
+            .select("*")
+            .eq("user_id", user.id)
+            .eq("status", "pending")
+            .limit(10);
+
+          projectContext = {
+            projects: projects.map((p) => ({
+              domain: p.domain,
+              name: p.name,
+              created_at: p.created_at,
+            })),
+            recent_keywords: keywords || [],
+            pending_recommendations: recommendations || [],
+          };
+        }
+      }
+
       const { data, error } = await supabase.functions.invoke("seo-ai-chat", {
-        body: { messages: [...messages, userMessage] },
+        body: {
+          messages: newMessages,
+          projectContext,
+          sessionId,
+          userId: user?.id,
+        },
       });
 
       if (error) throw error;
@@ -79,6 +127,15 @@ export const SEOAIChatbot = () => {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
+
+      if (user) {
+        await supabase.from("chatbot_conversations").upsert({
+          user_id: user.id,
+          session_id: sessionId,
+          messages: [...newMessages, assistantMessage],
+          context: projectContext,
+        });
+      }
     } catch (error) {
       console.error("Chat error:", error);
       toast({
@@ -102,6 +159,29 @@ export const SEOAIChatbot = () => {
     }
   };
 
+  const exportConversation = () => {
+    const exportData = {
+      session_id: sessionId,
+      exported_at: new Date().toISOString(),
+      messages,
+    };
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `seo-ai-chat-${new Date().toISOString().split("T")[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Conversation Exported",
+      description: "Your chat history has been downloaded",
+    });
+  };
+
   return (
     <>
       {/* Floating Button */}
@@ -120,27 +200,47 @@ export const SEOAIChatbot = () => {
 
       {/* Chat Window */}
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-[420px] h-[650px] flex flex-col shadow-[0_0_50px_hsl(262_83%_58%/0.4)] z-50 border-primary/30 overflow-hidden">
+        <Card className={`fixed ${isFullscreen ? 'inset-4' : 'bottom-6 right-6 w-full md:w-[420px] h-[650px]'} flex flex-col shadow-[0_0_50px_hsl(262_83%_58%/0.4)] z-50 border-primary/30 overflow-hidden transition-all duration-300`}>
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-primary via-primary to-secondary text-primary-foreground">
-            <div className="flex items-center gap-2">
-              <div className="relative">
+          <div className="flex items-center justify-between p-3 md:p-4 border-b bg-gradient-to-r from-primary via-primary to-secondary text-primary-foreground">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <div className="relative flex-shrink-0">
                 <MessageSquare className="w-5 h-5" />
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse" />
               </div>
-              <div>
-                <h3 className="font-bold text-sm">SEO AI Assistant</h3>
-                <p className="text-xs opacity-90">Always online • Instant answers</p>
+              <div className="min-w-0">
+                <h3 className="font-bold text-sm truncate">Super SEO AI Assistant</h3>
+                <p className="text-xs opacity-90 hidden sm:block">With project data access</p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(false)}
-              className="text-primary-foreground hover:bg-white/20 h-8 w-8"
-            >
-              <X className="w-4 h-4" />
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={exportConversation}
+                className="text-primary-foreground hover:bg-white/20 h-8 w-8"
+                title="Export conversation"
+              >
+                <Download className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsFullscreen(!isFullscreen)}
+                className="text-primary-foreground hover:bg-white/20 h-8 w-8 hidden md:flex"
+                title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+              >
+                {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsOpen(false)}
+                className="text-primary-foreground hover:bg-white/20 h-8 w-8"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Messages */}
@@ -152,13 +252,19 @@ export const SEOAIChatbot = () => {
                   className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl p-4 shadow-sm ${
+                    className={`max-w-[90%] md:max-w-[85%] rounded-2xl p-3 md:p-4 shadow-sm ${
                       msg.role === "user"
                         ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground"
                         : "bg-card border text-foreground"
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                    {msg.role === "assistant" ? (
+                      <div className="text-sm prose prose-sm dark:prose-invert max-w-none">
+                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                    )}
                   </div>
                 </div>
               ))}

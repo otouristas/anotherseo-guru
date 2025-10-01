@@ -11,14 +11,35 @@ serve(async (req) => {
   }
 
   try {
-    const { messages } = await req.json();
+    const { messages, projectContext, sessionId, userId } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are an expert SEO AI assistant for AnotherSEOGuru, a professional enterprise-level SEO platform. 
+    let contextualPrompt = "";
+    if (projectContext && projectContext.projects && projectContext.projects.length > 0) {
+      contextualPrompt = `\n\n**USER'S CURRENT DATA:**\n`;
+      contextualPrompt += `- Active Projects: ${projectContext.projects.map((p: any) => p.domain).join(", ")}\n`;
+
+      if (projectContext.recent_keywords && projectContext.recent_keywords.length > 0) {
+        contextualPrompt += `- Recent Keywords: ${projectContext.recent_keywords.slice(0, 10).map((k: any) =>
+          `${k.keyword} (vol: ${k.search_volume || 'N/A'}, diff: ${k.difficulty || 'N/A'})`
+        ).join(", ")}\n`;
+      }
+
+      if (projectContext.pending_recommendations && projectContext.pending_recommendations.length > 0) {
+        contextualPrompt += `- Pending AI Recommendations: ${projectContext.pending_recommendations.length} items\n`;
+        contextualPrompt += `  Top recommendations: ${projectContext.pending_recommendations.slice(0, 3).map((r: any) =>
+          r.title
+        ).join("; ")}\n`;
+      }
+
+      contextualPrompt += `\nWhen answering, reference the user's actual data when relevant. Provide personalized, specific recommendations based on their projects and keywords.`;
+    }
+
+    const systemPrompt = `You are an expert SEO AI assistant for AnotherSEOGuru, a professional enterprise-level SEO platform.${contextualPrompt} 
 
 Your knowledge base includes:
 

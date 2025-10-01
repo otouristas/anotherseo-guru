@@ -45,6 +45,7 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
   ];
 
   const aiItems = [
+    { id: "ai-recommendations", title: "AI Insights", icon: Sparkles },
     { id: "monitoring", title: "SERP Monitoring", icon: Bell },
     { id: "content-gaps", title: "Content Gaps", icon: Target },
     { id: "predictions", title: "Ranking Predictor", icon: Brain },

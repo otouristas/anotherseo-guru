@@ -33,6 +33,7 @@ import { RevenueAttribution } from "@/components/seo/RevenueAttribution";
 import { ComprehensiveAudit } from "@/components/seo/ComprehensiveAudit";
 import { KeywordOpportunityAnalyzer } from "@/components/seo/KeywordOpportunityAnalyzer";
 import { SiteAuditDashboard } from "@/components/seo/SiteAuditDashboard";
+import { AIRecommendations } from "@/components/seo/AIRecommendations";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export default function SEODashboard() {
@@ -148,6 +149,8 @@ function SEODashboardContent() {
     switch (activeTab) {
       case "overview":
         return <ProjectOverview projectId={selectedProject} />;
+      case "ai-recommendations":
+        return <AIRecommendations projectId={selectedProject} userId={user?.id || ""} />;
       case "serp":
         return <SERPTracker projectId={selectedProject} />;
       case "monitoring":
