@@ -7,20 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  Search,
-  AlertTriangle,
-  CheckCircle,
-  TrendingUp,
-  Zap,
-  FileText,
-  Link,
-  Image,
-  Clock,
-  BarChart3,
-  RefreshCw,
-  Download,
-} from "lucide-react";
+import { Search, TriangleAlert as AlertTriangle, CircleCheck as CheckCircle, TrendingUp, Zap, FileText, Link, Image, Clock, ChartBar as BarChart3, RefreshCw, Download } from "lucide-react";
 
 interface SiteAuditDashboardProps {
   projectId: string;
