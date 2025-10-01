@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { CheckCircle, Circle, Loader2, Search, Globe, TrendingUp, Link2, Zap, AlertCircle, ExternalLink, BarChart3 } from "lucide-react";
+import { CircleCheck as CheckCircle, Circle, Loader as Loader2, Search, Globe, TrendingUp, Link2, Zap, CircleAlert as AlertCircle, ExternalLink, ChartBar as BarChart3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
