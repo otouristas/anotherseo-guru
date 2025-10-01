@@ -38,7 +38,7 @@ export const SEOProjectOnboarding = ({ userId, onComplete }: SEOProjectOnboardin
   ];
 
   const createProject = async () => {
-    if (!userId) {
+    if (!userId || userId === "") {
       toast({
         title: "Not signed in",
         description: "Please sign in to create a project.",
@@ -70,19 +70,26 @@ export const SEOProjectOnboarding = ({ userId, onComplete }: SEOProjectOnboardin
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Database error:", error);
+        throw error;
+      }
+
+      if (!data) {
+        throw new Error("No data returned from insert");
+      }
 
       setProjectId(data.id);
       toast({
-        title: "Project Created! 🎉",
+        title: "Project Created!",
         description: "Let's connect your analytics tools next",
       });
       setStep(2);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating project:", error);
       toast({
         title: "Error",
-        description: "Failed to create project",
+        description: error.message || "Failed to create project. Please check the console for details.",
         variant: "destructive",
       });
     } finally {

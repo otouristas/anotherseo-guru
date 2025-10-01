@@ -122,7 +122,15 @@ function SEODashboardContent() {
   const renderContent = () => {
     if (!selectedProject) {
       if (showOnboarding) {
-        return <SEOProjectOnboarding userId={user?.id || ""} onComplete={handleOnboardingComplete} />;
+        if (!user?.id) {
+          return (
+            <Card className="p-12 text-center">
+              <h3 className="text-2xl font-bold mb-2">Authentication Required</h3>
+              <p className="text-muted-foreground">Please sign in to create a project</p>
+            </Card>
+          );
+        }
+        return <SEOProjectOnboarding userId={user.id} onComplete={handleOnboardingComplete} />;
       }
       return (
         <Card className="p-12 text-center">
