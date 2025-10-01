@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -56,6 +57,13 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>Contact Us - AnotherSEOGuru Support</title>
+        <meta name="description" content="Get in touch with AnotherSEOGuru support team. We're here to help with questions about features, pricing, demos, or anything else." />
+        <meta name="keywords" content="contact AnotherSEOGuru, SEO support, customer service, help desk" />
+        <link rel="canonical" href="https://anotherseoguru.com/contact" />
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
       {/* Hero Section */}
       <section className="py-20 px-4 bg-gradient-to-b from-primary/5 to-background">
         <div className="container mx-auto max-w-4xl text-center space-y-6">

@@ -131,9 +131,12 @@ export default function Pricing() {
     <>
       <Helmet>
         <title>Pricing Plans - AnotherSEOGuru SEO Tools & Content Creation</title>
-        <meta name="description" content="Transparent pricing for professional SEO tools and AI content creation. Choose from Starter, Professional, Agency, or Enterprise plans. 14-day free trial available." />
+        <meta name="description" content="Transparent pricing for professional SEO tools and AI content creation. Choose from Starter, Professional, Agency, or Enterprise plans. 1-day free trial available." />
         <meta name="keywords" content="SEO pricing, SEO tools cost, content creation pricing, SEO software plans, professional SEO packages" />
-        <link rel="canonical" href="https://anotherseo.guru/pricing" />
+        <link rel="canonical" href="https://anotherseoguru.com/pricing" />
+        <meta property="og:url" content="https://anotherseoguru.com/pricing" />
+        <meta property="og:title" content="Pricing Plans - AnotherSEOGuru" />
+        <meta property="og:description" content="Transparent pricing for professional SEO tools. 1-day free trial available." />
       </Helmet>
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
         {/* Hero Section */}
@@ -150,7 +153,7 @@ export default function Pricing() {
               </span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Professional SEO tools + AI content creation. Start with a 14-day free trial, no credit card required.
+              Professional SEO tools + AI content creation. Start with a 1-day free trial, no credit card required.
             </p>
           </div>
         </section>
@@ -197,7 +200,7 @@ export default function Pricing() {
                       variant={plan.popular ? "hero" : "outline"}
                       size="lg"
                     >
-                      <Link to={user ? (plan.cta === "Contact Sales" ? "/contact" : "/checkout") : "/auth"}>
+                      <Link to={user ? (plan.cta === "Contact Sales" ? "/contact" : `/checkout?plan=${plan.name.toLowerCase()}`) : "/auth"}>
                         {plan.cta}
                       </Link>
                     </Button>
@@ -257,7 +260,7 @@ export default function Pricing() {
                 <Card className="p-6">
                   <h4 className="font-semibold mb-2">What's included in the free trial?</h4>
                   <p className="text-sm text-muted-foreground">
-                    14-day full access to all features in your chosen plan. No credit card required. Cancel anytime before trial ends.
+                    1-day full access to all features in your chosen plan. No credit card required. Cancel anytime before trial ends.
                   </p>
                 </Card>
                 <Card className="p-6">
@@ -275,7 +278,7 @@ export default function Pricing() {
                 <Card className="p-6">
                   <h4 className="font-semibold mb-2">Do you offer refunds?</h4>
                   <p className="text-sm text-muted-foreground">
-                    Yes, we offer a 14-day money-back guarantee on all paid plans. Contact support if you're not satisfied.
+                    Yes, we offer a 1-day money-back guarantee on all paid plans. Contact support if you're not satisfied.
                   </p>
                 </Card>
               </div>

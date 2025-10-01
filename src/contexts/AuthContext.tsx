@@ -4,15 +4,25 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
+interface SubscriptionData {
+  subscribed: boolean;
+  product_id: string | null;
+  plan_type: string;
+  credits: number;
+  subscription_end: string | null;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: any | null;
+  subscription: SubscriptionData | null;
   loading: boolean;
   signUp: (email: string, password: string, firstName?: string, lastName?: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  checkSubscription: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,8 +31,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<any | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+
+  const checkSubscription = async () => {
+    if (!session) return;
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('check-subscription');
+      
+      if (error) {
+        console.error('Error checking subscription:', error);
+        return;
+      }
+      
+      if (data) {
+        setSubscription(data);
+        // Also refresh profile to get updated credits
+        if (user) {
+          await fetchProfile(user.id);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+    }
+  };
 
   const fetchProfile = async (userId: string) => {
     const { data, error } = await supabase
@@ -43,7 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+    const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
@@ -51,9 +85,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (session?.user) {
           setTimeout(() => {
             fetchProfile(session.user.id);
+            checkSubscription();
           }, 0);
         } else {
           setProfile(null);
+          setSubscription(null);
         }
         
         setLoading(false);
@@ -66,13 +102,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       
       if (session?.user) {
         fetchProfile(session.user.id);
+        checkSubscription();
       }
       
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    // Check subscription every 60 seconds
+    const subscriptionInterval = setInterval(() => {
+      if (session?.user) {
+        checkSubscription();
+      }
+    }, 60000);
+
+    return () => {
+      authSubscription.unsubscribe();
+      clearInterval(subscriptionInterval);
+    };
+  }, [session]);
 
   const signUp = async (email: string, password: string, firstName?: string, lastName?: string) => {
     const redirectUrl = `${window.location.origin}/`;
@@ -119,11 +166,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         session,
         profile,
+        subscription,
         loading,
         signUp,
         signIn,
         signOut,
         refreshProfile,
+        checkSubscription,
       }}
     >
       {children}

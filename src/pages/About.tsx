@@ -11,7 +11,10 @@ export default function About() {
         <title>About AnotherSEOGuru - Our Mission to Democratize Professional SEO</title>
         <meta name="description" content="Learn about AnotherSEOGuru's mission to provide enterprise-grade SEO tools to everyone. Discover our comprehensive suite including SERP tracking, competitor analysis, keyword research, and AI content creation." />
         <meta name="keywords" content="about AnotherSEOGuru, SEO company, professional SEO tools, SEO mission, enterprise SEO platform" />
-        <link rel="canonical" href="https://anotherseo.guru/about" />
+        <link rel="canonical" href="https://anotherseoguru.com/about" />
+        <meta property="og:url" content="https://anotherseoguru.com/about" />
+        <meta property="og:title" content="About AnotherSEOGuru" />
+        <meta property="og:description" content="Learn about our mission to democratize professional SEO tools." />
       </Helmet>
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
         {/* Hero Section */}

@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,6 +13,19 @@ import logo from "@/assets/logo.png";
 import { signInSchema, signUpSchema } from "@/lib/validation";
 
 export default function Auth() {
+  return (
+    <>
+      <Helmet>
+        <title>Sign In - AnotherSEOGuru</title>
+        <meta name="description" content="Sign in to your AnotherSEOGuru account" />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <AuthContent />
+    </>
+  );
+}
+
+function AuthContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

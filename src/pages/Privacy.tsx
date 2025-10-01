@@ -1,8 +1,17 @@
+import { Helmet } from "react-helmet-async";
 import { Card } from "@/components/ui/card";
 
 const Privacy = () => {
   return (
-    <div className="min-h-screen py-12 px-4">
+    <>
+      <Helmet>
+        <title>Privacy Policy - AnotherSEOGuru</title>
+        <meta name="description" content="Read AnotherSEOGuru's privacy policy to understand how we collect, use, and protect your data." />
+        <meta name="keywords" content="privacy policy, data protection, GDPR, user privacy" />
+        <link rel="canonical" href="https://anotherseoguru.com/privacy" />
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
+      <div className="min-h-screen py-12 px-4">
       <div className="container mx-auto max-w-4xl">
         <div className="space-y-8">
           <div className="text-center space-y-4">
@@ -121,7 +130,8 @@ const Privacy = () => {
           </Card>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

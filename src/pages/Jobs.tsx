@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,6 +32,19 @@ interface Job {
 }
 
 export default function Jobs() {
+  return (
+    <>
+      <Helmet>
+        <title>Jobs - AnotherSEOGuru</title>
+        <meta name="description" content="View your SEO analysis jobs and tasks" />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+      <JobsContent />
+    </>
+  );
+}
+
+function JobsContent() {
   const { user } = useAuth();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);

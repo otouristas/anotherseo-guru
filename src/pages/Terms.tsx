@@ -1,8 +1,17 @@
+import { Helmet } from "react-helmet-async";
 import { Card } from "@/components/ui/card";
 
 const Terms = () => {
   return (
-    <div className="min-h-screen py-12 px-4">
+    <>
+      <Helmet>
+        <title>Terms of Service - AnotherSEOGuru Legal</title>
+        <meta name="description" content="Terms of Service for AnotherSEOGuru SEO platform. Review our usage policies, data ownership, and subscription terms." />
+        <meta name="keywords" content="terms of service, SEO terms, legal agreement, usage policy" />
+        <link rel="canonical" href="https://anotherseoguru.com/terms" />
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
+      <div className="min-h-screen py-12 px-4">
       <div className="container mx-auto max-w-4xl">
         <div className="space-y-8">
           <div className="text-center space-y-4">
@@ -146,7 +155,8 @@ const Terms = () => {
           </Card>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

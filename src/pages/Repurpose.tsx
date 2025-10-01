@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { ContentInput } from "@/components/ContentInput";
 import { PlatformSelector } from "@/components/PlatformSelector";
 import { ToneStyleSelector } from "@/components/ToneStyleSelector";
@@ -39,6 +40,11 @@ interface GeneratedContent {
 export default function Repurpose() {
   return (
     <ProtectedRoute>
+      <Helmet>
+        <title>Content Generator - AnotherSEOGuru</title>
+        <meta name="description" content="Create SEO-optimized content for multiple platforms" />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <RepurposeContent />
     </ProtectedRoute>
   );

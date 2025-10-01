@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
@@ -36,6 +37,11 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 export default function SEODashboard() {
   return (
     <ProtectedRoute>
+      <Helmet>
+        <title>SEO Dashboard - AnotherSEOGuru</title>
+        <meta name="description" content="Manage your SEO projects and track rankings" />
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
       <SEODashboardContent />
     </ProtectedRoute>
   );

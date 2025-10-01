@@ -186,8 +186,9 @@ const Help = () => {
   return (
     <>
       <Helmet>
-        <title>Help Center - AnotherSEOGuru</title>
+        <title>Help Center - AnotherSEOGuru Documentation & Guides</title>
         <meta name="description" content="Comprehensive help center and documentation for AnotherSEOGuru SEO platform. Learn about keyword research, rank tracking, backlink analysis, and more." />
+        <meta name="keywords" content="SEO help, SEO documentation, keyword research guide, SERP tracking help, backlink analysis guide" />
         <link rel="canonical" href="https://anotherseoguru.com/help" />
       </Helmet>
 

@@ -96,7 +96,7 @@ export const PricingSection = () => {
             Simple, Transparent Pricing
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Professional SEO tools + AI content creation. Start with a 14-day free trial.
+            Professional SEO tools + AI content creation. Start with a 1-day free trial.
           </p>
         </div>
 
@@ -138,7 +138,7 @@ export const PricingSection = () => {
                   variant={plan.popular ? "hero" : "outline"}
                   size="lg"
                 >
-                  <Link to={plan.cta === "Contact Sales" ? "/contact" : "/auth"}>
+                  <Link to={plan.cta === "Contact Sales" ? "/contact" : `/checkout?plan=${plan.name.toLowerCase()}`}>
                     {plan.cta}
                   </Link>
                 </Button>

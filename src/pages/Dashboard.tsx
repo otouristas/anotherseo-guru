@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import { 
   User, 
   CreditCard, 
@@ -36,19 +37,21 @@ export default function Dashboard() {
 }
 
 function DashboardContent() {
-  const { user, profile } = useAuth();
+  const { user, profile, subscription } = useAuth();
   const [usageData, setUsageData] = useState<any>(null);
   const [seoProjects, setSeoProjects] = useState<any[]>([]);
+  const [isManagingSubscription, setIsManagingSubscription] = useState(false);
+  const { toast } = useToast();
 
   const planType = profile?.plan_type || "free";
   const isUnlimited = planType === "enterprise";
   const credits = profile?.credits || 0;
 
   const planLimits = {
-    free: { maxCredits: 2, name: "Free", price: "€0" },
-    basic: { maxCredits: 100, name: "Basic", price: "€49" },
-    pro: { maxCredits: 300, name: "Pro", price: "€79" },
-    enterprise: { maxCredits: Infinity, name: "Enterprise", price: "€299" }
+    free: { maxCredits: 20, name: "Free", price: "€0" },
+    starter: { maxCredits: 50, name: "Starter", price: "€49" },
+    professional: { maxCredits: 200, name: "Professional", price: "€99" },
+    agency: { maxCredits: Infinity, name: "Agency", price: "€249" }
   };
 
   const currentPlan = planLimits[planType as keyof typeof planLimits] || planLimits.free;
@@ -82,6 +85,32 @@ function DashboardContent() {
       fetchSeoProjects();
     }
   }, [user]);
+
+  const handleManageSubscription = async () => {
+    setIsManagingSubscription(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('customer-portal');
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+        toast({
+          title: "Opening Billing Portal",
+          description: "Manage your subscription in the new tab...",
+        });
+      }
+    } catch (error) {
+      console.error('Portal error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to open billing portal",
+        variant: "destructive",
+      });
+    } finally {
+      setIsManagingSubscription(false);
+    }
+  };
 
   return (
     <>
@@ -361,6 +390,15 @@ function DashboardContent() {
                       <Badge className="text-base sm:text-lg px-3 sm:px-4 py-1.5 sm:py-2">{currentPlan.name}</Badge>
                       <p className="text-xl sm:text-2xl font-bold">{currentPlan.price}<span className="text-xs sm:text-sm text-muted-foreground">/mo</span></p>
                     </div>
+                    
+                    {subscription?.subscribed && subscription?.subscription_end && (
+                      <div className="p-3 bg-success/10 border border-success/20 rounded-lg">
+                        <p className="text-xs sm:text-sm text-success font-medium">
+                          Active until {new Date(subscription.subscription_end).toLocaleDateString()}
+                        </p>
+                      </div>
+                    )}
+                    
                     <div className="pt-4 border-t space-y-2">
                       <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-muted-foreground">Credits per month</span>
@@ -372,14 +410,26 @@ function DashboardContent() {
                       </div>
                       <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-muted-foreground">Priority Support</span>
-                        <span className="font-medium">{planType === "enterprise" ? "✓" : "—"}</span>
+                        <span className="font-medium">{planType === "agency" || planType === "professional" ? "✓" : "—"}</span>
                       </div>
                     </div>
-                    {planType !== "enterprise" && (
-                      <Button asChild className="w-full mt-4">
-                        <Link to="/pricing">Upgrade Plan</Link>
-                      </Button>
-                    )}
+                    
+                    <div className="space-y-2">
+                      {subscription?.subscribed ? (
+                        <Button 
+                          onClick={handleManageSubscription}
+                          variant="outline"
+                          className="w-full"
+                          disabled={isManagingSubscription}
+                        >
+                          {isManagingSubscription ? "Opening..." : "Manage Subscription"}
+                        </Button>
+                      ) : (
+                        <Button asChild className="w-full">
+                          <Link to="/pricing">Upgrade Plan</Link>
+                        </Button>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
                 
