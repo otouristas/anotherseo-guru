@@ -162,7 +162,7 @@ const DashboardContent = memo(() => {
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-primary/5" />
           <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" style={{ backgroundSize: '30px 30px' }} />
 
-          <div className="relative container mx-auto px-4 py-8 md:py-12">
+          <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 lg:py-16">
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
               <div className="flex items-center gap-4 md:gap-6">
                 <Avatar className="h-16 w-16 md:h-20 md:w-20 border-4 border-primary/20 shadow-xl">
@@ -252,7 +252,7 @@ const DashboardContent = memo(() => {
         </section>
 
         <div className="flex-1">
-          <section className="container mx-auto px-4 py-12 md:py-16">
+          <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
           <DashboardFilters onFilterChange={setFilters} />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
