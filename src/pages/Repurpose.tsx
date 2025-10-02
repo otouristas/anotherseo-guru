@@ -29,6 +29,7 @@ import { DataForSEOContentTools } from "@/components/DataForSEOContentTools";
 import { SERPAnalyzer } from "@/components/SERPAnalyzer";
 import { OnPageAnalyzer } from "@/components/OnPageAnalyzer";
 import { Footer } from "@/components/Footer";
+import { SEOIntelligenceDashboard } from "@/components/seo-intelligence/SEOIntelligenceDashboard";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -66,7 +67,8 @@ function RepurposeContent() {
   const [generatedContent, setGeneratedContent] = useState<GeneratedContent[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [credits, setCredits] = useState(0);
-  const [activeStep, setActiveStep] = useState<"input" | "review" | "generate" | "results">("input");
+  const [activeStep, setActiveStep] = useState<"input" | "review" | "intelligence" | "generate" | "results">("input");
+  const [scrapedUrl, setScrapedUrl] = useState<string>("");
   const { toast } = useToast();
 
   const planType = profile?.plan_type || "free";
@@ -299,6 +301,18 @@ function RepurposeContent() {
             </Button>
             <div className="w-8 md:w-12 h-0.5 bg-border flex-shrink-0" />
             <Button
+              variant={activeStep === "intelligence" ? "default" : "outline"}
+              onClick={() => content.length > 0 && setActiveStep("intelligence")}
+              disabled={content.length === 0}
+              className="gap-2 whitespace-nowrap"
+              size="sm"
+            >
+              <Zap className="w-4 h-4" />
+              <span className="hidden sm:inline">3. AI Intelligence</span>
+              <span className="sm:hidden">3</span>
+            </Button>
+            <div className="w-8 md:w-12 h-0.5 bg-border flex-shrink-0" />
+            <Button
               variant={activeStep === "generate" ? "default" : "outline"}
               onClick={() => content.length > 0 && setActiveStep("generate")}
               disabled={content.length === 0}
@@ -306,8 +320,8 @@ function RepurposeContent() {
               size="sm"
             >
               <Sparkles className="w-4 h-4" />
-              <span className="hidden sm:inline">3. Generate</span>
-              <span className="sm:hidden">3</span>
+              <span className="hidden sm:inline">4. Generate</span>
+              <span className="sm:hidden">4</span>
             </Button>
             <div className="w-8 md:w-12 h-0.5 bg-border flex-shrink-0" />
             <Button
@@ -318,8 +332,8 @@ function RepurposeContent() {
               size="sm"
             >
               <Zap className="w-4 h-4" />
-              <span className="hidden sm:inline">4. Results</span>
-              <span className="sm:hidden">4</span>
+              <span className="hidden sm:inline">5. Results</span>
+              <span className="sm:hidden">5</span>
             </Button>
           </div>
 
@@ -355,20 +369,24 @@ function RepurposeContent() {
                   </TabsContent>
                   
                   <TabsContent value="scrape" className="mt-4">
-                    <URLScraper 
+                    <URLScraper
                       onContentScraped={(scrapedContent, metadata) => {
                         setContent(scrapedContent);
+                        if (metadata?.url) {
+                          setScrapedUrl(metadata.url);
+                        }
                         if (metadata?.title) {
                           setSerpMeta(prev => ({ ...prev, title: metadata.title || '' }));
                         }
                         if (metadata?.description) {
                           setSerpMeta(prev => ({ ...prev, description: metadata.description || '' }));
                         }
-                      }} 
+                      }}
                     />
                     {content && (
                       <div className="mt-4 p-3 bg-success/10 border border-success/20 rounded-lg text-sm">
                         ✓ Content scraped: {content.length} characters
+                        {scrapedUrl && <div className="mt-1 text-xs">URL: {scrapedUrl}</div>}
                       </div>
                     )}
                   </TabsContent>
@@ -419,9 +437,58 @@ function RepurposeContent() {
                   <Button
                     size="lg"
                     className="w-full"
+                    onClick={() => setActiveStep("intelligence")}
+                  >
+                    Next: SEO Intelligence Analysis
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {activeStep === "intelligence" && (
+              <div className="space-y-6">
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-bold mb-2">SEO Intelligence Analysis</h2>
+                  <p className="text-muted-foreground">
+                    AI-powered analysis with GSC data, algorithm detection, and optimization recommendations
+                  </p>
+                </div>
+
+                <SEOIntelligenceDashboard
+                  content={content}
+                  url={scrapedUrl}
+                  keywords={[seoData.primaryKeyword, ...seoData.secondaryKeywords].filter(k => k)}
+                  projectId={undefined}
+                  userId={user?.id || ""}
+                  onApplyRecommendations={(recommendations) => {
+                    recommendations.forEach((rec: any) => {
+                      if (rec.relatedKeywords && rec.relatedKeywords.length > 0) {
+                        setSeoData({
+                          ...seoData,
+                          secondaryKeywords: [...new Set([...seoData.secondaryKeywords, ...rec.relatedKeywords.slice(0, 3)])].slice(0, 5)
+                        });
+                      }
+                    });
+                    toast({
+                      title: "Recommendations Applied",
+                      description: "SEO recommendations have been integrated into your content settings",
+                    });
+                  }}
+                />
+
+                <div className="flex gap-4 justify-center pt-4">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={() => setActiveStep("review")}
+                  >
+                    Back: Review Content
+                  </Button>
+                  <Button
+                    size="lg"
                     onClick={() => setActiveStep("generate")}
                   >
-                    Next: Configure & Generate
+                    Continue to Generate
                   </Button>
                 </div>
               </div>
@@ -516,9 +583,9 @@ function RepurposeContent() {
                       size="lg"
                       variant="outline"
                       className="w-full"
-                      onClick={() => setActiveStep("review")}
+                      onClick={() => setActiveStep("intelligence")}
                     >
-                      Back: Review
+                      Back: SEO Intelligence
                     </Button>
                     <Button
                       size="lg"
