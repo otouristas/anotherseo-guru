@@ -23,11 +23,11 @@ interface Recommendation {
   title: string;
   description: string;
   priority: string;
-  confidence_score: number;
-  impact_estimate: string;
+  confidence_score?: number;
+  impact_estimate?: string;
   status: string;
-  metadata: any;
-  created_at: string;
+  metadata?: any;
+  created_at?: string;
 }
 
 export const AIRecommendations = ({ projectId, userId }: AIRecommendationsProps) => {
