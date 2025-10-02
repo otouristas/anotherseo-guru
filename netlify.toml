@@ -1,29 +1,27 @@
 [build]
   command = "npm ci && npm run build"
   publish = "dist"
-  
-  # Fallback command if main build fails
-  [build.ignore]
-    command = "npm ci && npm run build:netlify"
 
 [build.environment]
   NODE_VERSION = "18"
   NPM_VERSION = "10"
   NODE_OPTIONS = "--max-old-space-size=4096"
 
+# SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
+# Security headers
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+# Cache headers for assets
 [[headers]]
   for = "/assets/*"
   [headers.values]
@@ -38,60 +36,3 @@
   for = "*.css"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "*.woff2"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# Remove problematic conditional redirect
-
-# Remove API redirects - handled by Supabase client
-
-# Environment variables for production
-[context.production.environment]
-  VITE_SUPABASE_URL = "https://your-project.supabase.co"
-  VITE_SUPABASE_ANON_KEY = "your-anon-key"
-  VITE_DATAFORSEO_LOGIN = "your-login"
-  VITE_DATAFORSEO_PASSWORD = "your-password"
-  VITE_STRIPE_PUBLISHABLE_KEY = "your-stripe-key"
-  VITE_GA_MEASUREMENT_ID = "your-ga-id"
-  VITE_SENTRY_DSN = "your-sentry-dsn"
-
-# Deploy preview settings
-[context.deploy-preview.environment]
-  VITE_SUPABASE_URL = "https://your-project.supabase.co"
-  VITE_SUPABASE_ANON_KEY = "your-anon-key"
-
-# Branch deploy settings
-[context.branch-deploy.environment]
-  VITE_SUPABASE_URL = "https://your-project.supabase.co"
-  VITE_SUPABASE_ANON_KEY = "your-anon-key"
-
-# Functions (if using Netlify Functions)
-[functions]
-  directory = "netlify/functions"
-
-# Edge functions
-[[edge_functions]]
-  function = "hello"
-  path = "/api/hello"
-
-# Form handling
-[[forms]]
-  name = "contact"
-
-# Simplified build plugins to avoid build issues
-# [[plugins]]
-#   package = "@netlify/plugin-lighthouse"
-#   [plugins.inputs.thresholds]
-#     performance = 0.8
-#     accessibility = 0.9
-#     best-practices = 0.8
-#     seo = 0.9
-
-# [[plugins]]
-#   package = "@netlify/plugin-sitemap"
-#   [plugins.inputs]
-#     buildDir = "dist"
-#     exclude = ["/admin/*", "/api/*"]
