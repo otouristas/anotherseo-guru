@@ -47,6 +47,14 @@ export function SEOIntelligenceDashboard({
     setIsAnalyzing(true);
 
     try {
+      console.log("Starting SEO intelligence analysis with:", {
+        contentLength: content.length,
+        hasUrl: !!url,
+        keywordsCount: keywords.length,
+        hasProjectId: !!projectId,
+        hasUserId: !!userId,
+      });
+
       const { data, error } = await supabase.functions.invoke("seo-intelligence-analyzer", {
         body: {
           userId,
@@ -58,10 +66,21 @@ export function SEOIntelligenceDashboard({
         },
       });
 
-      if (error) throw error;
+      console.log("Response received:", { data, error });
+
+      if (error) {
+        console.error("Supabase function error:", error);
+        throw new Error(error.message || "Failed to invoke edge function");
+      }
+
+      if (!data) {
+        throw new Error("No data returned from analysis");
+      }
 
       if (!data.success) {
-        throw new Error(data.error || "Analysis failed");
+        const errorMsg = data.error || "Analysis failed";
+        const details = data.details ? ` Details: ${data.details}` : "";
+        throw new Error(errorMsg + details);
       }
 
       setAnalysisData(data);
@@ -74,9 +93,11 @@ export function SEOIntelligenceDashboard({
       setSelectedTab("recommendations");
     } catch (error) {
       console.error("Analysis error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to complete analysis";
+
       toast({
         title: "Analysis Failed",
-        description: error instanceof Error ? error.message : "Failed to complete analysis",
+        description: errorMessage.length > 200 ? errorMessage.substring(0, 200) + "..." : errorMessage,
         variant: "destructive",
       });
     } finally {

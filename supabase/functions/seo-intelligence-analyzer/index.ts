@@ -1,4 +1,3 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.58.0";
 
 const corsHeaders = {
@@ -16,7 +15,7 @@ interface AnalysisRequest {
   llmModel?: string;
 }
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 200, headers: corsHeaders });
   }
@@ -26,6 +25,13 @@ serve(async (req) => {
   try {
     const body: AnalysisRequest = await req.json();
     const { userId, projectId, content, url, keywords = [], llmModel = "gemini-2.5-flash" } = body;
+
+    if (!content) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Content is required" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -44,7 +50,6 @@ serve(async (req) => {
         .from("gsc_analytics")
         .select("*")
         .eq("project_id", projectId)
-        .ilike("page_url", `%${url}%`)
         .order("date", { ascending: false })
         .limit(90);
 
@@ -81,7 +86,7 @@ serve(async (req) => {
           if (keywords[0]) {
             const serpResponse = await supabase.functions.invoke("serp-monitor", {
               body: {
-                keyword: keywords[0],
+                keywords: [keywords[0]],
                 location: "United States",
               },
             });
@@ -250,10 +255,24 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error("SEO Intelligence Analysis error:", error);
+
+    let errorMessage = "Unknown error occurred";
+    let errorDetails = "";
+
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      errorDetails = error.stack || "";
+    } else if (typeof error === "string") {
+      errorMessage = error;
+    }
+
+    console.error("Error details:", errorDetails);
+
     return new Response(
       JSON.stringify({
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: errorMessage,
+        details: errorDetails.substring(0, 500),
       }),
       {
         status: 500,
