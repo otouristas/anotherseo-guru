@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { useDebounce } from '@/hooks/useDebounce';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Search, Download, Sparkles } from 'lucide-react';
+import { Loader as Loader2, Search, Download, Sparkles } from 'lucide-react';
 import {
   PolarArea,
 } from 'recharts';

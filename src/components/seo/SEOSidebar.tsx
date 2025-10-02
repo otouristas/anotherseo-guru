@@ -1,4 +1,4 @@
-import { LayoutDashboard, Search, ChartBar as BarChart3, Target, FileText, Link2, Globe, Zap, TrendingUp, Calendar, Settings, Upload, Sparkles, Bell, Brain, Mic, MapPin, DollarSign, FileSearch, ChartBar as BarChart, HelpCircle } from "lucide-react";
+import { LayoutDashboard, Search, ChartBar as BarChart3, Target, FileText, Link2, Globe, Zap, TrendingUp, Calendar, Settings, Upload, Sparkles, Bell, Brain, Mic, MapPin, DollarSign, FileSearch, ChartBar as BarChart, CircleHelp as HelpCircle } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
