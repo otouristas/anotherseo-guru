@@ -6,25 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  BarChart3,
-  TrendingUp,
-  TrendingDown,
-  Download,
-  RefreshCw,
-  Calendar,
-  Globe,
-  Search,
-  Users,
-  MousePointerClick,
-  Eye,
-  Target,
-  Zap,
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  FileText,
-} from "lucide-react";
+import { ChartBar as BarChart3, TrendingUp, TrendingDown, Download, RefreshCw, Calendar, Globe, Search, Users, MousePointerClick, Eye, Target, Zap, CircleAlert as AlertCircle, CircleCheck as CheckCircle, Clock, FileText } from "lucide-react";
 import {
   LineChart,
   Line,
