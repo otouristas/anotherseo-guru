@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -7,14 +7,23 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 interface URLScraperProps {
-  onContentScraped: (content: string, metadata?: { title?: string; description?: string }) => void;
+  onContentScraped: (content: string, metadata?: { title?: string; description?: string; url?: string }) => void;
+  initialUrl?: string;
+  autoTrigger?: boolean;
 }
 
-export const URLScraper = ({ onContentScraped }: URLScraperProps) => {
-  const [url, setUrl] = useState("");
+export const URLScraper = ({ onContentScraped, initialUrl = "", autoTrigger = false }: URLScraperProps) => {
+  const [url, setUrl] = useState(initialUrl);
   const [isLoading, setIsLoading] = useState(false);
   const [scrapedSuccess, setScrapedSuccess] = useState(false);
   const { toast } = useToast();
+
+  // Auto-trigger scraping if initialUrl is provided and autoTrigger is true
+  useEffect(() => {
+    if (autoTrigger && initialUrl && !isLoading) {
+      handleScrape();
+    }
+  }, []);
 
   const handleScrape = async () => {
     if (!url) {
@@ -58,6 +67,7 @@ export const URLScraper = ({ onContentScraped }: URLScraperProps) => {
         onContentScraped(data.content, {
           title: data.title,
           description: data.description,
+          url: url,
         });
         
         setScrapedSuccess(true);

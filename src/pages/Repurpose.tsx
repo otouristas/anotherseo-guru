@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import { useLocation } from "react-router-dom";
 import { ContentInput } from "@/components/ContentInput";
 import { PlatformSelector } from "@/components/PlatformSelector";
 import { ToneStyleSelector } from "@/components/ToneStyleSelector";
@@ -53,13 +54,16 @@ export default function Repurpose() {
 
 function RepurposeContent() {
   const { user, profile } = useAuth();
+  const location = useLocation();
+  const state = location.state as { url?: string; keywords?: string[]; mode?: string } | null;
+
   const [content, setContent] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [tone, setTone] = useState("professional");
   const [style, setStyle] = useState("narrative");
   const [seoData, setSeoData] = useState<SEOData>({
-    primaryKeyword: "",
-    secondaryKeywords: [],
+    primaryKeyword: state?.keywords?.[0] || "",
+    secondaryKeywords: state?.keywords?.slice(1, 5) || [],
     targetWordCount: 1000,
     anchors: []
   });
@@ -68,7 +72,8 @@ function RepurposeContent() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [credits, setCredits] = useState(0);
   const [activeStep, setActiveStep] = useState<"input" | "review" | "intelligence" | "generate" | "results">("input");
-  const [scrapedUrl, setScrapedUrl] = useState<string>("");
+  const [scrapedUrl, setScrapedUrl] = useState<string>(state?.url || "");
+  const [autoTriggerScrape, setAutoTriggerScrape] = useState<boolean>(!!state?.url);
   const { toast } = useToast();
 
   const planType = profile?.plan_type || "free";
@@ -85,6 +90,19 @@ function RepurposeContent() {
       setCredits(profile.credits || 0);
     }
   }, [profile]);
+
+  // Auto-trigger scrape when URL is provided from navigation state
+  useEffect(() => {
+    if (autoTriggerScrape && scrapedUrl && !content) {
+      setAutoTriggerScrape(false);
+      if (state?.mode === 'seo-optimization') {
+        toast({
+          title: "SEO Optimization Mode",
+          description: `Pre-loaded URL and ${state.keywords?.length || 0} keywords. Scraping content...`,
+        });
+      }
+    }
+  }, [autoTriggerScrape, scrapedUrl, content, state, toast]);
 
   const handlePlatformSelect = (platformId: string) => {
     setSelectedPlatforms((prev) =>

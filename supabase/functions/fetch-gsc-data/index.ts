@@ -45,35 +45,68 @@ Deno.serve(async (req) => {
       accessToken = await refreshAccessToken(credentials.refresh_token, supabase, projectId);
     }
 
-    // Fetch Search Analytics data
+    // Fetch Search Analytics data with pagination to get ALL keywords
     const analyticsEndpoint = `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(targetSiteUrl)}/searchAnalytics/query`;
-    
-    const analyticsPayload = {
+
+    const basePayload = {
       startDate: startDate || getDateDaysAgo(30),
       endDate: endDate || getDateDaysAgo(0),
       dimensions: ['query', 'page'],
-      rowLimit: 25000
+      rowLimit: 25000, // GSC API max
+      startRow: 0
     };
 
-    console.log('Fetching search analytics:', analyticsEndpoint);
+    console.log('Fetching ALL keywords from GSC (up to API limit of 25000 rows)');
 
-    const analyticsResponse = await fetch(analyticsEndpoint, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(analyticsPayload),
-    });
+    let allRows: any[] = [];
+    let startRow = 0;
+    const batchSize = 25000;
+    let hasMore = true;
 
-    if (!analyticsResponse.ok) {
-      const errorText = await analyticsResponse.text();
-      console.error('GSC API error:', analyticsResponse.status, errorText);
-      throw new Error(`GSC API error: ${analyticsResponse.status} - ${errorText}`);
+    // Fetch data in batches until we get all rows or hit the limit
+    while (hasMore && allRows.length < 25000) {
+      const analyticsPayload = {
+        ...basePayload,
+        startRow
+      };
+
+      console.log(`Fetching GSC batch starting at row ${startRow}...`);
+
+      const analyticsResponse = await fetch(analyticsEndpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(analyticsPayload),
+      });
+
+      if (!analyticsResponse.ok) {
+        const errorText = await analyticsResponse.text();
+        console.error('GSC API error:', analyticsResponse.status, errorText);
+        throw new Error(`GSC API error: ${analyticsResponse.status} - ${errorText}`);
+      }
+
+      const batchData = await analyticsResponse.json();
+      const batchRows = batchData.rows || [];
+
+      if (batchRows.length === 0) {
+        hasMore = false;
+        break;
+      }
+
+      allRows = allRows.concat(batchRows);
+      console.log(`Fetched ${batchRows.length} rows. Total so far: ${allRows.length}`);
+
+      // If we got less than the batch size, we've reached the end
+      if (batchRows.length < batchSize) {
+        hasMore = false;
+      } else {
+        startRow += batchSize;
+      }
     }
 
-    const analyticsData = await analyticsResponse.json();
-    console.log('GSC data fetched successfully:', analyticsData.rows?.length || 0, 'rows');
+    console.log(`GSC data fetched successfully: ${allRows.length} total keywords`);
 
     // Process and aggregate data
     const processedData = {
@@ -83,13 +116,15 @@ Deno.serve(async (req) => {
       avgPosition: 0,
       topQueries: [] as any[],
       topPages: [] as any[],
-      rows: analyticsData.rows || []
+      rows: allRows,
+      totalKeywords: allRows.length,
+      fetchedAllData: allRows.length < 25000
     };
 
-    if (analyticsData.rows && analyticsData.rows.length > 0) {
+    if (allRows && allRows.length > 0) {
       // Store data in database
       const today = new Date().toISOString().split('T')[0];
-      const gscRecords = analyticsData.rows.map((row: any) => ({
+      const gscRecords = allRows.map((row: any) => ({
         project_id: projectId,
         keyword: row.keys[0],
         page_url: row.keys[1],
@@ -115,22 +150,22 @@ Deno.serve(async (req) => {
       console.log(`Stored ${gscRecords.length} GSC records in database`);
 
       // Calculate totals
-      analyticsData.rows.forEach((row: any) => {
+      allRows.forEach((row: any) => {
         processedData.totalClicks += row.clicks || 0;
         processedData.totalImpressions += row.impressions || 0;
       });
 
       // Calculate averages
-      processedData.avgCTR = processedData.totalImpressions > 0 
-        ? (processedData.totalClicks / processedData.totalImpressions) * 100 
+      processedData.avgCTR = processedData.totalImpressions > 0
+        ? (processedData.totalClicks / processedData.totalImpressions) * 100
         : 0;
-      
-      const positionSum = analyticsData.rows.reduce((sum: number, row: any) => sum + (row.position || 0), 0);
-      processedData.avgPosition = positionSum / analyticsData.rows.length;
+
+      const positionSum = allRows.reduce((sum: number, row: any) => sum + (row.position || 0), 0);
+      processedData.avgPosition = positionSum / allRows.length;
 
       // Get top queries
       const queryMap = new Map();
-      analyticsData.rows.forEach((row: any) => {
+      allRows.forEach((row: any) => {
         const query = row.keys[0];
         if (!queryMap.has(query)) {
           queryMap.set(query, {
@@ -157,7 +192,7 @@ Deno.serve(async (req) => {
 
       // Get top pages
       const pageMap = new Map();
-      analyticsData.rows.forEach((row: any) => {
+      allRows.forEach((row: any) => {
         const page = row.keys[1];
         if (!pageMap.has(page)) {
           pageMap.set(page, {
