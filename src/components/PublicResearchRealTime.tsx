@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useDebounce } from '@/hooks/useDebounce';
 import { supabase } from '@/integrations/supabase/client';
-import { Loader2, Search, Download, Globe, HelpCircle, TrendingUp } from 'lucide-react';
+import { Loader as Loader2, Search, Download, Globe, CircleHelp as HelpCircle, TrendingUp } from 'lucide-react';
 import {
   ResponsiveContainer,
   BarChart,
