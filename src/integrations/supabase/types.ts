@@ -14,6 +14,94 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_recommendations: {
+        Row: {
+          created_at: string
+          description: string
+          effort_score: number | null
+          id: string
+          impact_score: number | null
+          priority: string
+          project_id: string | null
+          recommendation_type: string
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          effort_score?: number | null
+          id?: string
+          impact_score?: number | null
+          priority?: string
+          project_id?: string | null
+          recommendation_type: string
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          effort_score?: number | null
+          id?: string
+          impact_score?: number | null
+          priority?: string
+          project_id?: string | null
+          recommendation_type?: string
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_recommendations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_recommendations: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          priority: string
+          project_id: string | null
+          recommendation_type: string
+          status: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          priority?: string
+          project_id?: string | null
+          recommendation_type: string
+          status?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          priority?: string
+          project_id?: string | null
+          recommendation_type?: string
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_recommendations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       automated_seo_fixes: {
         Row: {
           automated_fix: string
@@ -113,6 +201,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "backlink_analysis_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chatbot_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          messages: Json
+          project_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          messages?: Json
+          project_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          messages?: Json
+          project_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chatbot_conversations_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "seo_projects"
@@ -489,6 +612,53 @@ export type Database = {
           word_count?: number | null
         }
         Relationships: []
+      }
+      crawl_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          max_pages: number
+          pages_crawled: number
+          pages_discovered: number
+          progress: number
+          project_id: string | null
+          started_at: string | null
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          max_pages?: number
+          pages_crawled?: number
+          pages_discovered?: number
+          progress?: number
+          project_id?: string | null
+          started_at?: string | null
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          max_pages?: number
+          pages_crawled?: number
+          pages_discovered?: number
+          progress?: number
+          project_id?: string | null
+          started_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crawl_jobs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       credit_costs: {
         Row: {
@@ -1154,6 +1324,47 @@ export type Database = {
           },
         ]
       }
+      page_seo_issues: {
+        Row: {
+          created_at: string
+          description: string
+          how_to_fix: string | null
+          id: string
+          issue_type: string
+          page_url: string
+          project_id: string | null
+          severity: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          how_to_fix?: string | null
+          id?: string
+          issue_type: string
+          page_url: string
+          project_id?: string | null
+          severity?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          how_to_fix?: string | null
+          id?: string
+          issue_type?: string
+          page_url?: string
+          project_id?: string | null
+          severity?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_seo_issues_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
@@ -1416,6 +1627,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "serp_rankings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      site_audit_scores: {
+        Row: {
+          accessibility_score: number | null
+          best_practices_score: number | null
+          created_at: string
+          id: string
+          overall_score: number | null
+          performance_score: number | null
+          project_id: string | null
+          seo_score: number | null
+        }
+        Insert: {
+          accessibility_score?: number | null
+          best_practices_score?: number | null
+          created_at?: string
+          id?: string
+          overall_score?: number | null
+          performance_score?: number | null
+          project_id?: string | null
+          seo_score?: number | null
+        }
+        Update: {
+          accessibility_score?: number | null
+          best_practices_score?: number | null
+          created_at?: string
+          id?: string
+          overall_score?: number | null
+          performance_score?: number | null
+          project_id?: string | null
+          seo_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_audit_scores_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "seo_projects"
