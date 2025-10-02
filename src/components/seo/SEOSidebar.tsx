@@ -1,4 +1,4 @@
-import { LayoutDashboard, Search, ChartBar as BarChart3, Target, FileText, Link2, Globe, Zap, TrendingUp, Calendar, Settings, Upload, Sparkles, Bell, Brain, Mic, MapPin, DollarSign, FileSearch, ChartBar as BarChart } from "lucide-react";
+import { LayoutDashboard, Search, ChartBar as BarChart3, Target, FileText, Link2, Globe, Zap, TrendingUp, Calendar, Settings, Upload, Sparkles, Bell, Brain, Mic, MapPin, DollarSign, FileSearch, ChartBar as BarChart, HelpCircle } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -65,6 +65,7 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
     { id: "query-wheel", title: "Query Wheel", icon: Target },
     { id: "intent-matcher", title: "Intent Matcher", icon: Brain },
     { id: "aio-optimizer", title: "AI Overview", icon: Sparkles },
+    { id: "answer-the-public", title: "Answer The Public", icon: HelpCircle },
     { id: "multi-location", title: "Multi-Location", icon: MapPin },
     { id: "revenue", title: "Revenue Attribution", icon: DollarSign },
   ];
