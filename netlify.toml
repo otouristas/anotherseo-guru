@@ -1,0 +1,101 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.woff2"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# SPA fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin", "editor"], Country = ["US", "CA"]}
+
+# API redirects for Supabase
+[[redirects]]
+  from = "/api/*"
+  to = "https://your-project.supabase.co/:splat"
+  status = 200
+  force = true
+
+# Environment variables for production
+[context.production.environment]
+  VITE_SUPABASE_URL = "https://your-project.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "your-anon-key"
+  VITE_DATAFORSEO_LOGIN = "your-login"
+  VITE_DATAFORSEO_PASSWORD = "your-password"
+  VITE_STRIPE_PUBLISHABLE_KEY = "your-stripe-key"
+  VITE_GA_MEASUREMENT_ID = "your-ga-id"
+  VITE_SENTRY_DSN = "your-sentry-dsn"
+
+# Deploy preview settings
+[context.deploy-preview.environment]
+  VITE_SUPABASE_URL = "https://your-project.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "your-anon-key"
+
+# Branch deploy settings
+[context.branch-deploy.environment]
+  VITE_SUPABASE_URL = "https://your-project.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "your-anon-key"
+
+# Functions (if using Netlify Functions)
+[functions]
+  directory = "netlify/functions"
+
+# Edge functions
+[[edge_functions]]
+  function = "hello"
+  path = "/api/hello"
+
+# Form handling
+[[forms]]
+  name = "contact"
+
+# Build plugins
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+  [plugins.inputs.thresholds]
+    performance = 0.8
+    accessibility = 0.9
+    best-practices = 0.8
+    seo = 0.9
+
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
+  [plugins.inputs]
+    buildDir = "dist"
+    exclude = ["/admin/*", "/api/*"]

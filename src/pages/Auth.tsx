@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { signInSchema, signUpSchema } from "@/lib/validation";
+import { Footer } from "@/components/Footer";
 
 export default function Auth() {
   return (
@@ -270,6 +271,7 @@ function AuthContent() {
           </TabsContent>
         </Tabs>
       </div>
+      <Footer />
     </div>
   );
 }

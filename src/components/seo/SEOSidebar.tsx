@@ -1,4 +1,4 @@
-import { LayoutDashboard, Search, ChartBar as BarChart3, Target, FileText, Link2, Globe, Zap, TrendingUp, Calendar, Settings, Upload, Sparkles, Bell, Brain, Mic, MapPin, DollarSign, FileSearch, ChartBar as BarChart, CircleHelp as HelpCircle } from "lucide-react";
+import { LayoutDashboard, Search, ChartBar as BarChart3, Target, FileText, Link2, Globe, Zap, TrendingUp, Calendar, Settings, Upload, Sparkles, Bell, Brain, Mic, MapPin, DollarSign, FileSearch, ChartBar as BarChart, CircleHelp as HelpCircle, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -22,11 +22,16 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
 
   const mainItems = [
     { id: "overview", title: "Overview", icon: LayoutDashboard },
-    { id: "seo-report", title: "SEO Report", icon: BarChart },
+    { id: "analytics", title: "Analytics", icon: BarChart },
+    { id: "seo-report", title: "SEO Report", icon: FileSearch },
   ];
 
   const aiItems = [
     { id: "ai-recommendations", title: "AI Insights", icon: Sparkles },
+    { id: "content-strategy", title: "Content Strategy", icon: Brain },
+    { id: "predictive-analytics", title: "Predictions", icon: TrendingUp },
+    { id: "serp-optimizer", title: "SERP Optimizer", icon: Target },
+    { id: "performance-dashboard", title: "Performance", icon: BarChart3 },
     { id: "monitoring", title: "SERP Monitoring", icon: Bell },
     { id: "content-gaps", title: "Content Gaps", icon: Target },
     { id: "predictions", title: "Ranking Predictor", icon: Brain },
@@ -68,6 +73,7 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
     { id: "public-research", title: "Public Research", icon: Globe },
     { id: "multi-location", title: "Multi-Location", icon: MapPin },
     { id: "revenue", title: "Revenue Attribution", icon: DollarSign },
+    { id: "team-collaboration", title: "Team Collaboration", icon: Users },
   ];
 
   const isActive = (id: string) => activeTab === id;

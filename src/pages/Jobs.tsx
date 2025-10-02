@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { RefreshCw, Trash2, Download, AlertCircle, CheckCircle2, Clock, Loader2, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { Footer } from "@/components/Footer";
 import {
   Table,
   TableBody,
@@ -307,6 +308,7 @@ function JobsContent() {
           )}
         </CardContent>
       </Card>
+      <Footer />
     </div>
   );
 }

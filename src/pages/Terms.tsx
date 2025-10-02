@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Card } from "@/components/ui/card";
+import { Footer } from "@/components/Footer";
 
 const Terms = () => {
   return (
@@ -156,6 +157,7 @@ const Terms = () => {
         </div>
       </div>
       </div>
+      <Footer />
     </>
   );
 };

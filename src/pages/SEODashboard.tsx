@@ -40,6 +40,12 @@ import { IntentMatcher } from "@/components/enterprise/IntentMatcher";
 import { AIOOptimizer } from "@/components/enterprise/AIOOptimizer";
 import { SeoReport } from "@/components/seo/SeoReport";
 import { PublicResearchRealTime } from "@/components/PublicResearchRealTime";
+import { AdvancedAnalytics } from "@/components/analytics/AdvancedAnalytics";
+import { AIContentStrategyGenerator } from "@/components/ai/AIContentStrategyGenerator";
+import { PredictiveSEOAnalytics } from "@/components/ai/PredictiveSEOAnalytics";
+import { AISERPOptimizer } from "@/components/ai/AISERPOptimizer";
+import { AdvancedPerformanceDashboard } from "@/components/ai/AdvancedPerformanceDashboard";
+import { TeamCollaborationSuite } from "@/components/ai/TeamCollaborationSuite";
 
 export default function SEODashboard() {
   return (
@@ -206,6 +212,18 @@ function SEODashboardContent() {
         return <SeoReport projectId={selectedProject} />;
       case "public-research":
         return <PublicResearchRealTime />;
+      case "analytics":
+        return <AdvancedAnalytics projectId={selectedProject} />;
+      case "content-strategy":
+        return <AIContentStrategyGenerator projectId={selectedProject} />;
+      case "predictive-analytics":
+        return <PredictiveSEOAnalytics projectId={selectedProject} />;
+      case "serp-optimizer":
+        return <AISERPOptimizer projectId={selectedProject} />;
+      case "performance-dashboard":
+        return <AdvancedPerformanceDashboard projectId={selectedProject} />;
+      case "team-collaboration":
+        return <TeamCollaborationSuite projectId={selectedProject} />;
       default:
         return <ProjectOverview projectId={selectedProject} />;
     }

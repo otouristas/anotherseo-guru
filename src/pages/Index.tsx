@@ -8,7 +8,6 @@ import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { PricingSection } from "@/components/PricingSection";
 import { FAQSection } from "@/components/landing/FAQSection";
 import { CTASection } from "@/components/landing/CTASection";
-import { StickyCTA } from "@/components/landing/StickyCTA";
 import { Footer } from "@/components/Footer";
 
 export default function Index() {
@@ -35,7 +34,6 @@ export default function Index() {
         <FAQSection />
         <CTASection />
         <Footer />
-        <StickyCTA />
       </div>
     </>
   );

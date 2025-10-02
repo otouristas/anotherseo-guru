@@ -1,0 +1,30 @@
+# Netlify redirects for SPA
+/*    /index.html   200
+
+# API redirects for Supabase Edge Functions
+/api/seo-intelligence-analyzer/*    https://your-project.supabase.co/functions/v1/seo-intelligence-analyzer/:splat    200
+/api/comprehensive-audit/*    https://your-project.supabase.co/functions/v1/comprehensive-audit/:splat    200
+/api/fetch-gsc-data/*    https://your-project.supabase.co/functions/v1/fetch-gsc-data/:splat    200
+/api/fetch-ga4-data/*    https://your-project.supabase.co/functions/v1/fetch-ga4-data/:splat    200
+/api/dataforseo-research/*    https://your-project.supabase.co/functions/v1/dataforseo-research/:splat    200
+/api/google-autocomplete/*    https://your-project.supabase.co/functions/v1/google-autocomplete/:splat    200
+
+# Security headers
+/*
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Cache static assets
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable

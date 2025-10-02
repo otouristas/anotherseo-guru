@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Footer } from "@/components/Footer";
 
 export default function Checkout() {
   return (
@@ -194,6 +195,7 @@ function CheckoutContent() {
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     </>
   );
