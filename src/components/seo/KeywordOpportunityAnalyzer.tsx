@@ -67,14 +67,14 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
     setAnalyzing(true);
     try {
       const { data, error } = await supabase.functions.invoke('keyword-opportunity-analyzer', {
-        body: { project_id: projectId }
+        body: { projectId }
       });
 
       if (error) throw error;
 
       toast({
         title: "Analysis Complete",
-        description: `Analyzed ${data.total_keywords} keywords across ${data.total_pages} pages`
+        description: `Analyzed ${data.summary?.totalKeywords || 0} keywords across ${data.summary?.totalPages || 0} pages`
       });
 
       await loadOpportunities();
@@ -82,7 +82,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
       console.error('Error running analysis:', error);
       toast({
         title: "Analysis Failed",
-        description: error.message,
+        description: error.message || "Failed to analyze keywords. Please ensure GSC data is available.",
         variant: "destructive"
       });
     } finally {
@@ -351,21 +351,35 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
                       </tbody>
                     </table>
                   </div>
-                  {group.keywords[0]?.ai_recommendations && (
-                    <div className="mt-4 p-3 bg-primary/5 rounded-lg">
-                      <div className="flex items-start gap-2">
-                        <Sparkles className="w-4 h-4 text-primary mt-1 shrink-0" />
-                        <div className="flex-1">
-                          <div className="font-medium text-sm mb-1">AI Recommendations</div>
-                          <ul className="text-sm text-muted-foreground space-y-1">
-                            {JSON.parse(group.keywords[0].ai_recommendations).recommendations?.map((rec: string, i: number) => (
-                              <li key={i}>• {rec}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  {group.keywords[0]?.ai_recommendations && (() => {
+                    try {
+                      const recs = typeof group.keywords[0].ai_recommendations === 'string'
+                        ? JSON.parse(group.keywords[0].ai_recommendations)
+                        : group.keywords[0].ai_recommendations;
+                      const recommendations = recs?.recommendations || Object.values(recs || {}).filter((v): v is string => typeof v === 'string');
+
+                      if (recommendations.length > 0) {
+                        return (
+                          <div className="mt-4 p-3 bg-primary/5 rounded-lg">
+                            <div className="flex items-start gap-2">
+                              <Sparkles className="w-4 h-4 text-primary mt-1 shrink-0" />
+                              <div className="flex-1">
+                                <div className="font-medium text-sm mb-1">AI Recommendations</div>
+                                <ul className="text-sm text-muted-foreground space-y-1">
+                                  {recommendations.map((rec: string, i: number) => (
+                                    <li key={i}>• {rec}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+                    } catch (e) {
+                      console.error('Failed to parse AI recommendations:', e);
+                    }
+                    return null;
+                  })()}
                 </CardContent>
               </Card>
             ))

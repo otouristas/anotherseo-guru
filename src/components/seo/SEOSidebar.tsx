@@ -1,4 +1,4 @@
-import { LayoutDashboard, Search, ChartBar as BarChart3, Target, FileText, Link2, Globe, Zap, TrendingUp, Calendar, Settings, Upload, Sparkles, Bell, Brain, Mic, MapPin, DollarSign, FileSearch } from "lucide-react";
+import { LayoutDashboard, Search, ChartBar as BarChart3, Target, FileText, Link2, Globe, Zap, TrendingUp, Calendar, Settings, Upload, Sparkles, Bell, Brain, Mic, MapPin, DollarSign, FileSearch, BarChart } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +22,7 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
 
   const mainItems = [
     { id: "overview", title: "Overview", icon: LayoutDashboard },
+    { id: "seo-report", title: "SEO Report", icon: BarChart },
   ];
 
   const aiItems = [

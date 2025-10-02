@@ -38,6 +38,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { QueryWheel } from "@/components/enterprise/QueryWheel";
 import { IntentMatcher } from "@/components/enterprise/IntentMatcher";
 import { AIOOptimizer } from "@/components/enterprise/AIOOptimizer";
+import { SeoReport } from "@/components/seo/SeoReport";
 
 export default function SEODashboard() {
   return (
@@ -200,6 +201,8 @@ function SEODashboardContent() {
         return <IntentMatcher />;
       case "aio-optimizer":
         return <AIOOptimizer />;
+      case "seo-report":
+        return <SeoReport projectId={selectedProject} />;
       default:
         return <ProjectOverview projectId={selectedProject} />;
     }
