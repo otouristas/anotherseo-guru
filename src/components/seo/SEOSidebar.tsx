@@ -61,6 +61,9 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
   ];
 
   const enterpriseItems = [
+    { id: "query-wheel", title: "Query Wheel", icon: Target },
+    { id: "intent-matcher", title: "Intent Matcher", icon: Brain },
+    { id: "aio-optimizer", title: "AI Overview", icon: Sparkles },
     { id: "multi-location", title: "Multi-Location", icon: MapPin },
     { id: "revenue", title: "Revenue Attribution", icon: DollarSign },
   ];

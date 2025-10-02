@@ -35,6 +35,9 @@ import { KeywordOpportunityAnalyzer } from "@/components/seo/KeywordOpportunityA
 import { SiteAuditDashboard } from "@/components/seo/SiteAuditDashboard";
 import { AIRecommendations } from "@/components/seo/AIRecommendations";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { QueryWheel } from "@/components/enterprise/QueryWheel";
+import { IntentMatcher } from "@/components/enterprise/IntentMatcher";
+import { AIOOptimizer } from "@/components/enterprise/AIOOptimizer";
 
 export default function SEODashboard() {
   return (
@@ -191,6 +194,12 @@ function SEODashboardContent() {
         return <MultiLocationTracker projectId={selectedProject} />;
       case "revenue":
         return <RevenueAttribution projectId={selectedProject} />;
+      case "query-wheel":
+        return <QueryWheel />;
+      case "intent-matcher":
+        return <IntentMatcher />;
+      case "aio-optimizer":
+        return <AIOOptimizer />;
       default:
         return <ProjectOverview projectId={selectedProject} />;
     }
