@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Sparkles, Brain, TrendingUp, AlertCircle, Loader2, Download } from "lucide-react";
+import { Sparkles, Brain, TrendingUp, CircleAlert as AlertCircle, Loader as Loader2, Download } from "lucide-react";
 import { GSCDataAnalyzer } from "./GSCDataAnalyzer";
 import { AlgorithmDropDetector } from "./AlgorithmDropDetector";
 import { KeywordOpportunities } from "./KeywordOpportunities";

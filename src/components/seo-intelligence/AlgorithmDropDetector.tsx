@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle, TrendingDown, Calendar, Target, CheckCircle2 } from "lucide-react";
+import { TriangleAlert as AlertTriangle, TrendingDown, Calendar, Target, CircleCheck as CheckCircle2 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface AlgorithmDrop {

@@ -3,17 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Sparkles,
-  ThumbsUp,
-  ThumbsDown,
-  Code,
-  TrendingUp,
-  Clock,
-  Target,
-  CheckCircle2,
-  X,
-} from "lucide-react";
+import { Sparkles, ThumbsUp, ThumbsDown, Code, TrendingUp, Clock, Target, CircleCheck as CheckCircle2, X } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface Recommendation {
