@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -16,12 +17,35 @@ import {
   Eye,
   Calendar,
   Sparkles,
-  AlertCircle
+  AlertCircle,
+  Activity,
+  Zap,
+  ArrowUp,
+  ArrowDown,
+  PieChart as PieChartIcon,
+  LineChart as LineChartIcon
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { 
+  LineChart, 
+  Line, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer, 
+  Legend, 
+  AreaChart, 
+  Area, 
+  BarChart, 
+  Bar, 
+  PieChart, 
+  Pie, 
+  Cell,
+  ComposedChart 
+} from 'recharts';
 
 interface ProjectOverviewProps {
   projectId: string;
@@ -246,129 +270,429 @@ export const ProjectOverview = ({ projectId }: ProjectOverviewProps) => {
   ];
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      {/* Project Header with Period Selector */}
-      <Card className="p-4 sm:p-6 bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-          <div className="flex-1">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-2">{project?.name}</h2>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm sm:text-base text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Globe className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="break-all">{project?.domain}</span>
+    <div className="space-y-6">
+      {/* Enhanced Project Header */}
+      <Card className="border-0 shadow-xl bg-gradient-to-br from-primary/10 via-background to-secondary/10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl" />
+        <CardContent className="relative p-6 sm:p-8">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div className="flex-1">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 rounded-xl bg-primary/10">
+                  <Globe className="w-8 h-8 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                    {project?.name}
+                  </h2>
+                  <div className="flex flex-wrap items-center gap-3 mt-2">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Globe className="w-4 h-4" />
+                      <span className="font-medium">{project?.domain}</span>
+                    </div>
+                    <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">
+                      {project?.target_location}
+                    </Badge>
+                  </div>
+                </div>
               </div>
-              <Badge variant="outline" className="text-xs sm:text-sm">{project?.target_location}</Badge>
+            </div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-background/50">
+                  <Calendar className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <Select value={period} onValueChange={(v: any) => setPeriod(v)}>
+                  <SelectTrigger className="w-36 bg-background/50 border-border/50">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="7d">Last 7 days</SelectItem>
+                    <SelectItem value="30d">Last 30 days</SelectItem>
+                    <SelectItem value="90d">Last 90 days</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="text-center lg:text-right">
+                <div className="text-sm text-muted-foreground mb-2">SEO Health Score</div>
+                <div className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+                  {Math.min(100, Math.round((stats.clicks / 100 + stats.ctr) * 10))}
+                </div>
+                <Progress 
+                  value={Math.min(100, Math.round((stats.clicks / 100 + stats.ctr) * 10))} 
+                  className="w-full lg:w-40 h-3 bg-background/50" 
+                />
+              </div>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-muted-foreground" />
-              <Select value={period} onValueChange={(v: any) => setPeriod(v)}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="7d">Last 7 days</SelectItem>
-                  <SelectItem value="30d">Last 30 days</SelectItem>
-                  <SelectItem value="90d">Last 90 days</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="text-left lg:text-right">
-              <div className="text-xs sm:text-sm text-muted-foreground mb-1">SEO Health Score</div>
-              <div className="text-3xl sm:text-4xl font-bold text-primary">
-                {Math.min(100, Math.round((stats.clicks / 100 + stats.ctr) * 10))}
-              </div>
-              <Progress value={Math.min(100, Math.round((stats.clicks / 100 + stats.ctr) * 10))} className="w-full lg:w-32 mt-2" />
-            </div>
-          </div>
-        </div>
+        </CardContent>
       </Card>
 
-      {/* Primary Metrics Grid */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+      {/* Enhanced Primary Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
         {metricCards.map((metric, idx) => {
           const Icon = metric.icon;
           const isPositive = metric.change > 0;
+          const isPositionMetric = metric.title === "Avg Position";
+          
           return (
-            <Card key={idx} className="p-3 sm:p-4 md:p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-start justify-between mb-2 sm:mb-4">
-                <div className={`p-2 sm:p-3 rounded-lg ${metric.bgColor}`}>
-                  <Icon className={`w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 ${metric.color}`} />
+            <Card key={idx} className="relative overflow-hidden group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background via-background to-primary/5">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500" />
+              <CardContent className="relative p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`p-3 rounded-xl ${metric.bgColor}`}>
+                      <Icon className={`w-6 h-6 ${metric.color}`} />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground">{metric.title}</h3>
+                      <p className="text-xs text-muted-foreground">Current period</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {isPositive ? (
+                      <ArrowUp className="w-4 h-4 text-green-500" />
+                    ) : (
+                      <ArrowDown className="w-4 h-4 text-red-500" />
+                    )}
+                    <span className={`text-xs font-medium ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                      {formatChange(metric.change)}
+                    </span>
+                  </div>
                 </div>
-                <Badge variant={isPositive ? "default" : "secondary"} className="gap-1 text-xs">
-                  {isPositive ? <TrendingUp className="w-2 h-2 sm:w-3 sm:h-3" /> : <TrendingDown className="w-2 h-2 sm:w-3 sm:h-3" />}
-                  {formatChange(metric.change)}
-                </Badge>
-              </div>
-              <div className="text-xl sm:text-2xl md:text-3xl font-bold mb-1">
-                {typeof metric.value === 'number' ? metric.value.toLocaleString() : metric.value}
-              </div>
-              <div className="text-xs sm:text-sm text-muted-foreground">{metric.title}</div>
+                
+                <div className="flex items-baseline gap-2 mb-4">
+                  <div className={`text-3xl font-bold ${isPositionMetric ? 'text-orange-600' : 'bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent'}`}>
+                    {typeof metric.value === 'number' ? metric.value.toLocaleString() : metric.value}
+                  </div>
+                  {isPositionMetric && (
+                    <div className="text-xs text-muted-foreground">position</div>
+                  )}
+                </div>
+
+                {/* Mini Chart Placeholder */}
+                <div className="h-12 flex items-center justify-center">
+                  <div className="w-full h-8 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg flex items-end justify-between px-2">
+                    {[...Array(7)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="bg-primary/60 rounded-t-sm transition-all duration-300 hover:bg-primary"
+                        style={{
+                          height: `${Math.random() * 60 + 20}%`,
+                          width: '8px'
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
             </Card>
           );
         })}
       </div>
 
-      {/* Performance Charts */}
-      <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Clicks & Impressions Trend</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="clicks" stroke="hsl(var(--primary))" strokeWidth={2} name="Clicks" />
-                  <Line type="monotone" dataKey="impressions" stroke="hsl(var(--secondary))" strokeWidth={2} name="Impressions" />
-                </LineChart>
-              </ResponsiveContainer>
+      {/* Enhanced Performance Analytics */}
+      <Card className="border-0 shadow-xl bg-gradient-to-br from-background via-background to-primary/5">
+        <CardHeader className="pb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <BarChart3 className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                  Performance Analytics
+                </CardTitle>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Comprehensive insights into your SEO performance trends
+                </p>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+            <Badge variant="secondary" className="gap-1">
+              <Activity className="w-3 h-3 text-green-500" />
+              Live Data
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="performance" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="performance" className="flex items-center gap-2">
+                <LineChartIcon className="w-4 h-4" />
+                Performance
+              </TabsTrigger>
+              <TabsTrigger value="updates" className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" />
+                Updates
+              </TabsTrigger>
+              <TabsTrigger value="insights" className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4" />
+                Insights
+              </TabsTrigger>
+            </TabsList>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertCircle className="w-5 h-5" />
-              Google Core Updates
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {googleCoreUpdates.map((update, idx) => (
-                <div key={idx} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div>
-                    <div className="font-medium text-sm">{update.name}</div>
-                    <div className="text-xs text-muted-foreground">{update.date}</div>
+            <TabsContent value="performance" className="space-y-6">
+              <div className="grid lg:grid-cols-2 gap-6">
+                {/* Clicks & Impressions Chart */}
+                <Card className="border-0 bg-gradient-to-br from-blue-500/5 to-blue-500/10">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5 text-blue-500" />
+                      Clicks & Impressions Trend
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <ComposedChart data={chartData}>
+                          <defs>
+                            <linearGradient id="colorClicks" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                            </linearGradient>
+                            <linearGradient id="colorImpressions" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                              <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                          <XAxis dataKey="date" />
+                          <YAxis yAxisId="left" />
+                          <YAxis yAxisId="right" orientation="right" />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: 'hsl(var(--card))',
+                              border: '1px solid hsl(var(--border))',
+                              borderRadius: '8px',
+                              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                            }}
+                          />
+                          <Legend />
+                          <Area
+                            yAxisId="left"
+                            type="monotone"
+                            dataKey="clicks"
+                            stroke="#3b82f6"
+                            fill="url(#colorClicks)"
+                            strokeWidth={2}
+                            name="Clicks"
+                          />
+                          <Line
+                            yAxisId="right"
+                            type="monotone"
+                            dataKey="impressions"
+                            stroke="#8b5cf6"
+                            strokeWidth={3}
+                            name="Impressions"
+                          />
+                        </ComposedChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Position & CTR Chart */}
+                <Card className="border-0 bg-gradient-to-br from-green-500/5 to-green-500/10">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Target className="w-5 h-5 text-green-500" />
+                      Position & CTR Analysis
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={chartData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
+                          <XAxis dataKey="date" />
+                          <YAxis yAxisId="left" />
+                          <YAxis yAxisId="right" orientation="right" />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: 'hsl(var(--card))',
+                              border: '1px solid hsl(var(--border))',
+                              borderRadius: '8px'
+                            }}
+                          />
+                          <Legend />
+                          <Line
+                            yAxisId="left"
+                            type="monotone"
+                            dataKey="position"
+                            stroke="#f59e0b"
+                            strokeWidth={3}
+                            name="Avg Position"
+                          />
+                          <Line
+                            yAxisId="right"
+                            type="monotone"
+                            dataKey="ctr"
+                            stroke="#10b981"
+                            strokeWidth={3}
+                            name="CTR %"
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="updates" className="space-y-6">
+              <Card className="border-0 bg-gradient-to-br from-orange-500/5 to-orange-500/10">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5 text-orange-500" />
+                    Google Core Updates Timeline
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {googleCoreUpdates.map((update, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-4 rounded-lg bg-background/50 border border-border/50 hover:bg-background/80 transition-colors">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-3 h-3 rounded-full ${update.impact === 'high' ? 'bg-red-500' : 'bg-yellow-500'}`} />
+                          <div>
+                            <div className="font-semibold text-sm">{update.name}</div>
+                            <div className="text-xs text-muted-foreground">{update.date}</div>
+                          </div>
+                        </div>
+                        <Badge 
+                          variant={update.impact === 'high' ? 'destructive' : 'secondary'} 
+                          className="text-xs"
+                        >
+                          {update.impact.toUpperCase()} IMPACT
+                        </Badge>
+                      </div>
+                    ))}
                   </div>
-                  <Badge variant={update.impact === 'high' ? 'destructive' : 'secondary'} className="text-xs">
-                    {update.impact.toUpperCase()}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-      {/* Secondary Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <TabsContent value="insights" className="space-y-6">
+              <div className="grid lg:grid-cols-2 gap-6">
+                {/* Traffic Sources */}
+                <Card className="border-0 bg-gradient-to-br from-purple-500/5 to-purple-500/10">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <PieChartIcon className="w-5 h-5 text-purple-500" />
+                      Traffic Sources
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={[
+                              { name: 'Organic', value: 65, color: '#3b82f6' },
+                              { name: 'Direct', value: 20, color: '#10b981' },
+                              { name: 'Social', value: 10, color: '#f59e0b' },
+                              { name: 'Referral', value: 5, color: '#ef4444' },
+                            ]}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={40}
+                            outerRadius={80}
+                            dataKey="value"
+                          >
+                            {[
+                              { name: 'Organic', value: 65, color: '#3b82f6' },
+                              { name: 'Direct', value: 20, color: '#10b981' },
+                              { name: 'Social', value: 10, color: '#f59e0b' },
+                              { name: 'Referral', value: 5, color: '#ef4444' },
+                            ].map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: 'hsl(var(--card))',
+                              border: '1px solid hsl(var(--border))',
+                              borderRadius: '8px'
+                            }}
+                          />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Performance Summary */}
+                <Card className="border-0 bg-gradient-to-br from-cyan-500/5 to-cyan-500/10">
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Zap className="w-5 h-5 text-cyan-500" />
+                      Performance Summary
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-background/50">
+                        <div className="flex items-center gap-3">
+                          <TrendingUp className="w-5 h-5 text-green-500" />
+                          <span className="font-medium">Growth Rate</span>
+                        </div>
+                        <Badge variant="default" className="bg-green-100 text-green-700">+24.5%</Badge>
+                      </div>
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-background/50">
+                        <div className="flex items-center gap-3">
+                          <Target className="w-5 h-5 text-blue-500" />
+                          <span className="font-medium">Top Keywords</span>
+                        </div>
+                        <Badge variant="secondary">156</Badge>
+                      </div>
+                      <div className="flex items-center justify-between p-3 rounded-lg bg-background/50">
+                        <div className="flex items-center gap-3">
+                          <Search className="w-5 h-5 text-purple-500" />
+                          <span className="font-medium">Search Visibility</span>
+                        </div>
+                        <Badge variant="default" className="bg-purple-100 text-purple-700">High</Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      {/* Enhanced Secondary Metrics */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         {secondaryMetrics.map((metric, idx) => {
           const Icon = metric.icon;
           return (
-            <Card key={idx} className="p-3 sm:p-4 md:p-6">
-              <div className={`p-2 sm:p-3 rounded-lg ${metric.bgColor} inline-flex mb-3`}>
-                <Icon className={`w-4 h-4 sm:w-5 sm:h-5 ${metric.color}`} />
-              </div>
-              <div className="text-2xl sm:text-3xl font-bold mb-1">{metric.value.toLocaleString()}</div>
-              <div className="text-xs sm:text-sm text-muted-foreground">{metric.title}</div>
+            <Card key={idx} className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-background via-background to-secondary/5">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-secondary/10 to-transparent rounded-full blur-xl group-hover:scale-150 transition-transform duration-500" />
+              <CardContent className="relative p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`p-3 rounded-xl ${metric.bgColor}`}>
+                    <Icon className={`w-6 h-6 ${metric.color}`} />
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Activity className="w-3 h-3 text-green-500" />
+                    <span className="text-xs font-medium text-green-600">Live</span>
+                  </div>
+                </div>
+                <div className="text-2xl font-bold mb-2 bg-gradient-to-r from-foreground to-secondary bg-clip-text text-transparent">
+                  {metric.value.toLocaleString()}
+                </div>
+                <div className="text-sm text-muted-foreground">{metric.title}</div>
+                
+                {/* Mini Progress Bar */}
+                <div className="mt-4">
+                  <div className="w-full bg-secondary/10 rounded-full h-2">
+                    <div 
+                      className="bg-gradient-to-r from-secondary to-primary h-2 rounded-full transition-all duration-1000"
+                      style={{ width: `${Math.min(100, (metric.value / 1000) * 100)}%` }}
+                    />
+                  </div>
+                </div>
+              </CardContent>
             </Card>
           );
         })}

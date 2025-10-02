@@ -235,39 +235,64 @@ function SEODashboardContent() {
         {selectedProject && <SEOSidebar onTabChange={setActiveTab} activeTab={activeTab} />}
         
         <div className="flex-1 flex flex-col">
-          {/* Header */}
-          <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-card/95 backdrop-blur shadow-sm px-4 md:px-6">
+          {/* Enhanced Header */}
+          <header className="sticky top-0 z-10 flex h-20 items-center gap-4 border-b bg-gradient-to-r from-background via-background to-primary/5 backdrop-blur shadow-lg px-4 md:px-6">
             {selectedProject && <SidebarTrigger className="mr-2" />}
             <div className="flex-1 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
-              <div>
-                <h1 className="text-lg sm:text-2xl font-bold">Professional SEO Suite</h1>
-                <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">Enterprise-grade SEO platform</p>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                    <Zap className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                      SEO Command Center
+                    </h1>
+                    <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
+                      Enterprise-grade SEO intelligence platform
+                    </p>
+                  </div>
+                </div>
               </div>
               {selectedProject && (
-                <Button onClick={handleNewProject} size="sm" className="gap-2 w-full sm:w-auto">
-                  <Plus className="w-4 h-4" />
-                  <span className="hidden sm:inline">New Project</span>
-                  <span className="sm:hidden">New</span>
-                </Button>
+                <div className="flex items-center gap-3">
+                  <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
+                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    <span className="text-xs font-medium text-green-700 dark:text-green-400">Live Monitoring</span>
+                  </div>
+                  <Button onClick={handleNewProject} size="sm" className="gap-2 w-full sm:w-auto bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90">
+                    <Plus className="w-4 h-4" />
+                    <span className="hidden sm:inline">New Project</span>
+                    <span className="sm:hidden">New</span>
+                  </Button>
+                </div>
               )}
             </div>
           </header>
 
-          {/* Main Content */}
-          <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-auto pt-6 sm:pt-8">
-            <div className="max-w-7xl mx-auto">
-              <Breadcrumb />
-              {selectedProject && (
-                <div className="mb-4 md:mb-6">
-                  <ProjectSelector
-                    projects={projects}
-                    selectedProject={selectedProject}
-                    onSelectProject={setSelectedProject}
-                    onDeleteProject={handleDeleteProject}
-                  />
+          {/* Enhanced Main Content */}
+          <main className="flex-1 overflow-auto bg-gradient-to-br from-background via-background to-primary/5">
+            <div className="p-4 sm:p-6 lg:p-8">
+              <div className="max-w-7xl mx-auto space-y-6">
+                <Breadcrumb />
+                {selectedProject && (
+                  <div className="mb-6 lg:mb-8">
+                    <ProjectSelector
+                      projects={projects}
+                      selectedProject={selectedProject}
+                      onSelectProject={setSelectedProject}
+                      onDeleteProject={handleDeleteProject}
+                    />
+                  </div>
+                )}
+                <div className="relative">
+                  {/* Background Pattern */}
+                  <div className="absolute inset-0 bg-grid-white/5 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" style={{ backgroundSize: '20px 20px' }} />
+                  <div className="relative">
+                    {renderContent()}
+                  </div>
                 </div>
-              )}
-              {renderContent()}
+              </div>
             </div>
           </main>
 

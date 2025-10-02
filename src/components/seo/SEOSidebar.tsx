@@ -79,17 +79,36 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
   const isActive = (id: string) => activeTab === id;
 
   const renderMenuItems = (items: typeof mainItems) => (
-    <SidebarMenu>
+    <SidebarMenu className="space-y-1">
       {items.map((item) => {
         const Icon = item.icon;
         return (
           <SidebarMenuItem key={item.id}>
             <SidebarMenuButton
               onClick={() => onTabChange(item.id)}
-              className={isActive(item.id) ? "bg-primary/15 text-primary font-semibold border-l-4 border-primary" : "hover:bg-muted/60 transition-all"}
+              className={`group relative flex items-center gap-3 rounded-lg transition-all duration-200 ${
+                isActive(item.id) 
+                  ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg scale-105' 
+                  : 'hover:bg-primary/10 hover:text-primary hover:scale-105'
+              }`}
             >
-              <Icon className="w-5 h-5" />
-              {!collapsed && <span className="text-sm">{item.title}</span>}
+              <div className={`p-1.5 rounded-md transition-all ${
+                isActive(item.id) 
+                  ? 'bg-white/20 shadow-sm' 
+                  : 'bg-primary/10 group-hover:bg-primary/20'
+              }`}>
+                <Icon className="w-4 h-4" />
+              </div>
+              {!collapsed && (
+                <span className={`text-sm font-medium transition-all ${
+                  isActive(item.id) ? 'text-white' : 'group-hover:text-primary'
+                }`}>
+                  {item.title}
+                </span>
+              )}
+              {isActive(item.id) && (
+                <div className="absolute right-2 w-2 h-2 bg-white rounded-full animate-pulse"></div>
+              )}
             </SidebarMenuButton>
           </SidebarMenuItem>
         );
@@ -98,66 +117,83 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
   );
 
   return (
-    <Sidebar className={collapsed ? "w-16" : "w-64 border-r shadow-sm"} collapsible="icon">
-      <SidebarContent className="mt-20 pt-4">
+    <Sidebar className={`${collapsed ? "w-16" : "w-64"} border-r shadow-lg bg-gradient-to-b from-background to-background/95 backdrop-blur`} collapsible="icon">
+      <SidebarContent className="mt-20 pt-4 space-y-6">
         <SidebarGroup>
-          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Main</SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarGroupLabel className="px-4 text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg mx-2 py-2 text-primary border border-primary/20">
+            🎯 Core Dashboard
+          </SidebarGroupLabel>
+          <SidebarGroupContent className="mt-3">
             {renderMenuItems(mainItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
-            <Sparkles className="w-3 h-3" />
+          <SidebarGroupLabel className="px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg mx-2 py-2 text-purple-600 border border-purple-200/20">
+            <Sparkles className="w-4 h-4" />
             AI Intelligence
           </SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarGroupContent className="mt-3">
             {renderMenuItems(aiItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Rankings</SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarGroupLabel className="px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-lg mx-2 py-2 text-green-600 border border-green-200/20">
+            <TrendingUp className="w-4 h-4" />
+            Rankings & Keywords
+          </SidebarGroupLabel>
+          <SidebarGroupContent className="mt-3">
             {renderMenuItems(rankingItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Competition</SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarGroupLabel className="px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-2 bg-gradient-to-r from-orange-500/10 to-red-500/10 rounded-lg mx-2 py-2 text-orange-600 border border-orange-200/20">
+            <Target className="w-4 h-4" />
+            Competition
+          </SidebarGroupLabel>
+          <SidebarGroupContent className="mt-3">
             {renderMenuItems(competitionItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Content</SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarGroupLabel className="px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-2 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 rounded-lg mx-2 py-2 text-blue-600 border border-blue-200/20">
+            <FileText className="w-4 h-4" />
+            Content Strategy
+          </SidebarGroupLabel>
+          <SidebarGroupContent className="mt-3">
             {renderMenuItems(contentItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Technical</SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarGroupLabel className="px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-2 bg-gradient-to-r from-gray-500/10 to-slate-500/10 rounded-lg mx-2 py-2 text-gray-600 border border-gray-200/20">
+            <Zap className="w-4 h-4" />
+            Technical SEO
+          </SidebarGroupLabel>
+          <SidebarGroupContent className="mt-3">
             {renderMenuItems(technicalItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider">Tools</SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarGroupLabel className="px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-2 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-lg mx-2 py-2 text-indigo-600 border border-indigo-200/20">
+            <Globe className="w-4 h-4" />
+            Integrations
+          </SidebarGroupLabel>
+          <SidebarGroupContent className="mt-3">
             {renderMenuItems(integrationsItems)}
           </SidebarGroupContent>
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="px-4 text-xs font-semibold uppercase tracking-wider flex items-center gap-2">
-            <Sparkles className="w-3 h-3" />
-            Enterprise
+          <SidebarGroupLabel className="px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-2 bg-gradient-to-r from-yellow-500/10 to-amber-500/10 rounded-lg mx-2 py-2 text-yellow-600 border border-yellow-200/20">
+            <Users className="w-4 h-4" />
+            Enterprise Tools
           </SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarGroupContent className="mt-3">
             {renderMenuItems(enterpriseItems)}
           </SidebarGroupContent>
         </SidebarGroup>
