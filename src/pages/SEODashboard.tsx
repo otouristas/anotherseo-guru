@@ -39,7 +39,7 @@ import { QueryWheel } from "@/components/enterprise/QueryWheel";
 import { IntentMatcher } from "@/components/enterprise/IntentMatcher";
 import { AIOOptimizer } from "@/components/enterprise/AIOOptimizer";
 import { SeoReport } from "@/components/seo/SeoReport";
-import { MvpAnswerThePublic } from "@/components/MvpAnswerThePublic";
+import { PublicResearchRealTime } from "@/components/PublicResearchRealTime";
 
 export default function SEODashboard() {
   return (
@@ -204,8 +204,8 @@ function SEODashboardContent() {
         return <AIOOptimizer />;
       case "seo-report":
         return <SeoReport projectId={selectedProject} />;
-      case "answer-the-public":
-        return <MvpAnswerThePublic />;
+      case "public-research":
+        return <PublicResearchRealTime />;
       default:
         return <ProjectOverview projectId={selectedProject} />;
     }
