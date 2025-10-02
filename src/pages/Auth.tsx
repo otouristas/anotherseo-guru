@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles, Target, TrendingUp, Brain } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { signInSchema, signUpSchema } from "@/lib/validation";
 import { Footer } from "@/components/Footer";
@@ -126,150 +126,250 @@ function AuthContent() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-accent/20 px-4">
-      <div className="w-full max-w-md">
-        <div className="flex flex-col items-center mb-8">
-          <Link to="/" className="flex items-center gap-2 mb-4">
-            <img src={logo} alt="AnotherSEOGuru Logo" className="h-12 w-12" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              AnotherSEOGuru
-            </span>
-          </Link>
-          <p className="text-muted-foreground text-center">
-            Transform your content for every platform
-          </p>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <div className="flex-1 flex">
+        {/* Left Column - Features */}
+        <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-primary/10 via-primary/5 to-secondary/10 relative overflow-hidden">
+          <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" style={{ backgroundSize: '30px 30px' }} />
+          <div className="relative z-10 flex flex-col justify-center px-12 xl:px-16 2xl:px-20">
+            <div className="max-w-lg">
+              <div className="flex items-center gap-3 mb-8">
+                <img src={logo} alt="AnotherSEOGuru Logo" className="h-16 w-16" />
+                <span className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  AnotherSEOGuru
+                </span>
+              </div>
+              
+              <h1 className="text-4xl xl:text-5xl font-bold text-foreground mb-6 leading-tight">
+                Transform Your Content with
+                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent block">
+                  AI-Powered SEO
+                </span>
+              </h1>
+              
+              <p className="text-xl text-muted-foreground mb-12 leading-relaxed">
+                Join thousands of content creators and marketers who are already using our advanced SEO platform to dominate search rankings.
+              </p>
+
+              {/* Features Grid */}
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Sparkles className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">AI Content Generation</h3>
+                    <p className="text-muted-foreground">Generate SEO-optimized content for any platform with advanced AI that understands search intent.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                    <Target className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">Keyword Research</h3>
+                    <p className="text-muted-foreground">Discover high-value keywords with our comprehensive research tools powered by DataForSEO.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">SERP Tracking</h3>
+                    <p className="text-muted-foreground">Monitor your rankings across multiple search engines and track competitor performance.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                    <Brain className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">Predictive Analytics</h3>
+                    <p className="text-muted-foreground">Get AI-powered insights and predictions to stay ahead of search algorithm changes.</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Social Proof */}
+              <div className="mt-12 pt-8 border-t border-border/50">
+                <div className="flex items-center gap-6">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-foreground">10K+</div>
+                    <div className="text-sm text-muted-foreground">Active Users</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-foreground">1M+</div>
+                    <div className="text-sm text-muted-foreground">Content Generated</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-foreground">95%</div>
+                    <div className="text-sm text-muted-foreground">Success Rate</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <Tabs defaultValue="signin" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="signin">Sign In</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
-          </TabsList>
+        {/* Right Column - Auth Form */}
+        <div className="flex-1 lg:flex-none lg:w-[500px] xl:w-[600px] flex items-center justify-center p-6 lg:p-12">
+          <div className="w-full max-w-md">
+            {/* Mobile Logo */}
+            <div className="lg:hidden flex flex-col items-center mb-8">
+              <Link to="/" className="flex items-center gap-2 mb-4">
+                <img src={logo} alt="AnotherSEOGuru Logo" className="h-12 w-12" />
+                <span className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  AnotherSEOGuru
+                </span>
+              </Link>
+            </div>
 
-          <TabsContent value="signin">
-            <Card>
-              <CardHeader>
-                <CardTitle>Welcome back</CardTitle>
-                <CardDescription>Sign in to your account to continue</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
-                    <Input
-                      id="signin-email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
-                    <Input
-                      id="signin-password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Signing in...
-                      </>
-                    ) : (
-                      "Sign In"
-                    )}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </TabsContent>
+            <Tabs defaultValue="signin" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-8">
+                <TabsTrigger value="signin" className="text-sm">Sign In</TabsTrigger>
+                <TabsTrigger value="signup" className="text-sm">Sign Up</TabsTrigger>
+              </TabsList>
 
-          <TabsContent value="signup">
-            <Card>
-              <CardHeader>
-                <CardTitle>Create an account</CardTitle>
-                <CardDescription>Get started with your free account</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="first-name">First Name</Label>
-                      <Input
-                        id="first-name"
-                        placeholder="John"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="last-name">Last Name</Label>
-                      <Input
-                        id="last-name"
-                        placeholder="Doe"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        disabled={isLoading}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      disabled={isLoading}
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Creating account...
-                      </>
-                    ) : (
-                      "Sign Up"
-                    )}
-                  </Button>
-                  <p className="text-xs text-muted-foreground text-center">
-                    By signing up, you agree to our{" "}
-                    <Link to="/terms" className="underline hover:text-primary">
-                      Terms
-                    </Link>{" "}
-                    and{" "}
-                    <Link to="/privacy" className="underline hover:text-primary">
-                      Privacy Policy
-                    </Link>
-                  </p>
-                </form>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              <TabsContent value="signin" className="space-y-6">
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-bold text-foreground mb-2">Welcome back</h2>
+                  <p className="text-muted-foreground">Sign in to continue your SEO journey</p>
+                </div>
+
+                <Card className="border-0 shadow-lg">
+                  <CardContent className="p-8">
+                    <form onSubmit={handleSignIn} className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="signin-email" className="text-sm font-medium">Email</Label>
+                        <Input
+                          id="signin-email"
+                          type="email"
+                          placeholder="you@example.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          disabled={isLoading}
+                          className="h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="signin-password" className="text-sm font-medium">Password</Label>
+                        <Input
+                          id="signin-password"
+                          type="password"
+                          placeholder="Enter your password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          disabled={isLoading}
+                          className="h-12"
+                        />
+                      </div>
+                      <Button type="submit" className="w-full h-12 text-base font-medium" disabled={isLoading}>
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Signing in...
+                          </>
+                        ) : (
+                          "Sign In"
+                        )}
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="signup" className="space-y-6">
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-bold text-foreground mb-2">Create your account</h2>
+                  <p className="text-muted-foreground">Start your SEO journey today</p>
+                </div>
+
+                <Card className="border-0 shadow-lg">
+                  <CardContent className="p-8">
+                    <form onSubmit={handleSignUp} className="space-y-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="first-name" className="text-sm font-medium">First Name</Label>
+                          <Input
+                            id="first-name"
+                            placeholder="John"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            disabled={isLoading}
+                            className="h-12"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="last-name" className="text-sm font-medium">Last Name</Label>
+                          <Input
+                            id="last-name"
+                            placeholder="Doe"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            disabled={isLoading}
+                            className="h-12"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="signup-email" className="text-sm font-medium">Email</Label>
+                        <Input
+                          id="signup-email"
+                          type="email"
+                          placeholder="you@example.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          disabled={isLoading}
+                          className="h-12"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="signup-password" className="text-sm font-medium">Password</Label>
+                        <Input
+                          id="signup-password"
+                          type="password"
+                          placeholder="Create a strong password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          disabled={isLoading}
+                          className="h-12"
+                        />
+                      </div>
+                      <Button type="submit" className="w-full h-12 text-base font-medium" disabled={isLoading}>
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Creating account...
+                          </>
+                        ) : (
+                          "Create Account"
+                        )}
+                      </Button>
+                      <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                        By signing up, you agree to our{" "}
+                        <Link to="/terms" className="underline hover:text-primary font-medium">
+                          Terms of Service
+                        </Link>{" "}
+                        and{" "}
+                        <Link to="/privacy" className="underline hover:text-primary font-medium">
+                          Privacy Policy
+                        </Link>
+                      </p>
+                    </form>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </div>
       </div>
       <Footer />
     </div>

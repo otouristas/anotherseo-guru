@@ -157,7 +157,7 @@ const DashboardContent = memo(() => {
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">
+      <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
         <section className="relative overflow-hidden border-b">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/10 to-primary/5" />
           <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" style={{ backgroundSize: '30px 30px' }} />
@@ -251,7 +251,8 @@ const DashboardContent = memo(() => {
           </div>
         </section>
 
-        <section className="container mx-auto px-4 py-6 md:py-8">
+        <div className="flex-1">
+          <section className="container mx-auto px-4 py-12 md:py-16">
           <DashboardFilters onFilterChange={setFilters} />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
@@ -349,7 +350,8 @@ const DashboardContent = memo(() => {
               </Card>
             </div>
           </div>
-        </section>
+          </section>
+        </div>
 
         <Footer />
       </div>

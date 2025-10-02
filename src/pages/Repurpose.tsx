@@ -257,18 +257,23 @@ function RepurposeContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-muted/20 to-background">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Hero Section */}
-      <section className="py-12 px-4 border-b">
-        <div className="container mx-auto max-w-4xl text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary">
-            <Zap className="w-4 h-4" />
+      <section className="relative overflow-hidden py-16 px-4 border-b">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary/5 to-primary/5" />
+        <div className="absolute inset-0 bg-grid-white/10 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" style={{ backgroundSize: '30px 30px' }} />
+        <div className="relative container mx-auto max-w-6xl text-center space-y-6">
+          <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary/10 border border-primary/20 text-base font-medium text-primary">
+            <Zap className="w-5 h-5" />
             AI-Powered SEO Intelligence Platform
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold">
-            Repurpose Your Content with SEO Intelligence
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+            Repurpose Your Content with
+            <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent block">
+              SEO Intelligence
+            </span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Transform content into platform-optimized versions powered by real-time keyword research, trends analysis, and advanced AI prompts engineered for 2025 algorithms
           </p>
           <div className="flex items-center justify-center gap-4 pt-2">
@@ -291,7 +296,8 @@ function RepurposeContent() {
       </section>
 
       {/* Main Interface */}
-      <section className="py-12 px-4">
+      <div className="flex-1">
+        <section className="py-16 px-4">
         <div className="container mx-auto max-w-7xl">
           {/* Step Progress */}
           <div className="flex items-center justify-center gap-2 md:gap-4 mb-8 overflow-x-auto pb-2">
@@ -682,7 +688,8 @@ function RepurposeContent() {
             )}
           </Card>
         </div>
-      </section>
+        </section>
+      </div>
 
       {/* Footer */}
       <Footer />
