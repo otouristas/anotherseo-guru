@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Search, Users, HelpCircle, Info, MapPin, Wrench } from "lucide-react";
+import { Loader as Loader2, Search, Users, CircleHelp as HelpCircle, Info, MapPin, Wrench } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PolarArea } from "recharts/Polar";
