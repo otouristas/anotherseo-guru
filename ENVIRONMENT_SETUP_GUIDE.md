@@ -1,4 +1,4 @@
-# 🔧 Environment Variables Setup Guide
+git s# 🔧 Environment Variables Setup Guide
 
 ## 📋 Quick Setup Instructions
 

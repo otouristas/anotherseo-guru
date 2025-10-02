@@ -20,6 +20,7 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; connect-src 'self' https://*.supabase.co https://*.supabase.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://*.google-analytics.com; img-src 'self' data: https://www.google-analytics.com https://*.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"
 
 # Cache headers for assets
 [[headers]]
@@ -36,3 +37,19 @@
   for = "*.css"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# Environment variables for production
+[context.production.environment]
+  VITE_SUPABASE_URL = "https://cabzhcbnxbnhjannbpxj.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhYnpoY2JueGJuaGphbm5icHhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxNzUyODAsImV4cCI6MjA3NDc1MTI4MH0.9j-ifJR50L_fOMBNx7yuCR-LExShYWW0mlCItQcXOkw"
+  VITE_GA_MEASUREMENT_ID = "G-FGFJEKZHB1"
+
+# Deploy preview settings
+[context.deploy-preview.environment]
+  VITE_SUPABASE_URL = "https://cabzhcbnxbnhjannbpxj.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhYnpoY2JueGJuaGphbm5icHhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxNzUyODAsImV4cCI6MjA3NDc1MTI4MH0.9j-ifJR50L_fOMBNx7yuCR-LExShYWW0mlCItQcXOkw"
+
+# Branch deploy settings
+[context.branch-deploy.environment]
+  VITE_SUPABASE_URL = "https://cabzhcbnxbnhjannbpxj.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNhYnpoY2JueGJuaGphbm5icHhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxNzUyODAsImV4cCI6MjA3NDc1MTI4MH0.9j-ifJR50L_fOMBNx7yuCR-LExShYWW0mlCItQcXOkw"
