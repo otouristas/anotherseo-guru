@@ -111,13 +111,9 @@ export class CacheManager {
       return cached;
     }
 
-    try {
-      const data = await fetcher();
-      this.set(key, data, ttl);
-      return data;
-    } catch (error) {
-      throw error;
-    }
+    const data = await fetcher();
+    this.set(key, data, ttl);
+    return data;
   }
 
   // Pattern-based invalidation

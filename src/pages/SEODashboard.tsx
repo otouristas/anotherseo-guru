@@ -186,12 +186,14 @@ function SEODashboardContent() {
         return <KeywordClustering projectId={selectedProject} />;
       case "opportunities":
         return <KeywordOpportunityAnalyzer projectId={selectedProject} />;
-      case "audit":
+      case "audit": {
         const projectForAudit = projects.find(p => p.id === selectedProject);
         return <SiteAuditDashboard projectId={selectedProject} domain={projectForAudit?.domain || ''} />;
-      case "comprehensive-audit":
+      }
+      case "comprehensive-audit": {
         const project = projects.find(p => p.id === selectedProject);
         return <ComprehensiveAudit projectId={selectedProject} domain={project?.domain || ''} />;
+      }
       case "technical":
         return <TechnicalAudit projectId={selectedProject} />;
       case "integrations":

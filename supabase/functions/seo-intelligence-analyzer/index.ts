@@ -40,8 +40,8 @@ Deno.serve(async (req) => {
     console.log("Starting comprehensive SEO analysis for user:", userId);
 
     // Step 1: Fetch GSC Data if URL is provided
-    let gscData: any = {};
-    let algorithmDrops: any[] = [];
+    let gscData: Record<string, unknown> = {};
+    let algorithmDrops: Array<Record<string, unknown>> = [];
 
     if (url && projectId) {
       console.log("Fetching GSC data for URL:", url);
@@ -65,8 +65,8 @@ Deno.serve(async (req) => {
     }
 
     // Step 2: Fetch DataForSEO Intelligence (simplified for MVP)
-    let dataforSeoData: any = {};
-    let competitorData: any[] = [];
+    const dataforSeoData: Record<string, unknown> = {};
+    const competitorData: Array<Record<string, unknown>> = [];
 
     // For now, skip external API calls that might fail
     // We'll generate recommendations based on GSC data and content analysis
@@ -141,7 +141,7 @@ Deno.serve(async (req) => {
     // Store algorithm drops
     if (algorithmDrops.length > 0 && projectId) {
       await supabase.from("algorithm_drops").insert(
-        algorithmDrops.map((drop) => ({
+        algorithmDrops.map((drop: any) => ({
           user_id: userId,
           project_id: projectId,
           url: url || "",
@@ -160,7 +160,7 @@ Deno.serve(async (req) => {
     // Store keyword opportunities
     if (keywordOpportunities.length > 0 && analysisId) {
       await supabase.from("keyword_opportunities").insert(
-        keywordOpportunities.map((opp) => ({
+        keywordOpportunities.map((opp: any) => ({
           user_id: userId,
           project_id: projectId,
           analysis_id: analysisId,
@@ -184,7 +184,7 @@ Deno.serve(async (req) => {
     // Store AI recommendations
     if (recommendations.length > 0 && analysisId) {
       await supabase.from("ai_recommendations").insert(
-        recommendations.map((rec) => ({
+        recommendations.map((rec: any) => ({
           user_id: userId,
           project_id: projectId,
           analysis_id: analysisId,
