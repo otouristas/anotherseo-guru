@@ -291,14 +291,4 @@ export function useAIRecommendations(projectId: string) {
 }
 
 // Hook for subscribing to multiple tables
-export function useMultipleRealTimeData<T>(
-  subscriptions: Array<UseRealTimeDataOptions & { key: string }>
-) {
-  const results: Record<string, UseRealTimeDataReturn<T>> = {};
-
-  subscriptions.forEach(({ key, ...options }) => {
-    results[key] = useRealTimeData<T>(options);
-  });
-
-  return results;
-}
+// Removed invalid multi-hook aggregator to comply with Rules of Hooks
