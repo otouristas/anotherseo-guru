@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
       .eq('id', projectId)
       .single();
 
-    const opportunityScores: any[] = [];
+    const opportunityScores: unknown[] = [];
 
     for (const domain of targetDomains) {
       // Simplified domain analysis (in production, use actual API)

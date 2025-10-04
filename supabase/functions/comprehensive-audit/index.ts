@@ -161,13 +161,13 @@ async function getKeywordData(domain: string) {
 
     // Parse DataForSEO response
     const tasks = data?.tasks || [];
-    const ranking: any[] = [];
-    const gaps: any[] = [];
-    const opportunities: any[] = [];
+    const ranking: unknown[] = [];
+    const gaps: unknown[] = [];
+    const opportunities: unknown[] = [];
 
     if (tasks.length > 0 && tasks[0].result) {
       const items = tasks[0].result[0]?.items || [];
-      items.forEach((item: any, index: number) => {
+      items.forEach((item: unknown, index: number) => {
         if (item.type === 'organic') {
           ranking.push({
             keyword: item.title || '',
@@ -190,7 +190,7 @@ async function getKeywordData(domain: string) {
   }
 }
 
-async function getPerformanceData(projectId: string, supabase: any) {
+async function getPerformanceData(projectId: string, supabase: unknown) {
   try {
     console.log('Fetching performance data for project:', projectId);
 
@@ -210,7 +210,7 @@ async function getPerformanceData(projectId: string, supabase: any) {
       };
     }
 
-    const results: any = {
+    const results: unknown = {
       gsc: { available: false },
       ga4: { available: false },
       core_web_vitals: null
@@ -293,7 +293,7 @@ async function getPerformanceData(projectId: string, supabase: any) {
   }
 }
 
-async function generateInsights(data: any) {
+async function generateInsights(data: unknown) {
   try {
     const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
     if (!lovableApiKey) throw new Error('Lovable API key not configured');
@@ -376,8 +376,8 @@ Format as JSON with: summary, priority_actions (array), recommendations (array)`
   }
 }
 
-function analyzeTechnicalIssues(crawlData: any) {
-  const issues: any = {
+function analyzeTechnicalIssues(crawlData: unknown) {
+  const issues: unknown = {
     broken_links: 0,
     missing_meta: 0,
     duplicate_titles: 0,

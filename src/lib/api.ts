@@ -2,13 +2,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { cache, CACHE_KEYS, shortTermCache, longTermCache } from './cache';
 import { errorHandler, NetworkError, AuthError, RateLimitError } from './errorHandler';
 
-export interface APIResponse<T = any> {
+export interface APIResponse<T = unknown> {
   data: T;
   error?: string;
   message?: string;
 }
 
-export interface PaginatedResponse<T = any> extends APIResponse<T[]> {
+export interface PaginatedResponse<T = unknown> extends APIResponse<T[]> {
   pagination: {
     page: number;
     limit: number;
@@ -113,7 +113,7 @@ export class APIClient {
     );
   }
 
-  async createProject(projectData: any) {
+  async createProject(projectData: Record<string, unknown>) {
     const { data, error } = await supabase
       .from('seo_projects')
       .insert(projectData)
@@ -128,7 +128,7 @@ export class APIClient {
     return data;
   }
 
-  async updateProject(id: string, updates: any) {
+  async updateProject(id: string, updates: Record<string, unknown>) {
     const { data, error } = await supabase
       .from('seo_projects')
       .update(updates)
@@ -217,7 +217,7 @@ export class APIClient {
     );
   }
 
-  async addKeyword(projectId: string, keywordData: any) {
+  async addKeyword(projectId: string, keywordData: Record<string, unknown>) {
     const { data, error } = await supabase
       .from('serp_rankings')
       .insert({ ...keywordData, project_id: projectId })
@@ -232,7 +232,7 @@ export class APIClient {
     return data;
   }
 
-  async updateKeyword(id: string, updates: any) {
+  async updateKeyword(id: string, updates: Record<string, unknown>) {
     const { data, error } = await supabase
       .from('serp_rankings')
       .update(updates)
@@ -360,7 +360,7 @@ export class APIClient {
   }
 
   // Real-time subscriptions
-  subscribeToProjectUpdates(projectId: string, callback: (payload: any) => void) {
+  subscribeToProjectUpdates(projectId: string, callback: (payload: unknown) => void) {
     return supabase
       .channel(`project-${projectId}`)
       .on(
@@ -381,7 +381,7 @@ export class APIClient {
       .subscribe();
   }
 
-  subscribeToKeywordUpdates(projectId: string, callback: (payload: any) => void) {
+  subscribeToKeywordUpdates(projectId: string, callback: (payload: unknown) => void) {
     return supabase
       .channel(`keywords-${projectId}`)
       .on(
@@ -402,7 +402,7 @@ export class APIClient {
   }
 
   // Batch operations
-  async batchUpdateKeywords(updates: Array<{ id: string; updates: any }>) {
+  async batchUpdateKeywords(updates: Array<{ id: string; updates: Record<string, unknown> }>) {
     const promises = updates.map(({ id, updates }) => 
       this.updateKeyword(id, updates)
     );
@@ -410,7 +410,7 @@ export class APIClient {
     return Promise.allSettled(promises);
   }
 
-  async batchAddKeywords(projectId: string, keywords: any[]) {
+  async batchAddKeywords(projectId: string, keywords: Array<Record<string, unknown>>) {
     const { data, error } = await supabase
       .from('serp_rankings')
       .insert(keywords.map(keyword => ({ ...keyword, project_id: projectId })))

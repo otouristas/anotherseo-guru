@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
       .single();
 
     const issues = auditData?.issues || {};
-    const detectedIssues: any[] = [];
+    const detectedIssues: unknown[] = [];
 
     // Analyze issues and generate automated fixes
     if (!auditData?.meta_robots || auditData.meta_robots === 'noindex') {

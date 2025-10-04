@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
-import { platforms } from "@/components/PlatformSelector";
+import { platforms } from "@/lib/platforms";
 
 const previewExamples = {
   "seo-blog": {

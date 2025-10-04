@@ -11,8 +11,8 @@ interface Recommendation {
   category: string;
   title: string;
   description: string;
-  steps?: any[];
-  detailedSteps?: any[];
+  steps?: unknown[];
+  detailedSteps?: unknown[];
   impactScore: number;
   effortLevel: string;
   priorityLevel: string;
@@ -20,9 +20,9 @@ interface Recommendation {
   estimatedTrafficLift?: number;
   timeHours?: number;
   implementationTimeHours?: number;
-  codeExamples?: any[];
-  examples?: any;
-  beforeAfterExamples?: any;
+  codeExamples?: unknown[];
+  examples?: unknown;
+  beforeAfterExamples?: unknown;
   relatedKeywords?: string[];
 }
 
@@ -227,7 +227,7 @@ export function AIRecommendations({
                           Implementation Steps
                         </h4>
                         <div className="space-y-2">
-                          {(rec.steps || rec.detailedSteps || []).map((step: any, idx: number) => (
+                          {(rec.steps || rec.detailedSteps || []).map((step: unknown, idx: number) => (
                             <div
                               key={idx}
                               className="flex items-start gap-3 p-3 rounded-lg bg-card border"
@@ -251,7 +251,7 @@ export function AIRecommendations({
                           <Code className="w-4 h-4" />
                           Code Examples
                         </h4>
-                        {rec.codeExamples.map((example: any, idx: number) => (
+                        {rec.codeExamples.map((example: unknown, idx: number) => (
                           <div key={idx} className="mb-3">
                             {example.title && (
                               <div className="text-xs font-medium text-muted-foreground mb-1">

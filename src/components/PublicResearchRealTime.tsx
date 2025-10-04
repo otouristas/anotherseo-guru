@@ -58,7 +58,7 @@ export const PublicResearchRealTime = () => {
 
         setSuggestions(data.suggestions || []);
         setShowSuggestions((data.suggestions || []).length > 0);
-      } catch (error: any) {
+      } catch (error) {
         console.error('Autocomplete failed:', error);
         setSuggestions([]);
       } finally {
@@ -100,11 +100,11 @@ export const PublicResearchRealTime = () => {
         title: expand ? "A-Z Expansion Complete!" : "Research Complete!",
         description: `Found ${data.total} suggestions from Google Autocomplete`,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Generation failed:', error);
       toast({
         title: "Research Failed",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive",
       });
     } finally {

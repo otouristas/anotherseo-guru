@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
     const prompt = `Analyze these competitor pages for the keyword "${keyword}" and identify content gaps:
 
 Competitors:
-${competitorContent.map((c: any, i: number) => `
+${competitorContent.map((c: unknown, i: number) => `
 ${i + 1}. ${c.url}
    - Headings: ${c.headings.join(', ')}
    - Word count: ${c.wordCount}

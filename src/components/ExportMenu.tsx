@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { exportToCSV, exportToXLSX } from "@/lib/exportHelpers";
 
 interface ExportMenuProps {
-  data: any[];
+  data: Record<string, unknown>[];
   filename: string;
   type?: "keyword" | "ranking" | "audit" | "competitor";
   sheetName?: string;
@@ -37,10 +37,10 @@ export const ExportMenu = ({ data, filename, type = "keyword", sheetName = "Data
         title: "Export Successful",
         description: "Data exported to CSV",
       });
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Export Failed",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Unknown error occurred",
         variant: "destructive",
       });
     }
@@ -62,10 +62,10 @@ export const ExportMenu = ({ data, filename, type = "keyword", sheetName = "Data
         title: "Export Successful",
         description: "Data exported to Excel",
       });
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Export Failed",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Unknown error occurred",
         variant: "destructive",
       });
     }

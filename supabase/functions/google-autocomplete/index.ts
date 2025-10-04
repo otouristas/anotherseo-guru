@@ -59,7 +59,7 @@ Deno.serve(async (req: Request) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Google Autocomplete error:", error);
 
     return new Response(
@@ -94,7 +94,7 @@ async function fetchGoogleSuggestions(query: string): Promise<string[]> {
 
     // Google returns: ["query", ["suggestion1", "suggestion2", ...]]
     if (Array.isArray(data) && Array.isArray(data[1])) {
-      return data[1].filter((s: any) => typeof s === "string");
+      return data[1].filter((s: unknown) => typeof s === "string");
     }
 
     return [];

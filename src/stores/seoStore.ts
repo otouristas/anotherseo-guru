@@ -243,7 +243,7 @@ export const useSEOStore = create<SEOState>()(
         getFilteredKeywords: () => {
           const { keywords, keywordFilters, sortBy, sortOrder } = get();
           
-          let filtered = keywords.filter(keyword => {
+          const filtered = keywords.filter(keyword => {
             // Search filter
             if (keywordFilters.search && 
                 !keyword.keyword.toLowerCase().includes(keywordFilters.search.toLowerCase())) {
@@ -278,8 +278,8 @@ export const useSEOStore = create<SEOState>()(
           
           // Sort
           filtered.sort((a, b) => {
-            let aValue: any = a[sortBy];
-            let bValue: any = b[sortBy];
+            let aValue: unknown = a[sortBy];
+            let bValue: unknown = b[sortBy];
             
             if (sortBy === 'keyword') {
               aValue = aValue.toLowerCase();

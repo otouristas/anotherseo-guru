@@ -79,7 +79,7 @@ export function usePerformanceMonitoring(
   const measureMemoryUsage = useCallback(() => {
     if (!enabled || !('memory' in performance)) return;
 
-    const memoryInfo = (performance as any).memory;
+    const memoryInfo = (performance as unknown).memory;
     const memoryUsage = memoryInfo.usedJSHeapSize / memoryInfo.totalJSHeapSize;
     
     setMetrics(prev => ({

@@ -47,7 +47,7 @@ interface BacklinkMonitorProps {
 }
 
 export const BacklinkMonitor = ({ projectId }: BacklinkMonitorProps) => {
-  const [backlinks, setBacklinks] = useState<any[]>([]);
+  const [backlinks, setBacklinks] = useState<unknown[]>([]);
 
   useEffect(() => {
     loadBacklinks();

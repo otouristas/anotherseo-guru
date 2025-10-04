@@ -36,7 +36,7 @@ const faqs = [
   },
   {
     question: "Do you offer refunds?",
-    answer: "We offer a 1-day money-back guarantee on all paid plans. If you're not satisfied for any reason, just contact support within 24 hours of purchase for a full refund."
+    answer: "We offer a 1-day money-back guarantee on all paid plans. If you're not satisfied for unknown reason, just contact support within 24 hours of purchase for a full refund."
   },
   {
     question: "How accurate is the keyword research data?",

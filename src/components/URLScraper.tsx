@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -18,14 +18,7 @@ export const URLScraper = ({ onContentScraped, initialUrl = "", autoTrigger = fa
   const [scrapedSuccess, setScrapedSuccess] = useState(false);
   const { toast } = useToast();
 
-  // Auto-trigger scraping if initialUrl is provided and autoTrigger is true
-  useEffect(() => {
-    if (autoTrigger && initialUrl && !isLoading) {
-      handleScrape();
-    }
-  }, []);
-
-  const handleScrape = async () => {
+  const handleScrape = useCallback(async () => {
     if (!url) {
       toast({
         title: "URL Required",
@@ -94,7 +87,14 @@ export const URLScraper = ({ onContentScraped, initialUrl = "", autoTrigger = fa
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [url, onContentScraped, toast]);
+
+  // Auto-trigger scraping if initialUrl is provided and autoTrigger is true
+  useEffect(() => {
+    if (autoTrigger && initialUrl && !isLoading) {
+      handleScrape();
+    }
+  }, [autoTrigger, initialUrl, isLoading, handleScrape]);
 
   return (
     <Card className="p-6 space-y-4">
@@ -104,7 +104,7 @@ export const URLScraper = ({ onContentScraped, initialUrl = "", autoTrigger = fa
       </div>
       
       <p className="text-sm text-muted-foreground">
-        Extract content from any public webpage using AI-powered web scraping
+        Extract content from unknown public webpage using AI-powered web scraping
       </p>
 
       <div className="flex gap-2">

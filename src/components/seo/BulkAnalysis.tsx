@@ -34,7 +34,7 @@ export const BulkAnalysis = ({ projectId }: BulkAnalysisProps) => {
     reader.readAsText(file);
   };
 
-  const parseInput = (): any[] => {
+  const parseInput = (): unknown[] => {
     const lines = inputText.split("\n").filter((line) => line.trim());
     
     if (analysisType === "keywords") {
@@ -85,7 +85,7 @@ export const BulkAnalysis = ({ projectId }: BulkAnalysisProps) => {
         : { items, analysisType, project_id: projectId };
 
       const job = await createAndTriggerJob({
-        jobType: jobType as any,
+        jobType: jobType as unknown,
         inputData,
         totalItems: items.length,
       });
@@ -97,7 +97,7 @@ export const BulkAnalysis = ({ projectId }: BulkAnalysisProps) => {
 
       // Navigate to jobs page
       navigate("/jobs");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Bulk analysis error:", error);
       toast({
         variant: "destructive",
@@ -123,7 +123,7 @@ export const BulkAnalysis = ({ projectId }: BulkAnalysisProps) => {
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <Label>Analysis Type</Label>
-          <Select value={analysisType} onValueChange={(value: any) => setAnalysisType(value)}>
+          <Select value={analysisType} onValueChange={(value: unknown) => setAnalysisType(value)}>
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>

@@ -51,8 +51,8 @@ interface CompetitorAnalysisProps {
 
 export const CompetitorAnalysis = ({ projectId }: CompetitorAnalysisProps) => {
   const [competitorDomain, setCompetitorDomain] = useState("");
-  const [project, setProject] = useState<any>(null);
-  const [analysis, setAnalysis] = useState<any>(null);
+  const [project, setProject] = useState<unknown>(null);
+  const [analysis, setAnalysis] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -199,7 +199,7 @@ export const CompetitorAnalysis = ({ projectId }: CompetitorAnalysisProps) => {
               <TabsContent value="overview" className="space-y-6">
                 {/* Competitor Cards */}
                 <div className="grid gap-6">
-                  {analysis.results.map((result: any, idx: number) => {
+                  {analysis.results.map((result: unknown, idx: number) => {
                     const isYourDomain = idx === 0;
                     
                     return (
@@ -354,7 +354,7 @@ export const CompetitorAnalysis = ({ projectId }: CompetitorAnalysisProps) => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        {analysis.results.slice(1).map((competitor: any, idx: number) => {
+                        {analysis.results.slice(1).map((competitor: unknown, idx: number) => {
                           const yourDomain = analysis.results[0];
                           const trafficGap = competitor.organicTraffic - yourDomain.organicTraffic;
                           const keywordGap = competitor.organicKeywords - yourDomain.organicKeywords;

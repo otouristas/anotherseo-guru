@@ -84,12 +84,12 @@ Format as JSON with keys: keywordRevenue (array), conversionRates (object), roiP
       JSON.stringify({
         success: true,
         analysis,
-        totalRevenue: analysis.keywordRevenue.reduce((sum: number, kw: any) => sum + kw.estimatedRevenue, 0),
+        totalRevenue: analysis.keywordRevenue.reduce((sum: number, kw: unknown) => sum + kw.estimatedRevenue, 0),
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

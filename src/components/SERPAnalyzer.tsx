@@ -14,7 +14,7 @@ export function SERPAnalyzer() {
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [location, setLocation] = useState("United States");
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<Record<string, unknown> | null>(null);
   const [aiSummary, setAiSummary] = useState("");
   const [aiPrompt, setAiPrompt] = useState("");
   
@@ -271,7 +271,7 @@ export function SERPAnalyzer() {
 
             {/* Basic Results Preview */}
             <div className="space-y-2 max-h-60 overflow-y-auto">
-              {results.data.items?.slice(0, 5).map((item: any, idx: number) => (
+              {results.data.items?.slice(0, 5).map((item: { title?: string; name?: string; alt?: string; url?: string; [key: string]: unknown }, idx: number) => (
                 <div key={idx} className="p-2 bg-background border rounded text-xs">
                   <div className="font-medium truncate">
                     {item.title || item.name || item.alt || 'Untitled'}

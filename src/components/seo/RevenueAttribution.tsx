@@ -10,7 +10,7 @@ interface RevenueAttributionProps {
 }
 
 export const RevenueAttribution = ({ projectId }: RevenueAttributionProps) => {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<unknown[]>([]);
   const [summary, setSummary] = useState({
     totalRevenue: 125430,
     totalConversions: 342,

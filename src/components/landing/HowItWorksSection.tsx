@@ -6,7 +6,7 @@ const steps = [
     number: "01",
     icon: FileText,
     title: "Paste Your Content",
-    description: "Upload your blog post, article, or any content you want to repurpose. We support text, URLs, and file uploads."
+    description: "Upload your blog post, article, or unknown content you want to repurpose. We support text, URLs, and file uploads."
   },
   {
     number: "02",

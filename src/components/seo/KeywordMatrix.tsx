@@ -52,7 +52,7 @@ interface KeywordMatrixProps {
 
 export const KeywordMatrix = ({ projectId }: KeywordMatrixProps) => {
   const [keyword, setKeyword] = useState("");
-  const [keywords, setKeywords] = useState<any[]>([]);
+  const [keywords, setKeywords] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -99,7 +99,7 @@ export const KeywordMatrix = ({ projectId }: KeywordMatrixProps) => {
       }
       
       // Save top keywords
-      const keywordsToSave = results.slice(0, 20).map((item: any) => ({
+      const keywordsToSave = results.slice(0, 20).map((item: unknown) => ({
         project_id: projectId,
         keyword: item.keyword,
         search_volume: item.keyword_info?.search_volume || item.search_volume || 0,
@@ -321,7 +321,7 @@ export const KeywordMatrix = ({ projectId }: KeywordMatrixProps) => {
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex-1 min-w-0 pr-2">
                               <div className="font-semibold text-sm truncate mb-2">{kw.keyword}</div>
-                              <Badge variant={getIntentBadge(kw.search_intent || 'informational') as any} className="text-xs">
+                              <Badge variant={getIntentBadge(kw.search_intent || 'informational') as unknown} className="text-xs">
                                 {kw.search_intent || 'informational'}
                               </Badge>
                             </div>
@@ -392,7 +392,7 @@ export const KeywordMatrix = ({ projectId }: KeywordMatrixProps) => {
                                 </div>
                               </td>
                               <td className="py-3 px-2">
-                                <Badge variant={getIntentBadge(kw.search_intent || 'informational') as any}>
+                                <Badge variant={getIntentBadge(kw.search_intent || 'informational') as unknown}>
                                   {kw.search_intent || 'informational'}
                                 </Badge>
                               </td>

@@ -40,8 +40,8 @@ Deno.serve(async (req) => {
     console.log("Starting comprehensive SEO analysis for user:", userId);
 
     // Step 1: Fetch GSC Data if URL is provided
-    let gscData: any = {};
-    let algorithmDrops: any[] = [];
+    let gscData: unknown = {};
+    let algorithmDrops: unknown[] = [];
 
     if (url && projectId) {
       console.log("Fetching GSC data for URL:", url);
@@ -65,8 +65,8 @@ Deno.serve(async (req) => {
     }
 
     // Step 2: Fetch DataForSEO Intelligence (simplified for MVP)
-    let dataforSeoData: any = {};
-    let competitorData: any[] = [];
+    const dataforSeoData: Record<string, unknown> = {};
+    const competitorData: unknown[] = [];
 
     // For now, skip external API calls that might fail
     // We'll generate recommendations based on GSC data and content analysis
@@ -253,7 +253,7 @@ Deno.serve(async (req) => {
   }
 });
 
-function processGSCData(analytics: any[]): any {
+function processGSCData(analytics: unknown[]): unknown {
   const keywordMap = new Map();
 
   analytics.forEach((row) => {
@@ -271,13 +271,13 @@ function processGSCData(analytics: any[]): any {
   });
 
   const keywordStats = Array.from(keywordMap.entries()).map(([keyword, data]) => {
-    const sorted = data.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const sorted = data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     const recent = sorted.slice(0, 7);
     const previous = sorted.slice(7, 14);
 
-    const recentAvgPosition = recent.reduce((sum: number, d: any) => sum + d.position, 0) / recent.length;
+    const recentAvgPosition = recent.reduce((sum: number, d: unknown) => sum + d.position, 0) / recent.length;
     const previousAvgPosition = previous.length > 0
-      ? previous.reduce((sum: number, d: any) => sum + d.position, 0) / previous.length
+      ? previous.reduce((sum: number, d: unknown) => sum + d.position, 0) / previous.length
       : recentAvgPosition;
 
     return {
@@ -285,9 +285,9 @@ function processGSCData(analytics: any[]): any {
       currentPosition: recentAvgPosition,
       previousPosition: previousAvgPosition,
       positionChange: previousAvgPosition - recentAvgPosition,
-      clicks: recent.reduce((sum: number, d: any) => sum + d.clicks, 0),
-      impressions: recent.reduce((sum: number, d: any) => sum + d.impressions, 0),
-      avgCtr: recent.reduce((sum: number, d: any) => sum + d.ctr, 0) / recent.length,
+      clicks: recent.reduce((sum: number, d: unknown) => sum + d.clicks, 0),
+      impressions: recent.reduce((sum: number, d: unknown) => sum + d.impressions, 0),
+      avgCtr: recent.reduce((sum: number, d: unknown) => sum + d.ctr, 0) / recent.length,
       trend: recentAvgPosition < previousAvgPosition ? "up" : recentAvgPosition > previousAvgPosition ? "down" : "stable",
       data: sorted,
     };
@@ -302,8 +302,8 @@ function processGSCData(analytics: any[]): any {
   };
 }
 
-function detectAlgorithmDrops(analytics: any[]): any[] {
-  const drops: any[] = [];
+function detectAlgorithmDrops(analytics: unknown[]): unknown[] {
+  const drops: unknown[] = [];
   const keywordsByDate = new Map();
 
   analytics.forEach((row) => {
@@ -323,18 +323,18 @@ function detectAlgorithmDrops(analytics: any[]): any[] {
     const currentData = keywordsByDate.get(currentDate);
     const previousData = keywordsByDate.get(previousDate);
 
-    const avgCurrentPosition = currentData.reduce((sum: number, r: any) => sum + r.position, 0) / currentData.length;
-    const avgPreviousPosition = previousData.reduce((sum: number, r: any) => sum + r.position, 0) / previousData.length;
+    const avgCurrentPosition = currentData.reduce((sum: number, r: unknown) => sum + r.position, 0) / currentData.length;
+    const avgPreviousPosition = previousData.reduce((sum: number, r: unknown) => sum + r.position, 0) / previousData.length;
 
     const positionDrop = avgCurrentPosition - avgPreviousPosition;
 
     if (positionDrop > 5) {
       const affectedKeywords = currentData
-        .filter((r: any) => {
-          const prev = previousData.find((p: any) => p.keyword === r.keyword);
+        .filter((r: unknown) => {
+          const prev = previousData.find((p: unknown) => p.keyword === r.keyword);
           return prev && (r.position - prev.position) > 3;
         })
-        .map((r: any) => r.keyword);
+        .map((r: unknown) => r.keyword);
 
       drops.push({
         date: currentDate,
@@ -364,7 +364,7 @@ function identifyLikelyAlgorithm(date: string): string {
   return match?.name || "Unknown Update";
 }
 
-function generateDropRecoveryActions(drop: number, keywords: string[]): any[] {
+function generateDropRecoveryActions(drop: number, keywords: string[]): unknown[] {
   return [
     { action: "Review content quality and E-E-A-T signals", priority: "high" },
     { action: "Check for thin or duplicate content issues", priority: "high" },
@@ -374,8 +374,8 @@ function generateDropRecoveryActions(drop: number, keywords: string[]): any[] {
   ];
 }
 
-function processCompetitorData(serpData: any): any[] {
-  return (serpData.organic || []).slice(0, 10).map((result: any, index: number) => ({
+function processCompetitorData(serpData: unknown): unknown[] {
+  return (serpData.organic || []).slice(0, 10).map((result: unknown, index: number) => ({
     position: index + 1,
     url: result.url,
     domain: new URL(result.url).hostname,
@@ -385,11 +385,11 @@ function processCompetitorData(serpData: any): any[] {
   }));
 }
 
-function identifyKeywordOpportunities(gscData: any, dataforSeoData: any, competitorData: any[]): any[] {
-  const opportunities: any[] = [];
+function identifyKeywordOpportunities(gscData: unknown, dataforSeoData: unknown, competitorData: unknown[]): unknown[] {
+  const opportunities: unknown[] = [];
 
   if (gscData.keywordStats) {
-    gscData.keywordStats.forEach((stat: any) => {
+    gscData.keywordStats.forEach((stat: unknown) => {
       if (stat.currentPosition >= 11 && stat.currentPosition <= 20) {
         opportunities.push({
           keyword: stat.keyword,
@@ -440,7 +440,7 @@ function estimateCTR(position: number): number {
   return ctrCurve[position] || 0.01;
 }
 
-function calculatePriorityScore(stat: any, volume: number, difficulty: number): number {
+function calculatePriorityScore(stat: unknown, volume: number, difficulty: number): number {
   let score = 0;
   score += (21 - stat.currentPosition) * 5;
   score += stat.clicks * 2;
@@ -450,7 +450,7 @@ function calculatePriorityScore(stat: any, volume: number, difficulty: number): 
   return Math.round(score);
 }
 
-function generateOpportunityActions(stat: any): any[] {
+function generateOpportunityActions(stat: unknown): unknown[] {
   return [
     { action: "Add more comprehensive content for this keyword", priority: "high" },
     { action: "Improve internal linking with relevant anchor text", priority: "medium" },
@@ -461,12 +461,12 @@ function generateOpportunityActions(stat: any): any[] {
 
 async function performAIAnalysis(
   content: string,
-  gscData: any,
-  dataforSeoData: any,
-  competitorData: any[],
-  opportunities: any[],
+  gscData: unknown,
+  dataforSeoData: unknown,
+  competitorData: unknown[],
+  opportunities: unknown[],
   model: string
-): Promise<any> {
+): Promise<unknown> {
   try {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
@@ -478,8 +478,8 @@ async function performAIAnalysis(
 
       return {
         summary: `Content Analysis: ${wordCount} words analyzed. ${hasGSC ? `Found ${gscData.totalKeywords} keywords in GSC data.` : 'No GSC data available.'} ${hasKeywords ? `Identified ${opportunities.length} optimization opportunities.` : ''}`,
-        trafficImpact: opportunities.reduce((sum: number, o: any) => sum + (o.trafficPotential || 0), 0),
-        recommendations: opportunities.slice(0, 3).map((o: any) => `Optimize for "${o.keyword}" (Position ${o.currentPosition})`),
+        trafficImpact: opportunities.reduce((sum: number, o: unknown) => sum + (o.trafficPotential || 0), 0),
+        recommendations: opportunities.slice(0, 3).map((o: unknown) => `Optimize for "${o.keyword}" (Position ${o.currentPosition})`),
         keyIssues: [
           wordCount < 1000 ? "Content length below recommended 1000 words" : null,
           !hasGSC ? "No GSC data connected - connect for better insights" : null,
@@ -533,10 +533,10 @@ async function performAIAnalysis(
 
 function buildAnalysisPrompt(
   content: string,
-  gscData: any,
-  dataforSeoData: any,
-  competitorData: any[],
-  opportunities: any[]
+  gscData: unknown,
+  dataforSeoData: unknown,
+  competitorData: unknown[],
+  opportunities: unknown[]
 ): string {
   return `Analyze this content for SEO optimization:
 
@@ -550,12 +550,12 @@ CURRENT PERFORMANCE (from Google Search Console):
 - Average Position: ${gscData.avgPosition?.toFixed(1) || "N/A"}
 
 TOP KEYWORD OPPORTUNITIES:
-${opportunities.slice(0, 5).map((opp: any) =>
+${opportunities.slice(0, 5).map((opp: unknown) =>
   `- "${opp.keyword}" (Position ${opp.currentPosition}, ${opp.type})`
 ).join("\n")}
 
 COMPETITOR ANALYSIS:
-${competitorData.slice(0, 3).map((comp: any) =>
+${competitorData.slice(0, 3).map((comp: unknown) =>
   `- Position ${comp.position}: ${comp.domain} (${comp.contentLength} chars)`
 ).join("\n")}
 
@@ -569,7 +569,7 @@ Provide:
 Format as JSON with: summary, keyIssues[], recommendations[], trafficImpact`;
 }
 
-function parseAIAnalysis(text: string): any {
+function parseAIAnalysis(text: string): unknown {
   try {
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
@@ -587,12 +587,12 @@ function parseAIAnalysis(text: string): any {
 }
 
 function generateDetailedRecommendations(
-  aiAnalysis: any,
-  gscData: any,
-  opportunities: any[],
-  drops: any[]
-): any[] {
-  const recommendations: any[] = [];
+  aiAnalysis: unknown,
+  gscData: unknown,
+  opportunities: unknown[],
+  drops: unknown[]
+): unknown[] {
+  const recommendations: unknown[] = [];
 
   if (drops.length > 0) {
     recommendations.push({
@@ -603,7 +603,7 @@ function generateDetailedRecommendations(
       impactScore: 95,
       effortLevel: "high",
       priorityLevel: "critical",
-      trafficLift: drops.reduce((sum: number, d: any) => sum + d.trafficLoss, 0),
+      trafficLift: drops.reduce((sum: number, d: unknown) => sum + d.trafficLoss, 0),
       timeHours: 8,
     });
   }
@@ -623,9 +623,9 @@ function generateDetailedRecommendations(
       impactScore: 85,
       effortLevel: "medium",
       priorityLevel: "high",
-      trafficLift: quickWins.reduce((sum: number, o: any) => sum + o.trafficPotential, 0),
+      trafficLift: quickWins.reduce((sum: number, o: unknown) => sum + o.trafficPotential, 0),
       timeHours: 4,
-      relatedKeywords: quickWins.map((o: any) => o.keyword),
+      relatedKeywords: quickWins.map((o: unknown) => o.keyword),
     });
   }
 
@@ -670,9 +670,9 @@ function generateDetailedRecommendations(
 
 function calculateOptimizationScore(
   content: string,
-  gscData: any,
-  opportunities: any[],
-  aiAnalysis: any
+  gscData: unknown,
+  opportunities: unknown[],
+  aiAnalysis: unknown
 ): number {
   let score = 0;
 
@@ -702,7 +702,7 @@ function calculateOptimizationScore(
   return Math.min(100, Math.max(0, score));
 }
 
-function calculateKeywordDensity(content: string, keywords: any[]): number {
+function calculateKeywordDensity(content: string, keywords: unknown[]): number {
   if (keywords.length === 0) return 0;
 
   const words = content.toLowerCase().split(/\s+/).length;

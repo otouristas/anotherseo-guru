@@ -56,7 +56,7 @@ export const KeywordResearch = ({ onKeywordSelect }: KeywordResearchProps) => {
 
       if (data?.tasks?.[0]?.result?.[0]?.items) {
         const items = data.tasks[0].result[0].items;
-        const formattedKeywords: KeywordData[] = items.map((item: any) => ({
+        const formattedKeywords: KeywordData[] = items.map((item: { keyword: string; keyword_info?: { search_volume?: number; competition?: number; cpc?: number } }) => ({
           keyword: item.keyword,
           search_volume: item.keyword_info?.search_volume || 0,
           competition: item.keyword_info?.competition || 0,

@@ -1,7 +1,7 @@
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 
-export async function exportToXLSX(data: any[], filename: string, sheetName: string = "Data") {
+export async function exportToXLSX(data: Array<Record<string, unknown>>, filename: string, sheetName: string = "Data") {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet(sheetName);
 
@@ -67,7 +67,7 @@ export async function exportToXLSX(data: any[], filename: string, sheetName: str
 }
 
 export async function exportMultiSheetXLSX(
-  sheets: Array<{ name: string; data: any[] }>,
+  sheets: Array<{ name: string; data: Array<Record<string, unknown>> }>,
   filename: string
 ) {
   const workbook = new ExcelJS.Workbook();
@@ -118,7 +118,7 @@ export async function exportMultiSheetXLSX(
   saveAs(blob, `${filename}.xlsx`);
 }
 
-export function exportToCSV(data: any[], filename: string) {
+export function exportToCSV(data: Array<Record<string, unknown>>, filename: string) {
   if (data.length === 0) {
     throw new Error("No data to export");
   }

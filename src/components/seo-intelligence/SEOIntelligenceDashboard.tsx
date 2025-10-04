@@ -18,7 +18,7 @@ interface SEOIntelligenceDashboardProps {
   keywords?: string[];
   projectId?: string;
   userId: string;
-  onApplyRecommendations?: (recommendations: any[]) => void;
+  onApplyRecommendations?: (recommendations: unknown[]) => void;
 }
 
 export function SEOIntelligenceDashboard({
@@ -30,7 +30,7 @@ export function SEOIntelligenceDashboard({
   onApplyRecommendations,
 }: SEOIntelligenceDashboardProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisData, setAnalysisData] = useState<any>(null);
+  const [analysisData, setAnalysisData] = useState<unknown>(null);
   const [selectedTab, setSelectedTab] = useState("overview");
   const { toast } = useToast();
 
@@ -306,7 +306,7 @@ export function SEOIntelligenceDashboard({
               <Card className="p-6">
                 <h3 className="text-lg font-semibold mb-4">Competitor Insights</h3>
                 <div className="space-y-3">
-                  {analysisData.competitorData.slice(0, 5).map((comp: any, idx: number) => (
+                  {analysisData.competitorData.slice(0, 5).map((comp: unknown, idx: number) => (
                     <div key={idx} className="flex items-center gap-3 p-3 rounded-lg bg-accent/5">
                       <Badge variant="outline">#{comp.position}</Badge>
                       <div className="flex-1 min-w-0">

@@ -12,7 +12,7 @@ export type JobType =
 
 export interface CreateJobParams {
   jobType: JobType;
-  inputData: Record<string, any>;
+  inputData: Record<string, unknown>;
   totalItems?: number;
 }
 
@@ -31,7 +31,7 @@ export async function createJob({
       input_data: inputData,
       total_items: totalItems,
       status: "pending",
-    } as any)
+    } as unknown)
     .select()
     .single();
 
@@ -97,7 +97,7 @@ export async function cancelJob(jobId: string) {
  */
 export function subscribeToJob(
   jobId: string,
-  callback: (job: any) => void
+  callback: (job: Record<string, unknown>) => void
 ) {
   const channel = supabase
     .channel(`job_${jobId}`)

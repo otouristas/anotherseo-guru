@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
       throw new Error('Google credentials not found. Please connect Google Search Console first.');
     }
 
-    const credentials = settings.credentials_json as any;
+    const credentials = settings.credentials_json as unknown;
     const targetSiteUrl = siteUrl || settings.google_search_console_site_url;
 
     if (!targetSiteUrl) {
@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
 
     console.log('Fetching ALL keywords from GSC (up to API limit of 25000 rows)');
 
-    let allRows: any[] = [];
+    let allRows: unknown[] = [];
     let startRow = 0;
     const batchSize = 25000;
     let hasMore = true;
@@ -114,8 +114,8 @@ Deno.serve(async (req) => {
       totalImpressions: 0,
       avgCTR: 0,
       avgPosition: 0,
-      topQueries: [] as any[],
-      topPages: [] as any[],
+      topQueries: [] as unknown[],
+      topPages: [] as unknown[],
       rows: allRows,
       totalKeywords: allRows.length,
       fetchedAllData: allRows.length < 25000
@@ -124,7 +124,7 @@ Deno.serve(async (req) => {
     if (allRows && allRows.length > 0) {
       // Store data in database
       const today = new Date().toISOString().split('T')[0];
-      const gscRecords = allRows.map((row: any) => ({
+      const gscRecords = allRows.map((row: unknown) => ({
         project_id: projectId,
         keyword: row.keys[0],
         page_url: row.keys[1],
@@ -150,7 +150,7 @@ Deno.serve(async (req) => {
       console.log(`Stored ${gscRecords.length} GSC records in database`);
 
       // Calculate totals
-      allRows.forEach((row: any) => {
+      allRows.forEach((row: unknown) => {
         processedData.totalClicks += row.clicks || 0;
         processedData.totalImpressions += row.impressions || 0;
       });
@@ -160,12 +160,12 @@ Deno.serve(async (req) => {
         ? (processedData.totalClicks / processedData.totalImpressions) * 100
         : 0;
 
-      const positionSum = allRows.reduce((sum: number, row: any) => sum + (row.position || 0), 0);
+      const positionSum = allRows.reduce((sum: number, row: unknown) => sum + (row.position || 0), 0);
       processedData.avgPosition = positionSum / allRows.length;
 
       // Get top queries
       const queryMap = new Map();
-      allRows.forEach((row: any) => {
+      allRows.forEach((row: unknown) => {
         const query = row.keys[0];
         if (!queryMap.has(query)) {
           queryMap.set(query, {
@@ -192,7 +192,7 @@ Deno.serve(async (req) => {
 
       // Get top pages
       const pageMap = new Map();
-      allRows.forEach((row: any) => {
+      allRows.forEach((row: unknown) => {
         const page = row.keys[1];
         if (!pageMap.has(page)) {
           pageMap.set(page, {
@@ -244,7 +244,7 @@ Deno.serve(async (req) => {
   }
 });
 
-async function refreshAccessToken(refreshToken: string, supabase: any, projectId: string): Promise<string> {
+async function refreshAccessToken(refreshToken: string, supabase: unknown, projectId: string): Promise<string> {
   const clientId = Deno.env.get('GOOGLE_OAUTH_CLIENT_ID');
   const clientSecret = Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET');
 

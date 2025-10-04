@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
         JSON.stringify({ success: true, result }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
-    } catch (processingError: any) {
+    } catch (processingError: unknown) {
       console.error(`Job ${jobId} failed:`, processingError);
 
       // Mark job as failed
@@ -98,7 +98,7 @@ Deno.serve(async (req) => {
 
       throw processingError;
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Worker error:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
@@ -108,7 +108,7 @@ Deno.serve(async (req) => {
 });
 
 // Job handlers
-async function processBacklinksAnalysis(job: any, supabase: any) {
+async function processBacklinksAnalysis(job: unknown, supabase: unknown) {
   const { domain } = job.input_data;
   const dataforSeoKey = Deno.env.get("DATAFORSEO_API_KEY");
   
@@ -159,7 +159,7 @@ async function processBacklinksAnalysis(job: any, supabase: any) {
   };
 }
 
-async function processKeywordResearch(job: any, supabase: any) {
+async function processKeywordResearch(job: unknown, supabase: unknown) {
   const { keyword, location } = job.input_data;
   const dataforSeoKey = Deno.env.get("DATAFORSEO_API_KEY");
 
@@ -192,7 +192,7 @@ async function processKeywordResearch(job: any, supabase: any) {
   return result;
 }
 
-async function processCompetitorAnalysis(job: any, supabase: any) {
+async function processCompetitorAnalysis(job: unknown, supabase: unknown) {
   const { domain, competitors } = job.input_data;
   const dataforSeoKey = Deno.env.get("DATAFORSEO_API_KEY");
 
@@ -240,7 +240,7 @@ async function processCompetitorAnalysis(job: any, supabase: any) {
   return { domains_analyzed: allDomains.length, results };
 }
 
-async function processSerpTracking(job: any, supabase: any) {
+async function processSerpTracking(job: unknown, supabase: unknown) {
   const { keyword, domain, location } = job.input_data;
   
   const response = await supabase.functions.invoke("serp-tracker", {
@@ -252,7 +252,7 @@ async function processSerpTracking(job: any, supabase: any) {
   return response.data;
 }
 
-async function processBulkAnalysis(job: any, supabase: any) {
+async function processBulkAnalysis(job: unknown, supabase: unknown) {
   const { items, analysisType } = job.input_data;
   const results = [];
 
@@ -279,7 +279,7 @@ async function processBulkAnalysis(job: any, supabase: any) {
       }
 
       results.push({ item, success: true, result: itemResult });
-    } catch (error: any) {
+    } catch (error: unknown) {
       results.push({ item, success: false, error: error.message });
     }
 
@@ -298,7 +298,7 @@ async function processBulkAnalysis(job: any, supabase: any) {
   };
 }
 
-async function processKeywordClustering(job: any, supabase: any) {
+async function processKeywordClustering(job: unknown, supabase: unknown) {
   const { keywords, projectId } = job.input_data;
 
   const response = await supabase.functions.invoke("keyword-clustering", {

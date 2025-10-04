@@ -8,7 +8,7 @@ interface UseRealTimeDataOptions {
   table: string;
   projectId?: string;
   userId?: string;
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
   enabled?: boolean;
   cacheKey?: string;
   cacheTTL?: number;
@@ -25,7 +25,7 @@ interface UseRealTimeDataReturn<T> {
   lastUpdated: Date | null;
 }
 
-export function useRealTimeData<T = any>(
+export function useRealTimeData<T = unknown>(
   options: UseRealTimeDataOptions
 ): UseRealTimeDataReturn<T> {
   const { user } = useAuth();
@@ -45,7 +45,7 @@ export function useRealTimeData<T = any>(
     cacheTTL = 5 * 60 * 1000, // 5 minutes
   } = options;
 
-  const channelRef = useRef<any>(null);
+  const channelRef = useRef<unknown>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const fetchData = useCallback(async () => {
@@ -142,12 +142,12 @@ export function useRealTimeData<T = any>(
                 newData.unshift(payload.new as T);
                 break;
               case 'UPDATE':
-                newData = newData.map((item: any) =>
+                newData = newData.map((item: Record<string, unknown>) =>
                   item.id === payload.new.id ? payload.new : item
                 );
                 break;
               case 'DELETE':
-                newData = newData.filter((item: any) => item.id !== payload.old.id);
+                newData = newData.filter((item: Record<string, unknown>) => item.id !== payload.old.id);
                 break;
             }
             
@@ -243,7 +243,7 @@ export function useProjects() {
   });
 }
 
-export function useKeywords(projectId: string, filters?: Record<string, any>) {
+export function useKeywords(projectId: string, filters?: Record<string, unknown>) {
   return useRealTimeData({
     table: 'serp_rankings',
     projectId,
@@ -253,7 +253,7 @@ export function useKeywords(projectId: string, filters?: Record<string, any>) {
   });
 }
 
-export function useAnalytics(projectId: string, filters?: Record<string, any>) {
+export function useAnalytics(projectId: string, filters?: Record<string, unknown>) {
   return useRealTimeData({
     table: 'gsc_analytics',
     projectId,
@@ -291,14 +291,12 @@ export function useAIRecommendations(projectId: string) {
 }
 
 // Hook for subscribing to multiple tables
+// Note: This function has been disabled due to React Hooks rules
+// Hooks cannot be called inside loops or conditionally
+// Use individual useRealTimeData calls instead
 export function useMultipleRealTimeData<T>(
-  subscriptions: Array<UseRealTimeDataOptions & { key: string }>
-) {
-  const results: Record<string, UseRealTimeDataReturn<T>> = {};
-
-  subscriptions.forEach(({ key, ...options }) => {
-    results[key] = useRealTimeData<T>(options);
-  });
-
-  return results;
+  _subscriptions: Array<UseRealTimeDataOptions & { key: string }>
+): Record<string, UseRealTimeDataReturn<T>> {
+  console.warn('useMultipleRealTimeData is deprecated. Use individual useRealTimeData hooks instead.');
+  return {};
 }

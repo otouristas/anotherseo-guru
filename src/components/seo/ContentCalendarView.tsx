@@ -14,7 +14,7 @@ interface ContentCalendarViewProps {
 }
 
 export const ContentCalendarView = ({ projectId }: ContentCalendarViewProps) => {
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<unknown[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     title: '',

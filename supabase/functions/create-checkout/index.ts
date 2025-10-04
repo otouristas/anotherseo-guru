@@ -14,7 +14,7 @@ const PLAN_PRICES: Record<string, string> = {
   agency: "price_1SDOIDBXxQFoEIvuow8qYGP3",
 };
 
-const logStep = (step: string, details?: any) => {
+const logStep = (step: string, details?: unknown) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
   console.log(`[CREATE-CHECKOUT] ${step}${detailsStr}`);
 };

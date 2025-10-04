@@ -139,7 +139,7 @@ export const SeoReport = ({ projectId }: SeoReportProps) => {
 
       const processedData: ReportData = processReportData(gscData || [], auditData);
       setReportData(processedData);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error loading report data:', error);
       toast({
         title: "Error loading report",
@@ -151,7 +151,7 @@ export const SeoReport = ({ projectId }: SeoReportProps) => {
     }
   };
 
-  const processReportData = (gscData: any[], auditData: any): ReportData => {
+  const processReportData = (gscData: unknown[], auditData: unknown): ReportData => {
     const totalClicks = gscData.reduce((sum, row) => sum + (row.clicks || 0), 0);
     const totalImpressions = gscData.reduce((sum, row) => sum + (row.impressions || 0), 0);
     const avgCTR = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
@@ -328,7 +328,7 @@ export const SeoReport = ({ projectId }: SeoReportProps) => {
     );
   }
 
-  const MetricCard = ({ title, value, change, icon: Icon, trend }: any) => (
+  const MetricCard = ({ title, value, change, icon: Icon, trend }: unknown) => (
     <Card>
       <CardContent className="pt-6">
         <div className="flex items-center justify-between">
@@ -360,7 +360,7 @@ export const SeoReport = ({ projectId }: SeoReportProps) => {
           <p className="text-muted-foreground">Detailed analytics and performance insights</p>
         </div>
         <div className="flex items-center gap-2">
-          <Select value={dateRange} onValueChange={(v: any) => setDateRange(v)}>
+          <Select value={dateRange} onValueChange={(v: unknown) => setDateRange(v)}>
             <SelectTrigger className="w-[140px]">
               <Calendar className="w-4 h-4 mr-2" />
               <SelectValue />

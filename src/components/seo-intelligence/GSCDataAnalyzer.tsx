@@ -4,7 +4,17 @@ import { TrendingUp, TrendingDown, Minus, CircleAlert as AlertCircle } from "luc
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 
 interface GSCDataAnalyzerProps {
-  gscData: any;
+  gscData: {
+    keywordStats?: Array<{
+      clicks: number;
+      trend?: string;
+      data?: Array<{ date: string; position: number; clicks: number }>;
+      [key: string]: unknown;
+    }>;
+    totalKeywords?: number;
+    totalClicks?: number;
+    [key: string]: unknown;
+  } | null;
   className?: string;
 }
 
@@ -22,14 +32,14 @@ export function GSCDataAnalyzer({ gscData, className = "" }: GSCDataAnalyzerProp
   }
 
   const topKeywords = gscData.keywordStats
-    .sort((a: any, b: any) => b.clicks - a.clicks)
+    .sort((a, b) => b.clicks - a.clicks)
     .slice(0, 10);
 
-  const trendingUp = gscData.keywordStats.filter((k: any) => k.trend === "up").length;
-  const trendingDown = gscData.keywordStats.filter((k: any) => k.trend === "down").length;
-  const stable = gscData.keywordStats.filter((k: any) => k.trend === "stable").length;
+  const trendingUp = gscData.keywordStats.filter((k) => k.trend === "up").length;
+  const trendingDown = gscData.keywordStats.filter((k) => k.trend === "down").length;
+  const stable = gscData.keywordStats.filter((k) => k.trend === "stable").length;
 
-  const chartData = topKeywords[0]?.data?.slice(0, 30).reverse().map((d: any) => ({
+  const chartData = topKeywords[0]?.data?.slice(0, 30).reverse().map((d) => ({
     date: new Date(d.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
     position: d.position,
     clicks: d.clicks,
@@ -128,7 +138,7 @@ export function GSCDataAnalyzer({ gscData, className = "" }: GSCDataAnalyzerProp
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4">Top Performing Keywords</h3>
         <div className="space-y-3">
-          {topKeywords.map((keyword: any, index: number) => (
+          {topKeywords.map((keyword: unknown, index: number) => (
             <div
               key={index}
               className="flex items-center justify-between p-3 rounded-lg bg-accent/5 hover:bg-accent/10 transition-colors"

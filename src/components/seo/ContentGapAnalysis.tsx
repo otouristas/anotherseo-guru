@@ -58,7 +58,7 @@ export const ContentGapAnalysis = ({ projectId }: ContentGapAnalysisProps) => {
   const [keyword, setKeyword] = useState("");
   const [competitorUrls, setCompetitorUrls] = useState("");
   const [loading, setLoading] = useState(false);
-  const [analysis, setAnalysis] = useState<any>(null);
+  const [analysis, setAnalysis] = useState<unknown>(null);
 
   const analyzeGaps = async () => {
     if (!keyword.trim() || !competitorUrls.trim()) {
@@ -97,7 +97,7 @@ export const ContentGapAnalysis = ({ projectId }: ContentGapAnalysisProps) => {
         title: "Analysis Complete",
         description: "Content gap analysis generated successfully",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error",
         description: error.message,

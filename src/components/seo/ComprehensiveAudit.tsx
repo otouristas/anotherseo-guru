@@ -31,14 +31,14 @@ interface AuditReport {
     }>;
   };
   keywords: {
-    ranking: any[];
-    gaps: any[];
-    opportunities: any[];
+    ranking: unknown[];
+    gaps: unknown[];
+    opportunities: unknown[];
   };
   traffic: {
-    gsc: any;
-    ga4: any;
-    core_web_vitals: any;
+    gsc: unknown;
+    ga4: unknown;
+    core_web_vitals: unknown;
   };
   recommendations: string[];
   summary: string;

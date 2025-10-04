@@ -59,7 +59,7 @@ export const RankingPredictor = ({ projectId }: RankingPredictorProps) => {
   const { toast } = useToast();
   const [keyword, setKeyword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [prediction, setPrediction] = useState<any>(null);
+  const [prediction, setPrediction] = useState<unknown>(null);
 
   const predictRankings = async () => {
     if (!keyword.trim()) {
@@ -84,7 +84,7 @@ export const RankingPredictor = ({ projectId }: RankingPredictorProps) => {
         title: "Prediction Generated",
         description: "AI-powered ranking forecast is ready",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error",
         description: error.message,

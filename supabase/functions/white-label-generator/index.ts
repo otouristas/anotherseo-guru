@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
     }
 
     // Gather data based on report sections
-    const reportData: any = {};
+    const reportData: unknown = {};
 
     if (report.report_sections.serp) {
       const { data: serpData } = await supabase
@@ -114,7 +114,7 @@ Format as JSON with keys: executiveSummary, keyMetrics, insights (array), recomm
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
       throw new Error('Google credentials not found. Please connect Google Analytics first.');
     }
 
-    const credentials = settings.credentials_json as any;
+    const credentials = settings.credentials_json as unknown;
     const targetPropertyId = propertyId || settings.google_analytics_property_id;
 
     if (!targetPropertyId) {
@@ -117,15 +117,15 @@ Deno.serve(async (req) => {
       avgBounceRate: 0,
       avgEngagementRate: 0,
       totalConversions: 0,
-      topPages: [] as any[],
-      channelBreakdown: [] as any[],
+      topPages: [] as unknown[],
+      channelBreakdown: [] as unknown[],
       rows: analyticsData.rows || []
     };
 
     if (analyticsData.rows && analyticsData.rows.length > 0) {
       // Store data in database
       const today = new Date().toISOString().split('T')[0];
-      const ga4Records = analyticsData.rows.map((row: any) => {
+      const ga4Records = analyticsData.rows.map((row: unknown) => {
         const metrics = row.metricValues;
         return {
           project_id: projectId,
@@ -157,7 +157,7 @@ Deno.serve(async (req) => {
       console.log(`Stored ${ga4Records.length} GA4 records in database`);
 
       // Calculate totals from row data
-      analyticsData.rows.forEach((row: any) => {
+      analyticsData.rows.forEach((row: unknown) => {
         const metrics = row.metricValues;
         processedData.totalUsers += parseInt(metrics[0]?.value || '0');
         processedData.totalSessions += parseInt(metrics[1]?.value || '0');
@@ -176,7 +176,7 @@ Deno.serve(async (req) => {
 
       // Get top pages
       const pageMap = new Map();
-      analyticsData.rows.forEach((row: any) => {
+      analyticsData.rows.forEach((row: unknown) => {
         const pagePath = row.dimensionValues[0]?.value || '/';
         if (!pageMap.has(pagePath)) {
           pageMap.set(pagePath, {
@@ -203,7 +203,7 @@ Deno.serve(async (req) => {
 
       // Get channel breakdown
       const channelMap = new Map();
-      analyticsData.rows.forEach((row: any) => {
+      analyticsData.rows.forEach((row: unknown) => {
         const channel = row.dimensionValues[1]?.value || 'Unknown';
         if (!channelMap.has(channel)) {
           channelMap.set(channel, {
@@ -250,7 +250,7 @@ Deno.serve(async (req) => {
   }
 });
 
-async function refreshAccessToken(refreshToken: string, supabase: any, projectId: string): Promise<string> {
+async function refreshAccessToken(refreshToken: string, supabase: unknown, projectId: string): Promise<string> {
   const clientId = Deno.env.get('GOOGLE_OAUTH_CLIENT_ID');
   const clientSecret = Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET');
 

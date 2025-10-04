@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     const currentPosition = historicalData[0]?.position || null;
 
     // Prepare data for AI analysis
-    const dataPoints = historicalData.map((d: any) => ({
+    const dataPoints = historicalData.map((d: unknown) => ({
       position: d.position,
       date: d.checked_at,
       hasFeaturedSnippet: d.featured_snippet,
@@ -101,7 +101,7 @@ Consider: ranking velocity, volatility, seasonal patterns, and SERP features.`;
     // Calculate simple trend
     let trend = 'stable';
     if (historicalData.length >= 5) {
-      const recent = historicalData.slice(0, 5).map((d: any) => d.position);
+      const recent = historicalData.slice(0, 5).map((d: unknown) => d.position);
       const avgRecent = recent.reduce((a: number, b: number) => a + b, 0) / recent.length;
       if (avgRecent < currentPosition) trend = 'improving';
       else if (avgRecent > currentPosition) trend = 'declining';

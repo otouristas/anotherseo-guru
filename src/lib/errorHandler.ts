@@ -4,7 +4,7 @@ export class SEOError extends Error {
   constructor(
     message: string,
     public code: string,
-    public context?: Record<string, any>
+    public context?: Record<string, unknown>
   ) {
     super(message);
     this.name = 'SEOError';
@@ -12,28 +12,28 @@ export class SEOError extends Error {
 }
 
 export class NetworkError extends SEOError {
-  constructor(message: string = 'Network connection failed', context?: Record<string, any>) {
+  constructor(message: string = 'Network connection failed', context?: Record<string, unknown>) {
     super(message, 'NETWORK_ERROR', context);
     this.name = 'NetworkError';
   }
 }
 
 export class AuthError extends SEOError {
-  constructor(message: string = 'Authentication failed', context?: Record<string, any>) {
+  constructor(message: string = 'Authentication failed', context?: Record<string, unknown>) {
     super(message, 'AUTH_ERROR', context);
     this.name = 'AuthError';
   }
 }
 
 export class RateLimitError extends SEOError {
-  constructor(message: string = 'Rate limit exceeded', context?: Record<string, any>) {
+  constructor(message: string = 'Rate limit exceeded', context?: Record<string, unknown>) {
     super(message, 'RATE_LIMIT_ERROR', context);
     this.name = 'RateLimitError';
   }
 }
 
 export class ValidationError extends SEOError {
-  constructor(message: string = 'Validation failed', context?: Record<string, any>) {
+  constructor(message: string = 'Validation failed', context?: Record<string, unknown>) {
     super(message, 'VALIDATION_ERROR', context);
     this.name = 'ValidationError';
   }
@@ -43,7 +43,7 @@ interface ErrorLogEntry {
   id: string;
   error: Error;
   timestamp: Date;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   userAgent?: string;
   url?: string;
   userId?: string;
@@ -61,7 +61,7 @@ export class ErrorHandler {
     return ErrorHandler.instance;
   }
 
-  handle(error: unknown, context?: Record<string, any>): void {
+  handle(error: unknown, context?: Record<string, unknown>): void {
     const errorObj = error instanceof Error ? error : new Error(String(error));
     
     // Log error
@@ -74,7 +74,7 @@ export class ErrorHandler {
     this.reportError(errorObj, context);
   }
 
-  private logError(error: Error, context?: Record<string, any>): void {
+  private logError(error: Error, context?: Record<string, unknown>): void {
     const logEntry: ErrorLogEntry = {
       id: crypto.randomUUID(),
       error,
@@ -142,7 +142,7 @@ export class ErrorHandler {
     });
   }
 
-  private reportError(error: Error, context?: Record<string, any>): void {
+  private reportError(error: Error, context?: Record<string, unknown>): void {
     // Send to monitoring service (e.g., Sentry, LogRocket)
     if (typeof window !== 'undefined') {
       // Google Analytics
@@ -159,7 +159,7 @@ export class ErrorHandler {
     }
   }
 
-  private async sendToErrorService(error: Error, context?: Record<string, any>): Promise<void> {
+  private async sendToErrorService(error: Error, context?: Record<string, unknown>): Promise<void> {
     try {
       // This would typically send to your error monitoring service
       const errorReport = {
@@ -218,9 +218,9 @@ export class ErrorHandler {
   }
 
   // Utility method for wrapping async functions
-  wrapAsync<T extends any[], R>(
+  wrapAsync<T extends unknown[], R>(
     fn: (...args: T) => Promise<R>,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ) {
     return async (...args: T): Promise<R> => {
       try {
@@ -233,9 +233,9 @@ export class ErrorHandler {
   }
 
   // Utility method for wrapping sync functions
-  wrapSync<T extends any[], R>(
+  wrapSync<T extends unknown[], R>(
     fn: (...args: T) => R,
-    context?: Record<string, any>
+    context?: Record<string, unknown>
   ) {
     return (...args: T): R => {
       try {
@@ -251,20 +251,20 @@ export class ErrorHandler {
 export const errorHandler = ErrorHandler.getInstance();
 
 // Convenience functions
-export const handleError = (error: unknown, context?: Record<string, any>) => {
+export const handleError = (error: unknown, context?: Record<string, unknown>) => {
   errorHandler.handle(error, context);
 };
 
-export const wrapAsync = <T extends any[], R>(
+export const wrapAsync = <T extends unknown[], R>(
   fn: (...args: T) => Promise<R>,
-  context?: Record<string, any>
+  context?: Record<string, unknown>
 ) => {
   return errorHandler.wrapAsync(fn, context);
 };
 
-export const wrapSync = <T extends any[], R>(
+export const wrapSync = <T extends unknown[], R>(
   fn: (...args: T) => R,
-  context?: Record<string, any>
+  context?: Record<string, unknown>
 ) => {
   return errorHandler.wrapSync(fn, context);
 };
