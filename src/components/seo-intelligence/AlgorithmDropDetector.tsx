@@ -12,7 +12,7 @@ interface AlgorithmDrop {
   trafficLoss: number;
   algorithm: string;
   diagnosis: string;
-  actions: any[];
+  actions: unknown[];
 }
 
 interface AlgorithmDropDetectorProps {
@@ -163,7 +163,7 @@ export function AlgorithmDropDetector({ drops, onApplyAction, className = "" }: 
                 <div>
                   <h4 className="font-medium mb-3">Recommended Recovery Actions</h4>
                   <div className="space-y-2">
-                    {drop.actions.map((action: any, actionIdx: number) => (
+                    {drop.actions.map((action: unknown, actionIdx: number) => (
                       <div
                         key={actionIdx}
                         className="flex items-start gap-3 p-3 rounded-lg bg-card border"

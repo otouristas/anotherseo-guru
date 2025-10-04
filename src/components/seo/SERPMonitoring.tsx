@@ -15,7 +15,7 @@ interface SERPMonitoringProps {
 export const SERPMonitoring = ({ projectId }: SERPMonitoringProps) => {
   const { toast } = useToast();
   const [keyword, setKeyword] = useState("");
-  const [alerts, setAlerts] = useState<any[]>([]);
+  const [alerts, setAlerts] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -79,7 +79,7 @@ export const SERPMonitoring = ({ projectId }: SERPMonitoringProps) => {
 
       setKeyword("");
       loadAlerts();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error",
         description: error.message,

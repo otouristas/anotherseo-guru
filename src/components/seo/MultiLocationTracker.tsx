@@ -13,7 +13,7 @@ interface MultiLocationTrackerProps {
 
 export const MultiLocationTracker = ({ projectId }: MultiLocationTrackerProps) => {
   const { toast } = useToast();
-  const [locations, setLocations] = useState<any[]>([]);
+  const [locations, setLocations] = useState<unknown[]>([]);
   const [newLocation, setNewLocation] = useState({ city: "", state: "", country: "United States" });
   const [loading, setLoading] = useState(false);
 
@@ -69,7 +69,7 @@ export const MultiLocationTracker = ({ projectId }: MultiLocationTrackerProps) =
 
       setNewLocation({ city: "", state: "", country: "United States" });
       loadLocations();
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error",
         description: error.message,

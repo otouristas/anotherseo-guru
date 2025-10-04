@@ -26,7 +26,7 @@ function CheckoutContent() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
-  const planDetails: Record<string, any> = {
+  const planDetails: Record<string, unknown> = {
     starter: {
       name: "Starter",
       price: 49,

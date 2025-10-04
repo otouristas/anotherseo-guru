@@ -91,7 +91,7 @@ export const KeywordClustering = ({ projectId }: KeywordClusteringProps) => {
         title: "Clustering complete!",
         description: `Created ${data.totalClusters} semantic clusters`,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Clustering error:", error);
       toast({
         variant: "destructive",

@@ -26,7 +26,7 @@ interface Recommendation {
   confidence_score?: number;
   impact_estimate?: string;
   status: string;
-  metadata?: any;
+  metadata?: unknown;
   created_at?: string;
 }
 
@@ -182,7 +182,7 @@ export const AIRecommendations = ({ projectId, userId }: AIRecommendationsProps)
   };
 
   const getIcon = (type: string) => {
-    const icons: Record<string, any> = {
+    const icons: Record<string, unknown> = {
       keyword: TrendingUp,
       content: FileText,
       technical: Code,

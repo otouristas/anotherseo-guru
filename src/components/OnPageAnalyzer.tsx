@@ -16,13 +16,13 @@ export function OnPageAnalyzer() {
   const [polling, setPolling] = useState(false);
   const [domain, setDomain] = useState("");
   const [taskId, setTaskId] = useState("");
-  const [summary, setSummary] = useState<any>(null);
+  const [summary, setSummary] = useState<Record<string, unknown> | null>(null);
   const [duplicateUrl, setDuplicateUrl] = useState("");
   const [similarity, setSimilarity] = useState([6]);
-  const [duplicates, setDuplicates] = useState<any>(null);
+  const [duplicates, setDuplicates] = useState<Record<string, unknown> | null>(null);
   const [pageFrom, setPageFrom] = useState("");
   const [linkType, setLinkType] = useState("all");
-  const [links, setLinks] = useState<any>(null);
+  const [links, setLinks] = useState<Record<string, unknown> | null>(null);
   
   const { toast } = useToast();
 
@@ -179,7 +179,7 @@ export function OnPageAnalyzer() {
 
     setLoading(true);
     try {
-      const filters: any[] = [];
+      const filters: Array<[string, string, string | boolean]> = [];
       if (linkType === 'internal') {
         filters.push(["direction", "=", "internal"]);
       } else if (linkType === 'external') {
@@ -362,7 +362,7 @@ export function OnPageAnalyzer() {
                 </div>
 
                 <div className="space-y-2 max-h-80 overflow-y-auto">
-                  {duplicates.items?.[0]?.pages?.map((dup: any, idx: number) => (
+                  {duplicates.items?.[0]?.pages?.map((dup: { similarity: number; page?: Array<{ checks?: { duplicate_content?: boolean }; [key: string]: unknown }> }, idx: number) => (
                     <div key={idx} className="p-3 bg-background border rounded text-xs space-y-2">
                       <div className="flex items-center justify-between">
                         <Badge variant="secondary">
@@ -448,7 +448,7 @@ export function OnPageAnalyzer() {
                 </div>
 
                 <div className="space-y-2 max-h-80 overflow-y-auto">
-                  {links.items?.slice(0, 50).map((link: any, idx: number) => (
+                  {links.items?.slice(0, 50).map((link: { type: string; direction: string; dofollow?: boolean; [key: string]: unknown }, idx: number) => (
                     <div key={idx} className="p-3 bg-background border rounded text-xs space-y-2">
                       <div className="flex items-center gap-2">
                         <Badge variant="outline">{link.type}</Badge>

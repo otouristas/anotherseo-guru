@@ -92,7 +92,7 @@ export const SEOAIChatbot = () => {
             .limit(20);
 
           // Temporarily disable recommendations fetch until types sync
-          const recommendations: any[] = [];
+          const recommendations: unknown[] = [];
 
           projectContext = {
             projects: projects.map((p) => ({
@@ -126,8 +126,8 @@ export const SEOAIChatbot = () => {
 
       if (user) {
         // Store conversation snapshot; matches table columns
-        // @ts-ignore - using untyped insert to avoid type drift during schema sync
-        await (supabase as any).from("chatbot_conversations").insert({
+        // @ts-expect-error - using untyped insert to avoid type drift during schema sync
+        await (supabase as unknown).from("chatbot_conversations").insert({
           user_id: user.id,
           project_id: null,
           messages: [...newMessages, assistantMessage],

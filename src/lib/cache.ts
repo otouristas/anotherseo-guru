@@ -16,7 +16,7 @@ interface CacheStats {
 }
 
 export class CacheManager {
-  private cache = new Map<string, CacheItem<any>>();
+  private cache = new Map<string, CacheItem<unknown>>();
   private defaultTTL = 5 * 60 * 1000; // 5 minutes
   private maxSize = 1000;
   private totalHits = 0;
@@ -111,13 +111,9 @@ export class CacheManager {
       return cached;
     }
 
-    try {
-      const data = await fetcher();
-      this.set(key, data, ttl);
-      return data;
-    } catch (error) {
-      throw error;
-    }
+    const data = await fetcher();
+    this.set(key, data, ttl);
+    return data;
   }
 
   // Pattern-based invalidation
@@ -194,8 +190,8 @@ export class CacheManager {
   }
 
   // Export cache data (for debugging)
-  export(): Record<string, any> {
-    const data: Record<string, any> = {};
+  export(): Record<string, unknown> {
+    const data: Record<string, unknown> = {};
     for (const [key, item] of this.cache.entries()) {
       if (Date.now() - item.timestamp <= item.ttl) {
         data[key] = item.data;
@@ -205,7 +201,7 @@ export class CacheManager {
   }
 
   // Import cache data (for debugging)
-  import(data: Record<string, any>, ttl?: number): void {
+  import(data: Record<string, unknown>, ttl?: number): void {
     for (const [key, value] of Object.entries(data)) {
       this.set(key, value, ttl);
     }

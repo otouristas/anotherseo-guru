@@ -81,8 +81,8 @@ Deno.serve(async (req) => {
       url: domainUrl,
       competitors,
       totalResults: results.length,
-      featuredSnippet: results.some((r: any) => r.type === 'featured_snippet'),
-      localPack: results.some((r: any) => r.type === 'local_pack')
+      featuredSnippet: results.some((r: unknown) => r.type === 'featured_snippet'),
+      localPack: results.some((r: unknown) => r.type === 'local_pack')
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -39,13 +39,7 @@ export const ContentHistory = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (user) {
-      fetchHistory();
-    }
-  }, [user]);
-
-  const fetchHistory = async () => {
+  const fetchHistory = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('content_history')
@@ -65,7 +59,7 @@ export const ContentHistory = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, toast]);
 
   const deleteContent = async (id: string) => {
     try {
@@ -90,6 +84,12 @@ export const ContentHistory = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      fetchHistory();
+    }
+  }, [user, fetchHistory]);
 
   const copyContent = (content: string, platform: string) => {
     navigator.clipboard.writeText(content);

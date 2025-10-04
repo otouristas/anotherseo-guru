@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
     const auth = btoa(`${login}:${password}`);
 
     let endpoint = '';
-    let payload: any[] = [];
+    let payload: unknown[] = [];
 
     console.log('DataForSEO action:', action);
 
@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
         }];
         break;
 
-      case 'trends':
+      case 'trends': {
         // Google Trends endpoint
         endpoint = 'https://api.dataforseo.com/v3/keywords_data/google_trends/explore/live';
         const dateFrom = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
@@ -69,6 +69,7 @@ Deno.serve(async (req) => {
           date_to: dateTo
         }];
         break;
+      }
 
       case 'serp_analysis':
         // SERP organic results endpoint
@@ -215,12 +216,13 @@ Deno.serve(async (req) => {
         }];
         break;
 
-      case 'onpage_summary':
+      case 'onpage_summary': {
         // OnPage API - Get summary
         const taskId = requestData.task_id;
         endpoint = `https://api.dataforseo.com/v3/on_page/summary/${taskId}`;
         payload = [];
         break;
+      }
 
       case 'onpage_duplicate_content':
         // OnPage API - Duplicate Content

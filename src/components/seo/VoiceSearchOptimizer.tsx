@@ -57,7 +57,7 @@ export const VoiceSearchOptimizer = ({ projectId }: VoiceSearchOptimizerProps) =
   const { toast } = useToast();
   const [keyword, setKeyword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<unknown>(null);
 
   const analyzeVoiceSearch = async () => {
     if (!keyword.trim()) {
@@ -82,7 +82,7 @@ export const VoiceSearchOptimizer = ({ projectId }: VoiceSearchOptimizerProps) =
         title: "Analysis Complete",
         description: "Voice search optimization report is ready",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error",
         description: error.message,

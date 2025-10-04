@@ -57,7 +57,7 @@ export const ContentScoring = ({ projectId }: ContentScoringProps) => {
   const { user } = useAuth();
   const [content, setContent] = useState("");
   const [keywords, setKeywords] = useState("");
-  const [score, setScore] = useState<any>(null);
+  const [score, setScore] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 

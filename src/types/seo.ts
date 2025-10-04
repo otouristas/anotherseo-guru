@@ -91,7 +91,7 @@ export interface AIRecommendation {
   estimatedTrafficLift: number;
   implementationTimeHours: number;
   codeExamples: string[];
-  beforeAfterExamples: Record<string, any>;
+  beforeAfterExamples: Record<string, unknown>;
   relatedKeywords: string[];
   status: 'pending' | 'applied' | 'dismissed';
   appliedDate?: string;
@@ -203,7 +203,7 @@ export interface Subscription {
 }
 
 // API Response Types
-export interface APIResponse<T = any> {
+export interface APIResponse<T = unknown> {
   data: T;
   error?: string;
   message?: string;

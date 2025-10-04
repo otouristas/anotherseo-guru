@@ -55,7 +55,7 @@ interface TechnicalAuditProps {
 
 export const TechnicalAudit = ({ projectId }: TechnicalAuditProps) => {
   const [url, setUrl] = useState("");
-  const [audit, setAudit] = useState<any>(null);
+  const [audit, setAudit] = useState<unknown>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -113,7 +113,7 @@ export const TechnicalAudit = ({ projectId }: TechnicalAuditProps) => {
   };
 
   const getCWVStatus = (metric: string, value: number) => {
-    const thresholds: any = {
+    const thresholds: unknown = {
       lcp: { good: 2.5, poor: 4.0 },
       fid: { good: 100, poor: 300 },
       cls: { good: 0.1, poor: 0.25 }
@@ -421,7 +421,7 @@ export const TechnicalAudit = ({ projectId }: TechnicalAuditProps) => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {audit.issues?.map((issue: any, idx: number) => (
+                      {audit.issues?.map((issue: unknown, idx: number) => (
                         <div key={idx} className="flex items-start gap-3 p-4 rounded-lg bg-background/50 border border-border/50">
                           <div className={`p-2 rounded-lg ${
                             issue.severity === 'error' ? 'bg-red-500/10' : 

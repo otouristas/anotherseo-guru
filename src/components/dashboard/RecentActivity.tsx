@@ -13,7 +13,7 @@ interface RecentActivityProps {
   activities: Activity[];
 }
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Search,
   FileText,
   Zap,

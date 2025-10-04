@@ -49,10 +49,10 @@ interface SERPTrackerProps {
 
 export const SERPTracker = ({ projectId }: SERPTrackerProps) => {
   const [keyword, setKeyword] = useState("");
-  const [rankings, setRankings] = useState<any[]>([]);
-  const [savedKeywords, setSavedKeywords] = useState<any[]>([]);
+  const [rankings, setRankings] = useState<unknown[]>([]);
+  const [savedKeywords, setSavedKeywords] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(false);
-  const [project, setProject] = useState<any>(null);
+  const [project, setProject] = useState<unknown>(null);
   const { toast } = useToast();
 
   useEffect(() => {

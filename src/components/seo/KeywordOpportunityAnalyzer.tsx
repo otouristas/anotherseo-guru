@@ -25,13 +25,13 @@ interface KeywordAnalysis {
   difficulty_score: number;
   potential_score: number;
   opportunity_type: string;
-  ai_recommendations: any;
+  ai_recommendations: unknown;
 }
 
 export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnalyzerProps) => {
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const [opportunities, setOpportunities] = useState<any[]>([]);
+  const [opportunities, setOpportunities] = useState<unknown[]>([]);
   const [groupBy, setGroupBy] = useState<'keyword' | 'page'>('page');
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
 
       if (error) throw error;
       setOpportunities(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error loading opportunities:', error);
       toast({
         title: "Error loading opportunities",
@@ -78,7 +78,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
       });
 
       await loadOpportunities();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error running analysis:', error);
       toast({
         title: "Analysis Failed",
@@ -117,7 +117,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
       });
 
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Audit Failed",
         description: error.message,
@@ -128,7 +128,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
 
   // Group data by page or keyword
   const groupedData = groupBy === 'page' 
-    ? opportunities.reduce((acc: any, item) => {
+    ? opportunities.reduce((acc: unknown, item) => {
         const page = item.page_url;
         if (!acc[page]) {
           acc[page] = {
@@ -149,7 +149,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
         if (item.cluster_name) acc[page].clusters.add(item.cluster_name);
         return acc;
       }, {})
-    : opportunities.reduce((acc: any, item) => {
+    : opportunities.reduce((acc: unknown, item) => {
         const kw = item.keyword;
         if (!acc[kw]) {
           acc[kw] = {
@@ -169,7 +169,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
         return acc;
       }, {});
 
-  Object.values(groupedData).forEach((group: any) => {
+  Object.values(groupedData).forEach((group: unknown) => {
     if (groupBy === 'page') {
       const count = group.keywords.length;
       group.avg_position = count > 0 ? group.avg_position / count : 0;
@@ -260,7 +260,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
 
       <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground">Group by:</span>
-        <Tabs value={groupBy} onValueChange={(v: any) => setGroupBy(v)} className="w-auto">
+        <Tabs value={groupBy} onValueChange={(v: unknown) => setGroupBy(v)} className="w-auto">
           <TabsList>
             <TabsTrigger value="page">Page</TabsTrigger>
             <TabsTrigger value="keyword">Keyword</TabsTrigger>
@@ -282,7 +282,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
       ) : (
         <div className="space-y-4">
           {groupBy === 'page' ? (
-            groupedArray.map((group: any, idx) => (
+            groupedArray.map((group: unknown, idx) => (
               <Card key={idx} className="overflow-hidden">
                 <CardHeader className="bg-primary/5">
                   <div className="flex items-start justify-between gap-4">
@@ -299,7 +299,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
                       </div>
                     </div>
                     <div className="flex gap-2 shrink-0">
-                      <Button size="sm" onClick={() => optimizeContent(group.page_url, group.keywords.map((k: any) => k.keyword))}>
+                      <Button size="sm" onClick={() => optimizeContent(group.page_url, group.keywords.map((k: unknown) => k.keyword))}>
                         <Sparkles className="w-4 h-4 mr-2" />
                         Optimize Content
                       </Button>
@@ -334,7 +334,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
                         </tr>
                       </thead>
                       <tbody>
-                        {group.keywords.map((kw: any, i: number) => (
+                        {group.keywords.map((kw: unknown, i: number) => (
                           <tr key={i} className="border-b last:border-0">
                             <td className="py-2 font-medium">{kw.keyword}</td>
                             <td className="py-2">
@@ -384,7 +384,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
               </Card>
             ))
           ) : (
-            groupedArray.map((group: any, idx) => (
+            groupedArray.map((group: unknown, idx) => (
               <Card key={idx}>
                 <CardHeader>
                   <div className="flex items-start justify-between gap-4">
@@ -404,7 +404,7 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">
-                    {group.pages.map((page: any, i: number) => (
+                    {group.pages.map((page: unknown, i: number) => (
                       <div key={i} className="flex items-center justify-between p-3 border rounded-lg">
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-medium truncate mb-1">{page.page_url}</div>

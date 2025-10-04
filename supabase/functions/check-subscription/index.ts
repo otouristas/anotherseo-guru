@@ -14,7 +14,7 @@ const PRODUCT_PLAN_MAPPING: Record<string, { plan_type: string; credits: number 
   "prod_T9hhyDmixWlLvT": { plan_type: "agency", credits: 999999 },
 };
 
-const logStep = (step: string, details?: any) => {
+const logStep = (step: string, details?: unknown) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
   console.log(`[CHECK-SUBSCRIPTION] ${step}${detailsStr}`);
 };

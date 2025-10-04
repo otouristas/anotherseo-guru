@@ -20,17 +20,17 @@ Deno.serve(async (req) => {
     let contextualPrompt = "";
     if (projectContext && projectContext.projects && projectContext.projects.length > 0) {
       contextualPrompt = `\n\n**USER'S CURRENT DATA:**\n`;
-      contextualPrompt += `- Active Projects: ${projectContext.projects.map((p: any) => p.domain).join(", ")}\n`;
+      contextualPrompt += `- Active Projects: ${projectContext.projects.map((p: unknown) => p.domain).join(", ")}\n`;
 
       if (projectContext.recent_keywords && projectContext.recent_keywords.length > 0) {
-        contextualPrompt += `- Recent Keywords: ${projectContext.recent_keywords.slice(0, 10).map((k: any) =>
+        contextualPrompt += `- Recent Keywords: ${projectContext.recent_keywords.slice(0, 10).map((k: unknown) =>
           `${k.keyword} (vol: ${k.search_volume || 'N/A'}, diff: ${k.difficulty || 'N/A'})`
         ).join(", ")}\n`;
       }
 
       if (projectContext.pending_recommendations && projectContext.pending_recommendations.length > 0) {
         contextualPrompt += `- Pending AI Recommendations: ${projectContext.pending_recommendations.length} items\n`;
-        contextualPrompt += `  Top recommendations: ${projectContext.pending_recommendations.slice(0, 3).map((r: any) =>
+        contextualPrompt += `  Top recommendations: ${projectContext.pending_recommendations.slice(0, 3).map((r: unknown) =>
           r.title
         ).join("; ")}\n`;
       }
@@ -46,7 +46,7 @@ Your knowledge base includes:
 - **Keyword Research & DataForSEO Integration**: Access to 9 billion keywords database, 200+ keyword modifiers on Google and Bing Autocomplete. Bulk keyword generation with high-intent discovery.
 - **Keyword Clustering**: Unlimited SERP and Semantic clustering. Group keywords that can target the same page without limits or subscription fees.
 - **SERP Similarity Tool**: Analyze keyword overlap to determine if two keywords should be targeted together on the same page.
-- **Keyword Tracking**: Monitor unlimited keywords including competitor analysis. Track desktop, mobile, and local results across any location.
+- **Keyword Tracking**: Monitor unlimited keywords including competitor analysis. Track desktop, mobile, and local results across unknown location.
 - **Backlink Analysis**: Comprehensive link profile evaluation. Compare backlinks with competitors and discover new link-building opportunities.
 - **Backlink Gap Analysis**: Find backlink opportunities your competitors have that you don't. Discover new linking domains.
 - **Traffic Analytics**: Uncover competitor traffic stats, export their keywords, analyze top pages. Identify growth opportunities and market gaps.

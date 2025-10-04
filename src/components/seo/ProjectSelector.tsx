@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 interface ProjectSelectorProps {
-  projects: any[];
+  projects: unknown[];
   selectedProject: string | null;
   onSelectProject: (id: string) => void;
   onDeleteProject: (id: string) => void;

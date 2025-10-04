@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
     }
 
     const currentPosition = trackingData.domainPosition || null;
-    const alerts: any[] = [];
+    const alerts: unknown[] = [];
 
     // Create alerts based on changes
     if (previousRanking && currentPosition) {
@@ -92,12 +92,12 @@ Deno.serve(async (req) => {
 
       // New competitor in top 3
       if (currentPosition && currentPosition <= 3 && trackingData.competitors) {
-        const newCompetitors = trackingData.competitors.filter((comp: any) => 
+        const newCompetitors = trackingData.competitors.filter((comp: unknown) => 
           comp.position <= 3 && !previousRanking.url
         );
         
         if (newCompetitors.length > 0) {
-          newCompetitors.forEach((comp: any) => {
+          newCompetitors.forEach((comp: unknown) => {
             alerts.push({
               project_id: projectId,
               keyword,

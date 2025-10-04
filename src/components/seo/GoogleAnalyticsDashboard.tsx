@@ -27,8 +27,8 @@ interface GoogleAnalyticsDashboardProps {
 }
 
 export const GoogleAnalyticsDashboard = ({ projectId }: GoogleAnalyticsDashboardProps) => {
-  const [gscData, setGscData] = useState<any>(null);
-  const [ga4Data, setGa4Data] = useState<any>(null);
+  const [gscData, setGscData] = useState<unknown>(null);
+  const [ga4Data, setGa4Data] = useState<unknown>(null);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [lastSync, setLastSync] = useState<Date | null>(null);
@@ -225,7 +225,7 @@ export const GoogleAnalyticsDashboard = ({ projectId }: GoogleAnalyticsDashboard
 
       // Reload data
       await loadAnalyticsData();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Sync error:', error);
       toast({
         title: "Sync Failed",
@@ -375,7 +375,7 @@ export const GoogleAnalyticsDashboard = ({ projectId }: GoogleAnalyticsDashboard
                   fill="#8884d8"
                   dataKey="sessions"
                 >
-                  {ga4Data.channelBreakdown.map((_: any, index: number) => (
+                  {ga4Data.channelBreakdown.map((_: unknown, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -393,7 +393,7 @@ export const GoogleAnalyticsDashboard = ({ projectId }: GoogleAnalyticsDashboard
           <Card className="p-6">
             <h3 className="text-lg font-semibold mb-4">Top Keywords Details</h3>
             <div className="space-y-2">
-              {gscData.topKeywords.map((keyword: any, index: number) => (
+              {gscData.topKeywords.map((keyword: unknown, index: number) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-accent/10 rounded-lg">
                   <div className="flex-1">
                     <p className="font-medium truncate">{keyword.keyword}</p>
@@ -416,7 +416,7 @@ export const GoogleAnalyticsDashboard = ({ projectId }: GoogleAnalyticsDashboard
           <Card className="p-6">
             <h3 className="text-lg font-semibold mb-4">Top Pages by Views</h3>
             <div className="space-y-2">
-              {ga4Data.topPages.map((page: any, index: number) => (
+              {ga4Data.topPages.map((page: unknown, index: number) => (
                 <div key={index} className="flex items-center justify-between p-3 bg-accent/10 rounded-lg">
                   <div className="flex-1">
                     <p className="font-medium truncate">{page.page}</p>

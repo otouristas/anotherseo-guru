@@ -36,7 +36,7 @@ Deno.serve(async (req) => {
     console.log(`Processing ${gscData.length} keyword records`);
 
     // Group keywords by page
-    const pageGroups = new Map<string, any[]>();
+    const pageGroups = new Map<string, unknown[]>();
     gscData.forEach(record => {
       if (!pageGroups.has(record.page_url)) {
         pageGroups.set(record.page_url, []);
@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
       difficulty_score: number;
       potential_score: number;
       opportunity_type: string;
-      ai_recommendations?: any;
+      ai_recommendations?: unknown;
     }> = [];
     let processedPages = 0;
 
@@ -268,7 +268,7 @@ async function generateClusterName(keywords: string[], apiKey: string): Promise<
   }
 }
 
-async function generateAIRecommendations(opportunities: any[], apiKey: string): Promise<any[]> {
+async function generateAIRecommendations(opportunities: unknown[], apiKey: string): Promise<unknown[]> {
   try {
     const context = opportunities.map((opp, i) => 
       `${i + 1}. Keyword: "${opp.keyword}"

@@ -29,7 +29,7 @@ interface Job {
   created_at: string;
   started_at: string | null;
   completed_at: string | null;
-  result_data: any;
+  result_data: Record<string, unknown>;
 }
 
 export default function Jobs() {
@@ -62,7 +62,7 @@ function JobsContent() {
 
       if (error) throw error;
       setJobs(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         variant: "destructive",
         title: "Error loading jobs",
@@ -108,7 +108,7 @@ function JobsContent() {
         title: "Job deleted",
         description: "The job has been removed from your history.",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         variant: "destructive",
         title: "Error deleting job",

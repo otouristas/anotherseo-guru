@@ -53,7 +53,7 @@ export const TrendsAnalysis = ({ keywords }: TrendsAnalysisProps) => {
 
       if (data?.tasks?.[0]?.result?.[0]?.items) {
         const items = data.tasks[0].result[0].items;
-        const formattedTrends: TrendData[] = items.map((item: any) => ({
+        const formattedTrends: TrendData[] = items.map((item: { keyword: string; data?: Array<{ values?: number[] }> }) => ({
           keyword: item.keyword,
           currentInterest: item.data?.[item.data.length - 1]?.values?.[0] || 0,
           change: calculateTrendChange(item.data),
@@ -82,7 +82,7 @@ export const TrendsAnalysis = ({ keywords }: TrendsAnalysisProps) => {
     }
   };
 
-  const calculateTrendChange = (data: any[]) => {
+  const calculateTrendChange = (data: Array<{ values?: number[] }>) => {
     if (!data || data.length < 2) return 0;
     const recent = data.slice(-4);
     const older = data.slice(-8, -4);

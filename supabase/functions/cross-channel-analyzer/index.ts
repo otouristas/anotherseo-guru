@@ -34,14 +34,14 @@ Deno.serve(async (req) => {
 
     // Aggregate metrics by channel
     const channelMetrics = channels.map((channel: string) => {
-      const channelData = analyticsData.filter((d: any) => d.channel === channel);
+      const channelData = analyticsData.filter((d: unknown) => d.channel === channel);
       return {
         channel,
-        totalImpressions: channelData.reduce((sum: number, d: any) => sum + (d.impressions || 0), 0),
-        totalClicks: channelData.reduce((sum: number, d: any) => sum + (d.clicks || 0), 0),
-        totalConversions: channelData.reduce((sum: number, d: any) => sum + (d.conversions || 0), 0),
-        totalRevenue: channelData.reduce((sum: number, d: any) => sum + (d.revenue || 0), 0),
-        totalCost: channelData.reduce((sum: number, d: any) => sum + (d.cost || 0), 0),
+        totalImpressions: channelData.reduce((sum: number, d: unknown) => sum + (d.impressions || 0), 0),
+        totalClicks: channelData.reduce((sum: number, d: unknown) => sum + (d.clicks || 0), 0),
+        totalConversions: channelData.reduce((sum: number, d: unknown) => sum + (d.conversions || 0), 0),
+        totalRevenue: channelData.reduce((sum: number, d: unknown) => sum + (d.revenue || 0), 0),
+        totalCost: channelData.reduce((sum: number, d: unknown) => sum + (d.cost || 0), 0),
       };
     });
 
@@ -50,7 +50,7 @@ Deno.serve(async (req) => {
     const analysisPrompt = `Analyze cross-channel marketing performance for period ${startDate} to ${endDate}.
 
 Channel Performance:
-${channelMetrics.map((m: any) => `${m.channel}: ${m.totalConversions} conversions, $${m.totalRevenue.toFixed(2)} revenue, ROAS: ${(m.totalRevenue / (m.totalCost || 1)).toFixed(2)}`).join('\n')}
+${channelMetrics.map((m: unknown) => `${m.channel}: ${m.totalConversions} conversions, $${m.totalRevenue.toFixed(2)} revenue, ROAS: ${(m.totalRevenue / (m.totalCost || 1)).toFixed(2)}`).join('\n')}
 
 Provide:
 1. Channel synergy analysis (how channels work together)
@@ -77,8 +77,8 @@ Format as JSON with keys: synergyAnalysis, attributionInsights, budgetRecommenda
     const analysis = JSON.parse(aiResult.choices[0].message.content);
 
     // Calculate overall ROAS
-    const totalRevenue = channelMetrics.reduce((sum: number, m: any) => sum + m.totalRevenue, 0);
-    const totalCost = channelMetrics.reduce((sum: number, m: any) => sum + m.totalCost, 0);
+    const totalRevenue = channelMetrics.reduce((sum: number, m: unknown) => sum + m.totalRevenue, 0);
+    const totalCost = channelMetrics.reduce((sum: number, m: unknown) => sum + m.totalCost, 0);
     const overallROAS = totalCost > 0 ? (totalRevenue / totalCost) : 0;
 
     return new Response(
@@ -92,7 +92,7 @@ Format as JSON with keys: synergyAnalysis, attributionInsights, budgetRecommenda
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

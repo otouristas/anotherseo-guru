@@ -62,15 +62,15 @@ Deno.serve(async (req) => {
     const serpResults = dataForSeoData?.tasks?.[0]?.result?.[0];
 
     // Extract voice search features
-    const featuredSnippet = serpResults?.items?.find((item: any) => 
+    const featuredSnippet = serpResults?.items?.find((item: unknown) => 
       item.type === 'featured_snippet'
     );
 
     const peopleAlsoAsk = serpResults?.items
-      ?.filter((item: any) => item.type === 'people_also_ask')
-      ?.map((item: any) => item.title) || [];
+      ?.filter((item: unknown) => item.type === 'people_also_ask')
+      ?.map((item: unknown) => item.title) || [];
 
-    const answerBox = serpResults?.items?.find((item: any) => 
+    const answerBox = serpResults?.items?.find((item: unknown) => 
       item.type === 'answer_box'
     );
 

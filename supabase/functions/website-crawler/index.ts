@@ -58,6 +58,7 @@ Deno.serve(async (req: Request) => {
     const totalCreditsNeeded = maxPages * creditsPerPage;
 
     if (profile.plan_type === "agency") {
+      // Agency plans have unlimited credits
     } else if (profile.credits < totalCreditsNeeded) {
       throw new Error(`Insufficient credits. You need ${totalCreditsNeeded} credits but have ${profile.credits}`);
     }

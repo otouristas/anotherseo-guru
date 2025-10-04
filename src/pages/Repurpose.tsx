@@ -18,7 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Link } from "react-router-dom";
-import { platforms } from "@/components/PlatformSelector";
+import { platforms } from "@/lib/platforms";
 import { CreditDisplay } from "@/components/CreditDisplay";
 import { URLScraper } from "@/components/URLScraper";
 import { KeywordResearch } from "@/components/KeywordResearch";
@@ -485,7 +485,7 @@ function RepurposeContent() {
                   projectId={undefined}
                   userId={user?.id || ""}
                   onApplyRecommendations={(recommendations) => {
-                    recommendations.forEach((rec: any) => {
+                    recommendations.forEach((rec: Record<string, unknown>) => {
                       if (rec.relatedKeywords && rec.relatedKeywords.length > 0) {
                         setSeoData({
                           ...seoData,

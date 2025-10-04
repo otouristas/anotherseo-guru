@@ -109,10 +109,10 @@ Use a ${tone} tone and ${style} writing style.`;
   return basePrompt;
 }
 
-function getPlatformPrompt(platform: string, content: string, seoData: any): string {
+function getPlatformPrompt(platform: string, content: string, seoData: unknown): string {
   // Format anchor links for prompt injection
   const anchorsText = seoData?.anchors?.length > 0 
-    ? seoData.anchors.map((a: any) => `[${a.anchor}] -> ${a.url}`).join(', ')
+    ? seoData.anchors.map((a: unknown) => `[${a.anchor}] -> ${a.url}`).join(', ')
     : 'none';
   
   // Format keywords

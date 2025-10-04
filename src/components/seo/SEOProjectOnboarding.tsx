@@ -85,7 +85,7 @@ export const SEOProjectOnboarding = ({ userId, onComplete }: SEOProjectOnboardin
         description: "Let's connect your analytics tools next",
       });
       setStep(2);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Error creating project:", error);
       toast({
         title: "Error",
@@ -136,7 +136,7 @@ export const SEOProjectOnboarding = ({ userId, onComplete }: SEOProjectOnboardin
         description: "SERP data will sync automatically",
       });
       setStep(3);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Connection Failed",
         description: error.message,
@@ -184,7 +184,7 @@ export const SEOProjectOnboarding = ({ userId, onComplete }: SEOProjectOnboardin
         description: "Traffic data will sync automatically",
       });
       setStep(4);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Connection Failed",
         description: error.message,
@@ -290,7 +290,7 @@ export const SEOProjectOnboarding = ({ userId, onComplete }: SEOProjectOnboardin
         if (projectId) onComplete(projectId);
       }, 1500);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Audit error:", error);
       toast({
         title: "Audit Failed",

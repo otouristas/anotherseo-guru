@@ -16,10 +16,10 @@ import { useToast } from "@/hooks/use-toast";
 
 interface ExportDataProps {
   data: {
-    projects?: any[];
-    usage?: any;
-    recommendations?: any[];
-    activity?: any[];
+    projects?: Array<Record<string, unknown>>;
+    usage?: Record<string, unknown>;
+    recommendations?: Array<Record<string, unknown>>;
+    activity?: Array<Record<string, unknown>>;
   };
 }
 
@@ -68,7 +68,7 @@ export const ExportData = memo(({ data }: ExportDataProps) => {
     setIsExporting(true);
 
     try {
-      const exportData: any = {};
+      const exportData: Record<string, unknown> = {};
 
       if (selectedSections.includes("projects")) {
         exportData.projects = data.projects || [];
@@ -100,7 +100,7 @@ export const ExportData = memo(({ data }: ExportDataProps) => {
         if (selectedSections.includes("projects") && exportData.projects?.length > 0) {
           csv += "SEO Projects\n";
           csv += "Name,Domain,Status,Created\n";
-          exportData.projects.forEach((p: any) => {
+          exportData.projects.forEach((p: Record<string, unknown>) => {
             csv += `"${p.name}","${p.domain}","${p.status}","${new Date(p.created_at).toLocaleDateString()}"\n`;
           });
           csv += "\n";
@@ -199,7 +199,7 @@ export const ExportData = memo(({ data }: ExportDataProps) => {
                         ? "border-primary bg-primary/5"
                         : "hover:border-primary/50"
                     }`}
-                    onClick={() => setExportFormat(format.id as any)}
+                    onClick={() => setExportFormat(format.id as "csv" | "json" | "pdf")}
                   >
                     <CardContent className="p-4 text-center">
                       <Icon className="w-8 h-8 mx-auto mb-2 text-primary" />

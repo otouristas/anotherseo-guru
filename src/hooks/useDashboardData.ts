@@ -3,11 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 
 interface DashboardData {
-  usageData: any;
-  seoProjects: any[];
-  apiKeys: any[];
-  recommendations: any[];
-  recentActivity: any[];
+  usageData: Record<string, unknown>;
+  seoProjects: Array<Record<string, unknown>>;
+  apiKeys: Array<Record<string, unknown>>;
+  recommendations: Array<Record<string, unknown>>;
+  recentActivity: Array<Record<string, unknown>>;
   isLoading: boolean;
   error: Error | null;
 }

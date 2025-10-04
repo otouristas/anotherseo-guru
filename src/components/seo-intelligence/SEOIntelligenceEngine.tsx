@@ -32,11 +32,11 @@ interface SEOIntelligenceEngineProps {
 
 interface AnalysisResult {
   optimizationScore: number;
-  gscData: any;
-  algorithmDrops: any[];
-  keywordOpportunities: any[];
-  recommendations: any[];
-  competitorData: any[];
+  gscData: unknown;
+  algorithmDrops: unknown[];
+  keywordOpportunities: unknown[];
+  recommendations: unknown[];
+  competitorData: unknown[];
   processingTime: number;
   aiAnalysis: {
     summary: string;

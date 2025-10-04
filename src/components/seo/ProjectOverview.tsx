@@ -62,10 +62,10 @@ const googleCoreUpdates = [
 ];
 
 export const ProjectOverview = ({ projectId }: ProjectOverviewProps) => {
-  const [project, setProject] = useState<any>(null);
+  const [project, setProject] = useState<unknown>(null);
   const [period, setPeriod] = useState<'7d' | '30d' | '90d'>('30d');
-  const [gscData, setGscData] = useState<any[]>([]);
-  const [keywordAnalysis, setKeywordAnalysis] = useState<any[]>([]);
+  const [gscData, setGscData] = useState<unknown[]>([]);
+  const [keywordAnalysis, setKeywordAnalysis] = useState<unknown[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   
@@ -188,7 +188,7 @@ export const ProjectOverview = ({ projectId }: ProjectOverviewProps) => {
   };
 
   // Aggregate daily data for chart
-  const chartData = gscData.reduce((acc: any[], item) => {
+  const chartData = gscData.reduce((acc: unknown[], item) => {
     const existingDate = acc.find(d => d.date === item.date);
     if (existingDate) {
       existingDate.clicks += item.clicks || 0;
@@ -302,7 +302,7 @@ export const ProjectOverview = ({ projectId }: ProjectOverviewProps) => {
                 <div className="p-2 rounded-lg bg-background/50">
                   <Calendar className="w-5 h-5 text-muted-foreground" />
                 </div>
-                <Select value={period} onValueChange={(v: any) => setPeriod(v)}>
+                <Select value={period} onValueChange={(v: unknown) => setPeriod(v)}>
                   <SelectTrigger className="w-36 bg-background/50 border-border/50">
                     <SelectValue />
                   </SelectTrigger>
@@ -713,7 +713,7 @@ export const ProjectOverview = ({ projectId }: ProjectOverviewProps) => {
           <CardContent>
             <div className="space-y-3">
               {keywordAnalysis
-                .reduce((acc: any[], item) => {
+                .reduce((acc: unknown[], item) => {
                   const existing = acc.find(p => p.page === item.page_url);
                   if (existing) {
                     existing.clicks += item.clicks || 0;

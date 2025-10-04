@@ -208,8 +208,8 @@ export const SiteAuditCrawler = ({ projectId }: SiteAuditCrawlerProps) => {
         page_speed_score: mockResult.technicalSEO.siteSpeed,
         mobile_friendly: mockResult.technicalSEO.mobileOptimization > 80,
         has_ssl: mockResult.technicalSEO.securityScore > 90,
-        core_web_vitals: mockResult.performance as any,
-        issues: mockResult.issues as any,
+        core_web_vitals: mockResult.performance as unknown,
+        issues: mockResult.issues as unknown,
         recommendations: mockResult.opportunities.map(o => o.title)
       });
 
@@ -366,7 +366,7 @@ export const SiteAuditCrawler = ({ projectId }: SiteAuditCrawlerProps) => {
                       <div>
                         <div className="flex items-center gap-2 mb-2">
                           <h4 className="font-semibold">{issue.title}</h4>
-                          <Badge variant={getSeverityColor(issue.severity) as any}>
+                          <Badge variant={getSeverityColor(issue.severity) as unknown}>
                             {issue.severity}
                           </Badge>
                           <Badge variant="outline">{issue.category}</Badge>
@@ -395,7 +395,7 @@ export const SiteAuditCrawler = ({ projectId }: SiteAuditCrawlerProps) => {
                       <TrendingUp className="w-5 h-5 text-green-500" />
                       <h4 className="font-semibold">{opp.title}</h4>
                     </div>
-                    <Badge variant={getImpactColor(opp.impact) as any}>{opp.impact} impact</Badge>
+                    <Badge variant={getImpactColor(opp.impact) as unknown}>{opp.impact} impact</Badge>
                   </div>
                   <p className="text-sm text-muted-foreground mb-3">{opp.description}</p>
                   <div className="flex items-center gap-2 text-sm text-primary">

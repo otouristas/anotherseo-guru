@@ -14,7 +14,7 @@ interface KeywordOpportunity {
   type: string;
   priorityScore: number;
   quickWin: boolean;
-  actions: any[];
+  actions: unknown[];
 }
 
 interface KeywordOpportunitiesProps {
@@ -227,7 +227,7 @@ function OpportunityCard({
             Top Recommended Actions:
           </div>
           <div className="space-y-1">
-            {opportunity.actions.slice(0, 2).map((action: any, idx: number) => (
+            {opportunity.actions.slice(0, 2).map((action: unknown, idx: number) => (
               <div key={idx} className="flex items-start gap-2 text-xs">
                 <div className="w-1 h-1 rounded-full bg-primary mt-1.5 shrink-0" />
                 <span className="text-muted-foreground">{action.action}</span>
