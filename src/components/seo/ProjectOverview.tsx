@@ -1,4 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { EnhancedCard } from "@/components/ui/enhanced-card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
@@ -700,17 +701,12 @@ export const ProjectOverview = ({ projectId }: ProjectOverviewProps) => {
 
       {/* Top Pages & Keywords with AI Recommendations */}
       <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="w-5 h-5" />
-                Top Pages
-              </CardTitle>
-              <Badge>{stats.pages}</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
+        <EnhancedCard
+          title="Top Pages"
+          icon={<FileText className="w-5 h-5" />}
+          value={stats.pages}
+          variant="info"
+        >
             <div className="space-y-3">
               {keywordAnalysis
                 .reduce((acc: any[], item) => {
@@ -757,20 +753,14 @@ export const ProjectOverview = ({ projectId }: ProjectOverviewProps) => {
                 </div>
               )}
             </div>
-          </CardContent>
-        </Card>
+        </EnhancedCard>
 
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Target className="w-5 h-5" />
-                Top Opportunities
-              </CardTitle>
-              <Badge variant="default">{stats.opportunities}</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
+        <EnhancedCard
+          title="Top Opportunities"
+          icon={<Target className="w-5 h-5" />}
+          value={stats.opportunities}
+          variant="warning"
+        >
             <div className="space-y-3">
               {keywordAnalysis
                 .filter(k => k.opportunity_type === 'high_potential_low_competition')
@@ -814,8 +804,7 @@ export const ProjectOverview = ({ projectId }: ProjectOverviewProps) => {
                 </div>
               )}
             </div>
-          </CardContent>
-        </Card>
+        </EnhancedCard>
       </div>
     </div>
   );

@@ -185,28 +185,28 @@ export const SEOAIChatbot = () => {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-[0_0_40px_hsl(262_83%_58%/0.5)] hover:shadow-[0_0_50px_hsl(262_83%_58%/0.7)] z-50 transition-all hover:scale-110"
+          className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-[0_0_40px_hsl(262_83%_58%/0.5)] hover:shadow-[0_0_50px_hsl(262_83%_58%/0.7)] z-[9999] transition-all hover:scale-110 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90"
           size="icon"
         >
           <div className="relative">
-            <MessageSquare className="w-7 h-7" />
-            <Sparkles className="w-4 h-4 absolute -top-2 -right-2 text-secondary animate-pulse" />
+            <MessageSquare className="w-7 h-7 text-white" />
+            <Sparkles className="w-4 h-4 absolute -top-2 -right-2 text-yellow-300 animate-pulse" />
           </div>
         </Button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
-        <Card className={`fixed ${isFullscreen ? 'inset-4' : 'bottom-6 right-6 w-full md:w-[420px] h-[650px]'} flex flex-col shadow-[0_0_50px_hsl(262_83%_58%/0.4)] z-50 border-primary/30 overflow-hidden transition-all duration-300`}>
+        <Card className={`fixed ${isFullscreen ? 'inset-2 sm:inset-4' : 'bottom-6 right-6 w-[calc(100vw-3rem)] h-[calc(100vh-3rem)] sm:w-[420px] sm:h-[650px]'} flex flex-col shadow-[0_0_50px_hsl(262_83%_58%/0.4)] z-[9999] border-primary/30 overflow-hidden transition-all duration-300 bg-background`}>
           {/* Header */}
-          <div className="flex items-center justify-between p-3 md:p-4 border-b bg-gradient-to-r from-primary via-primary to-secondary text-primary-foreground">
+          <div className="flex items-center justify-between p-3 sm:p-4 border-b bg-gradient-to-r from-primary via-primary to-secondary text-primary-foreground">
             <div className="flex items-center gap-2 flex-1 min-w-0">
               <div className="relative flex-shrink-0">
-                <MessageSquare className="w-5 h-5" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />
+                <div className="absolute -top-1 -right-1 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse" />
               </div>
               <div className="min-w-0">
-                <h3 className="font-bold text-sm truncate">Super SEO AI Assistant</h3>
+                <h3 className="font-bold text-xs sm:text-sm truncate">Super SEO AI Assistant</h3>
                 <p className="text-xs opacity-90 hidden sm:block">With project data access</p>
               </div>
             </div>
@@ -215,80 +215,80 @@ export const SEOAIChatbot = () => {
                 variant="ghost"
                 size="icon"
                 onClick={exportConversation}
-                className="text-primary-foreground hover:bg-white/20 h-8 w-8"
+                className="text-primary-foreground hover:bg-white/20 h-7 w-7 sm:h-8 sm:w-8"
                 title="Export conversation"
               >
-                <Download className="w-4 h-4" />
+                <Download className="w-3 h-3 sm:w-4 sm:h-4" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsFullscreen(!isFullscreen)}
-                className="text-primary-foreground hover:bg-white/20 h-8 w-8 hidden md:flex"
+                className="text-primary-foreground hover:bg-white/20 h-7 w-7 sm:h-8 sm:w-8 hidden sm:flex"
                 title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
               >
-                {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                {isFullscreen ? <Minimize2 className="w-3 h-3 sm:w-4 sm:h-4" /> : <Maximize2 className="w-3 h-3 sm:w-4 sm:h-4" />}
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsOpen(false)}
-                className="text-primary-foreground hover:bg-white/20 h-8 w-8"
+                className="text-primary-foreground hover:bg-white/20 h-7 w-7 sm:h-8 sm:w-8"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3 h-3 sm:w-4 sm:h-4" />
               </Button>
             </div>
           </div>
 
           {/* Messages */}
-          <ScrollArea className="flex-1 p-4 bg-gradient-to-b from-background to-muted/20" ref={scrollRef}>
-            <div className="space-y-4">
+          <ScrollArea className="flex-1 p-3 sm:p-4 bg-gradient-to-b from-background to-muted/20" ref={scrollRef}>
+            <div className="space-y-3 sm:space-y-4">
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
                   className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[90%] md:max-w-[85%] rounded-2xl p-3 md:p-4 shadow-sm ${
+                    className={`max-w-[95%] sm:max-w-[90%] md:max-w-[85%] rounded-2xl p-3 sm:p-4 shadow-sm ${
                       msg.role === "user"
                         ? "bg-gradient-to-r from-primary to-secondary text-primary-foreground"
                         : "bg-card border text-foreground"
                     }`}
                   >
                     {msg.role === "assistant" ? (
-                      <div className="text-sm prose prose-sm dark:prose-invert max-w-none">
+                      <div className="text-xs sm:text-sm prose prose-sm dark:prose-invert max-w-none">
                         <ReactMarkdown>{msg.content}</ReactMarkdown>
                       </div>
                     ) : (
-                      <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                      <p className="text-xs sm:text-sm whitespace-pre-wrap leading-relaxed">{msg.content}</p>
                     )}
                   </div>
                 </div>
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-card border rounded-2xl p-4 flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                    <span className="text-sm text-muted-foreground">Thinking...</span>
+                  <div className="bg-card border rounded-2xl p-3 sm:p-4 flex items-center gap-2">
+                    <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin text-primary" />
+                    <span className="text-xs sm:text-sm text-muted-foreground">Thinking...</span>
                   </div>
                 </div>
               )}
 
               {/* Quick Prompts */}
               {showQuickPrompts && messages.length === 1 && (
-                <div className="space-y-2 mt-4">
-                  <p className="text-xs font-medium text-muted-foreground mb-3">Quick Start:</p>
+                <div className="space-y-2 mt-3 sm:mt-4">
+                  <p className="text-xs font-medium text-muted-foreground mb-2 sm:mb-3">Quick Start:</p>
                   {quickPrompts.map((item, idx) => {
                     const Icon = item.icon;
                     return (
                       <Button
                         key={idx}
                         variant="outline"
-                        className="w-full justify-start h-auto py-3 px-4 hover:bg-primary/5 hover:border-primary/50 transition-all"
+                        className="w-full justify-start h-auto py-2 sm:py-3 px-3 sm:px-4 hover:bg-primary/5 hover:border-primary/50 transition-all text-xs sm:text-sm"
                         onClick={() => handleQuickPrompt(item.prompt)}
                       >
-                        <Icon className="w-4 h-4 mr-2 text-primary shrink-0" />
-                        <span className="text-sm text-left">{item.text}</span>
+                        <Icon className="w-3 h-3 sm:w-4 sm:h-4 mr-2 text-primary shrink-0" />
+                        <span className="text-left truncate">{item.text}</span>
                       </Button>
                     );
                   })}
@@ -298,7 +298,7 @@ export const SEOAIChatbot = () => {
           </ScrollArea>
 
           {/* Input */}
-          <div className="p-4 border-t bg-background">
+          <div className="p-3 sm:p-4 border-t bg-background">
             <div className="flex gap-2">
               <Input
                 value={input}
@@ -306,15 +306,15 @@ export const SEOAIChatbot = () => {
                 onKeyPress={handleKeyPress}
                 placeholder="Ask about keywords, backlinks, SEO..."
                 disabled={isLoading}
-                className="flex-1"
+                className="flex-1 text-sm sm:text-base"
               />
               <Button 
                 onClick={() => sendMessage()} 
                 disabled={isLoading || !input.trim()} 
                 size="icon"
-                className="shrink-0"
+                className="shrink-0 h-9 w-9 sm:h-10 sm:w-10"
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-3 h-3 sm:w-4 sm:h-4" />
               </Button>
             </div>
             <p className="text-xs text-muted-foreground mt-2 text-center">

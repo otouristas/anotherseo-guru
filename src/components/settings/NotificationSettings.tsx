@@ -33,19 +33,46 @@ export const NotificationSettings = () => {
   const loadSettings = async () => {
     if (!user) return;
 
-    const { data, error } = await supabase
-      .from("user_settings")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from("user_settings")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
 
-    if (error) {
-      console.error("Error loading settings:", error);
-    } else if (data) {
+      if (error) {
+        // Handle table not found or other errors gracefully
+        if (error.code === 'PGRST116' || error.message.includes('404') || error.message.includes('relation "public.user_settings" does not exist')) {
+          console.warn("User settings table not found, using default notification settings");
+          setSettings({
+            notifications_enabled: true,
+            email_notifications: true,
+            notification_frequency: "daily",
+          });
+        } else {
+          console.error("Error loading settings:", error);
+        }
+      } else if (data) {
+        setSettings({
+          notifications_enabled: data.notifications_enabled ?? true,
+          email_notifications: data.email_notifications ?? true,
+          notification_frequency: data.notification_frequency || "daily",
+        });
+      } else {
+        // No data found, use defaults
+        setSettings({
+          notifications_enabled: true,
+          email_notifications: true,
+          notification_frequency: "daily",
+        });
+      }
+    } catch (err) {
+      console.error("Unexpected error loading notification settings:", err);
+      // Use default settings on any error
       setSettings({
-        notifications_enabled: data.notifications_enabled ?? true,
-        email_notifications: data.email_notifications ?? true,
-        notification_frequency: data.notification_frequency || "daily",
+        notifications_enabled: true,
+        email_notifications: true,
+        notification_frequency: "daily",
       });
     }
     setLoading(false);

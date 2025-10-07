@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -116,20 +116,40 @@ Respond with JSON: { snippet: "...", entities: ["entity1", "entity2", ...] }`,
   };
 
   return (
-    <Card className="p-6">
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-primary" />
-            AI Overview Optimizer
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Optimize your content for Google AI Overview (powered by Gemini) to increase visibility in AI-generated
-            search results.
-          </p>
-        </div>
+    <div className="space-y-6">
+      {/* Enhanced Header */}
+      <Card className="border-0 shadow-xl bg-gradient-to-br from-primary/10 via-background to-secondary/10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl" />
+        <CardHeader className="relative pb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <Sparkles className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                  AI Overview Optimizer
+                </CardTitle>
+                <p className="text-base text-muted-foreground mt-1">
+                  Optimize your content for Google AI Overview (powered by Gemini) to increase visibility
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="gap-1">
+                <Sparkles className="w-3 h-3 text-purple-500" />
+                AI-Powered
+              </Badge>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
 
-        <div className="space-y-4">
+      {/* Input Section */}
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-background via-background to-primary/5">
+        <CardContent className="p-6">
+          <div className="space-y-6">
+            <div className="space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">Target Query</label>
             <Input
@@ -215,7 +235,9 @@ Respond with JSON: { snippet: "...", entities: ["entity1", "entity2", ...] }`,
             <p>Enter your content and query to optimize for AI Overview</p>
           </div>
         )}
-      </div>
-    </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

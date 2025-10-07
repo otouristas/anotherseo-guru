@@ -222,98 +222,122 @@ export function AdvancedPerformanceDashboard({ projectId }: { projectId: string 
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5" />
-            Advanced Performance Dashboard
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+      {/* Enhanced Header */}
+      <Card className="border-0 shadow-xl bg-gradient-to-br from-primary/10 via-background to-secondary/10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl" />
+        <CardHeader className="relative pb-6">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">
-              Comprehensive performance analytics and optimization insights
-            </p>
-            <div className="flex gap-2">
-              {['7d', '30d', '90d'].map((timeframe) => (
-                <Button
-                  key={timeframe}
-                  variant={selectedTimeframe === timeframe ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedTimeframe(timeframe)}
-                >
-                  {timeframe}
-                </Button>
-              ))}
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <BarChart3 className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                  Advanced Performance Dashboard
+                </CardTitle>
+                <p className="text-base text-muted-foreground mt-1">
+                  Real-time performance monitoring with advanced analytics and insights
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex gap-2">
+                {['7d', '30d', '90d'].map((timeframe) => (
+                  <Button
+                    key={timeframe}
+                    variant={selectedTimeframe === timeframe ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setSelectedTimeframe(timeframe)}
+                    className={selectedTimeframe === timeframe ? 'bg-gradient-to-r from-primary to-secondary' : ''}
+                  >
+                    {timeframe}
+                  </Button>
+                ))}
+              </div>
+              <Badge variant="secondary" className="gap-1">
+                <Activity className="w-3 h-3 text-green-500" />
+                Live Data
+              </Badge>
             </div>
           </div>
-        </CardContent>
+        </CardHeader>
       </Card>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Sessions</p>
-                <p className="text-2xl font-bold">{metrics?.trafficMetrics.totalSessions.toLocaleString()}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-background via-background to-primary/5">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-xl group-hover:scale-150 transition-transform duration-500" />
+          <CardContent className="relative p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 rounded-xl bg-blue-500/10">
+                <Eye className="w-6 h-6 text-blue-500" />
               </div>
-              <Eye className="h-8 w-8 text-muted-foreground" />
+              <div className="flex items-center gap-1">
+                <TrendingUp className="w-3 h-3 text-green-500" />
+                <span className="text-xs font-medium text-green-600">+12.5%</span>
+              </div>
             </div>
-            <div className="flex items-center mt-2">
-              <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-sm text-green-600">+12.5%</span>
+            <div className="text-3xl font-bold mb-2 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+              {metrics?.trafficMetrics.totalSessions.toLocaleString()}
             </div>
+            <div className="text-sm text-muted-foreground">Total Sessions</div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Bounce Rate</p>
-                <p className="text-2xl font-bold">{metrics?.trafficMetrics.bounceRate}%</p>
+        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-background via-background to-primary/5">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-xl group-hover:scale-150 transition-transform duration-500" />
+          <CardContent className="relative p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 rounded-xl bg-orange-500/10">
+                <MousePointer className="w-6 h-6 text-orange-500" />
               </div>
-              <MousePointer className="h-8 w-8 text-muted-foreground" />
+              <div className="flex items-center gap-1">
+                <TrendingDown className="w-3 h-3 text-green-500" />
+                <span className="text-xs font-medium text-green-600">-3.2%</span>
+              </div>
             </div>
-            <div className="flex items-center mt-2">
-              <TrendingDown className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-sm text-green-600">-3.2%</span>
+            <div className="text-3xl font-bold mb-2 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+              {metrics?.trafficMetrics.bounceRate}%
             </div>
+            <div className="text-sm text-muted-foreground">Bounce Rate</div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Avg. Session</p>
-                <p className="text-2xl font-bold">{Math.floor((metrics?.trafficMetrics.avgSessionDuration || 0) / 60)}m</p>
+        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-background via-background to-primary/5">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-xl group-hover:scale-150 transition-transform duration-500" />
+          <CardContent className="relative p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 rounded-xl bg-green-500/10">
+                <Clock className="w-6 h-6 text-green-500" />
               </div>
-              <Clock className="h-8 w-8 text-muted-foreground" />
+              <div className="flex items-center gap-1">
+                <TrendingUp className="w-3 h-3 text-green-500" />
+                <span className="text-xs font-medium text-green-600">+8.1%</span>
+              </div>
             </div>
-            <div className="flex items-center mt-2">
-              <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-sm text-green-600">+8.1%</span>
+            <div className="text-3xl font-bold mb-2 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+              {Math.floor((metrics?.trafficMetrics.avgSessionDuration || 0) / 60)}m
             </div>
+            <div className="text-sm text-muted-foreground">Avg. Session</div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Pages/Session</p>
-                <p className="text-2xl font-bold">{metrics?.trafficMetrics.pagesPerSession}</p>
+        <Card className="relative overflow-hidden group hover:shadow-lg transition-all duration-300 border-0 bg-gradient-to-br from-background via-background to-primary/5">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-xl group-hover:scale-150 transition-transform duration-500" />
+          <CardContent className="relative p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 rounded-xl bg-purple-500/10">
+                <Globe className="w-6 h-6 text-purple-500" />
               </div>
-              <Globe className="h-8 w-8 text-muted-foreground" />
+              <div className="flex items-center gap-1">
+                <TrendingUp className="w-3 h-3 text-green-500" />
+                <span className="text-xs font-medium text-green-600">+2.3%</span>
+              </div>
             </div>
-            <div className="flex items-center mt-2">
-              <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-              <span className="text-sm text-green-600">+2.3%</span>
+            <div className="text-3xl font-bold mb-2 bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+              {metrics?.trafficMetrics.pagesPerSession}
             </div>
+            <div className="text-sm text-muted-foreground">Pages/Session</div>
           </CardContent>
         </Card>
       </div>

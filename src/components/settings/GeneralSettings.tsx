@@ -32,19 +32,46 @@ export const GeneralSettings = () => {
   const loadSettings = async () => {
     if (!user) return;
 
-    const { data, error } = await supabase
-      .from("user_settings")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from("user_settings")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
 
-    if (error) {
-      console.error("Error loading settings:", error);
-    } else if (data) {
+      if (error) {
+        // Handle table not found or other errors gracefully
+        if (error.code === 'PGRST116' || error.message.includes('404') || error.message.includes('relation "public.user_settings" does not exist')) {
+          console.warn("User settings table not found, using default settings");
+          setSettings({
+            language: "en",
+            timezone: "UTC", 
+            ai_model_preference: "auto",
+          });
+        } else {
+          console.error("Error loading settings:", error);
+        }
+      } else if (data) {
+        setSettings({
+          language: data.language || "en",
+          timezone: data.timezone || "UTC",
+          ai_model_preference: data.ai_model_preference || "auto",
+        });
+      } else {
+        // No data found, use defaults
+        setSettings({
+          language: "en",
+          timezone: "UTC",
+          ai_model_preference: "auto",
+        });
+      }
+    } catch (err) {
+      console.error("Unexpected error loading settings:", err);
+      // Use default settings on any error
       setSettings({
-        language: data.language || "en",
-        timezone: data.timezone || "UTC",
-        ai_model_preference: data.ai_model_preference || "auto",
+        language: "en",
+        timezone: "UTC",
+        ai_model_preference: "auto",
       });
     }
     setLoading(false);

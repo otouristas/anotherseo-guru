@@ -18,6 +18,7 @@ import {
   BarChart3,
   AlertCircle,
   CheckCircle,
+  Calendar,
   Star,
   Users,
   Globe

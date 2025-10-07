@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -142,18 +142,39 @@ export function QueryWheel({ onKeywordsGenerated }: Props) {
   const totalQueries = Object.values(wheelData).reduce((sum, arr) => sum + arr.length, 0);
 
   return (
-    <Card className="p-6">
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
-            <Search className="w-6 h-6 text-primary" />
-            5W Query Wheel Generator
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Generate comprehensive keyword variations across Who, What, Why, How, and Where dimensions
-            for complete topical coverage.
-          </p>
-        </div>
+    <div className="space-y-6">
+      {/* Enhanced Header */}
+      <Card className="border-0 shadow-xl bg-gradient-to-br from-primary/10 via-background to-secondary/10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl" />
+        <CardHeader className="relative pb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <Search className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                  5W Query Wheel Generator
+                </CardTitle>
+                <p className="text-base text-muted-foreground mt-1">
+                  Generate comprehensive keyword variations across Who, What, Why, How, and Where dimensions
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="gap-1">
+                <Wrench className="w-3 h-3 text-orange-500" />
+                Enterprise
+              </Badge>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
+
+      {/* Input Section */}
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-background via-background to-primary/5">
+        <CardContent className="p-6">
+          <div className="space-y-6">
 
         <div className="flex gap-2">
           <Input
@@ -226,7 +247,9 @@ export function QueryWheel({ onKeywordsGenerated }: Props) {
             <p>Enter a seed keyword to generate the query wheel</p>
           </div>
         )}
-      </div>
-    </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

@@ -39,7 +39,8 @@ import {
   PieChart,
   Pie,
   Cell,
-  ComposedChart
+  ComposedChart,
+  Legend
 } from 'recharts';
 import { ExportMenu } from "@/components/ExportMenu";
 
@@ -490,7 +491,10 @@ export const SERPTracker = ({ projectId }: SERPTrackerProps) => {
                               borderRadius: '8px'
                             }}
                           />
-                          <Legend />
+                          <Legend 
+                            wrapperStyle={{ fontSize: '12px' }}
+                            iconType="circle"
+                          />
                         </PieChart>
                       </ResponsiveContainer>
                     </div>

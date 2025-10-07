@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { BarChart3, Search, CheckCircle, AlertCircle } from "lucide-react";
+import { BarChart3, Search, CheckCircle, AlertCircle, RefreshCw, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Select,
@@ -13,9 +13,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { GoogleAnalyticsDashboard } from "./GoogleAnalyticsDashboard";
+import { Separator } from "@/components/ui/separator";
 
 interface GoogleIntegrationsProps {
   projectId: string;
+}
+
+interface GSCProperty {
+  siteUrl: string;
+  permissionLevel?: string;
+}
+
+interface GAProperty {
+  name: string;
+  displayName: string;
+  parent?: string;
+  timeZone?: string;
 }
 
 export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
@@ -23,10 +36,12 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
   const [gaConnected, setGaConnected] = useState(false);
   const [gscPropertyId, setGscPropertyId] = useState("");
   const [gaPropertyId, setGaPropertyId] = useState("");
-  const [gscProperties, setGscProperties] = useState<Array<{ siteUrl: string }>>([]);
-  const [gaProperties, setGaProperties] = useState<Array<{ name: string; displayName: string }>>([]);
+  const [gscProperties, setGscProperties] = useState<GSCProperty[]>([]);
+  const [gaProperties, setGaProperties] = useState<GAProperty[]>([]);
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [showPropertySelector, setShowPropertySelector] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -46,8 +61,45 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
       setGaPropertyId(data.google_analytics_property_id || "");
       setGscConnected(!!data.google_search_console_site_url);
       setGaConnected(!!data.google_analytics_property_id);
+      
+      // If we have credentials but no properties loaded, fetch them
+      if (data.credentials_json && (gscProperties.length === 0 || gaProperties.length === 0)) {
+        await refreshProperties();
+      }
     }
     setLoading(false);
+  };
+
+  const refreshProperties = async () => {
+    setRefreshing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('google-oauth-callback', {
+        body: { 
+          refreshOnly: true,
+          projectId,
+          redirectUri: `${window.location.origin}/google-oauth-callback.html`
+        }
+      });
+
+      if (error) throw error;
+
+      setGscProperties(data.gscProperties || []);
+      setGaProperties(data.gaProperties || []);
+      
+      toast({
+        title: "Properties Refreshed! ✅",
+        description: "Updated list of available Google properties",
+      });
+    } catch (error) {
+      console.error('Failed to refresh properties:', error);
+      toast({
+        title: "Refresh Failed",
+        description: "Could not refresh Google properties",
+        variant: "destructive",
+      });
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const saveSettings = async (gscUrl?: string, gaId?: string) => {
@@ -127,10 +179,11 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
 
           setGscProperties(data.gscProperties || []);
           setGaProperties(data.gaProperties || []);
+          setShowPropertySelector(true);
           
           toast({
             title: "Connected to Google! ✅",
-            description: "Please select your properties below",
+            description: "Now select your specific properties for this project",
           });
           
         } catch (error) {
@@ -165,9 +218,10 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
     await saveSettings(siteUrl, gaPropertyId);
     setGscPropertyId(siteUrl);
     setGscConnected(true);
+    setShowPropertySelector(false);
     toast({
       title: "Google Search Console Connected! ✅",
-      description: "Property selected successfully",
+      description: `Selected property: ${siteUrl}`,
     });
   };
 
@@ -175,10 +229,16 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
     await saveSettings(gscPropertyId, propertyId);
     setGaPropertyId(propertyId);
     setGaConnected(true);
+    setShowPropertySelector(false);
+    const propertyName = gaProperties.find(p => p.name === propertyId)?.displayName || propertyId;
     toast({
       title: "Google Analytics Connected! ✅",
-      description: "Property selected successfully",
+      description: `Selected property: ${propertyName}`,
     });
+  };
+
+  const changeProperties = () => {
+    setShowPropertySelector(true);
   };
 
 
@@ -208,28 +268,108 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold mb-2">Connect Your Google Properties</h2>
-        <p className="text-muted-foreground">
-          Integrate with Google Search Console and Google Analytics to get comprehensive insights and
-          actionable SEO recommendations based on real data.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold mb-2">Connect Your Google Properties</h2>
+          <p className="text-muted-foreground">
+            Integrate with Google Search Console and Google Analytics to get comprehensive insights and
+            actionable SEO recommendations based on real data.
+          </p>
+        </div>
+        {(gscConnected || gaConnected) && (
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={refreshProperties}
+              disabled={refreshing}
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+              Refresh Properties
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={changeProperties}
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Change Properties
+            </Button>
+          </div>
+        )}
       </div>
 
+      {/* Property Selection Modal */}
+      {showPropertySelector && (gscProperties.length > 0 || gaProperties.length > 0) && (
+        <Card className="p-6 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              Select Properties for This Project
+            </h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowPropertySelector(false)}
+            >
+              ✕
+            </Button>
+          </div>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            Choose which Google Search Console and Analytics properties to connect to this specific project.
+          </p>
+          
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* GSC Property Selection */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Google Search Console</label>
+              <Select onValueChange={selectGSCProperty}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a property..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {gscProperties.map((prop) => (
+                    <SelectItem key={prop.siteUrl} value={prop.siteUrl}>
+                      {prop.siteUrl}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* GA Property Selection */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Google Analytics</label>
+              <Select onValueChange={selectGAProperty}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a property..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {gaProperties.map((prop) => (
+                    <SelectItem key={prop.name} value={prop.name}>
+                      {prop.displayName} ({prop.name.split('/').pop()})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {/* Google Search Console */}
-      <Card className="p-6">
+      <Card className="p-6 border border-gray-200 dark:border-gray-700">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-lg bg-blue-500/10">
-              <Search className="w-6 h-6 text-blue-500" />
+            <div className="p-3 rounded-md bg-gray-100 dark:bg-gray-800">
+              <Search className="w-6 h-6 text-gray-600 dark:text-gray-400" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold">Google Search Console</h3>
-              <p className="text-sm text-muted-foreground">Connect to sync SERP data, indexing status, and search analytics</p>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Google Search Console</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Connect to sync SERP data, indexing status, and search analytics</p>
             </div>
           </div>
           {gscConnected && (
-            <Badge variant="default" className="flex items-center gap-1">
+            <Badge variant="default" className="flex items-center gap-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
               <CheckCircle className="w-3 h-3" />
               Connected
             </Badge>
@@ -253,7 +393,7 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
               </ul>
             </div>
 
-            {gscProperties.length > 0 ? (
+            {gscProperties.length > 0 && !showPropertySelector ? (
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">Select your Search Console property:</p>
                 <Select onValueChange={selectGSCProperty}>
@@ -282,47 +422,65 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="bg-green-500/10 p-4 rounded-lg">
-              <p className="text-sm">
-                <span className="font-medium">Connected Property:</span> {gscPropertyId}
-              </p>
-              <p className="text-sm text-muted-foreground mt-2">
-                Last synced: Just now • Next sync: In 1 hour
-              </p>
+            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-md">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-900 dark:text-white">
+                    <span className="font-medium">Connected Property:</span> {gscPropertyId}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    Last synced: Just now • Next sync: In 1 hour
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={changeProperties}
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Change
+                </Button>
+              </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-accent/10 rounded-lg">
-                <div className="text-2xl font-bold mb-1">1,245</div>
-                <div className="text-sm text-muted-foreground">Total Clicks (7d)</div>
+              <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-md">
+                <div className="text-2xl font-bold mb-1 text-gray-900 dark:text-white">1,245</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Total Clicks (7d)</div>
               </div>
-              <div className="text-center p-4 bg-accent/10 rounded-lg">
-                <div className="text-2xl font-bold mb-1">45.2K</div>
-                <div className="text-sm text-muted-foreground">Impressions (7d)</div>
+              <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-md">
+                <div className="text-2xl font-bold mb-1 text-gray-900 dark:text-white">45.2K</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Impressions (7d)</div>
               </div>
-              <div className="text-center p-4 bg-accent/10 rounded-lg">
-                <div className="text-2xl font-bold mb-1">2.75%</div>
-                <div className="text-sm text-muted-foreground">Avg. CTR (7d)</div>
+              <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-md">
+                <div className="text-2xl font-bold mb-1 text-gray-900 dark:text-white">2.75%</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Avg. CTR (7d)</div>
               </div>
             </div>
-            <Button variant="outline" onClick={disconnectGSC}>Disconnect</Button>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={disconnectGSC}>Disconnect</Button>
+              <Button variant="outline" onClick={refreshProperties} disabled={refreshing}>
+                <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                Refresh Data
+              </Button>
+            </div>
           </div>
         )}
       </Card>
 
       {/* Google Analytics */}
-      <Card className="p-6">
+      <Card className="p-6 border border-gray-200 dark:border-gray-700">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-lg bg-orange-500/10">
-              <BarChart3 className="w-6 h-6 text-orange-500" />
+            <div className="p-3 rounded-md bg-gray-100 dark:bg-gray-800">
+              <BarChart3 className="w-6 h-6 text-gray-600 dark:text-gray-400" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold">Google Analytics 4</h3>
-              <p className="text-sm text-muted-foreground">Connect to analyze user behavior, conversions, and traffic sources</p>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Google Analytics 4</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Connect to analyze user behavior, conversions, and traffic sources</p>
             </div>
           </div>
           {gaConnected && (
-            <Badge variant="default" className="flex items-center gap-1">
+            <Badge variant="default" className="flex items-center gap-1 bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
               <CheckCircle className="w-3 h-3" />
               Connected
             </Badge>
@@ -346,7 +504,7 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
               </ul>
             </div>
 
-            {gaProperties.length > 0 ? (
+            {gaProperties.length > 0 && !showPropertySelector ? (
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">Select your Analytics property:</p>
                 <Select onValueChange={selectGAProperty}>
@@ -356,7 +514,7 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
                   <SelectContent>
                     {gaProperties.map((prop) => (
                       <SelectItem key={prop.name} value={prop.name}>
-                        {prop.displayName} ({prop.name})
+                        {prop.displayName} ({prop.name.split('/').pop()})
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -387,32 +545,50 @@ export const GoogleIntegrations = ({ projectId }: GoogleIntegrationsProps) => {
           </div>
         ) : (
           <div className="space-y-4">
-            <div className="bg-green-500/10 p-4 rounded-lg">
-              <p className="text-sm">
-                <span className="font-medium">Connected Property:</span> {gaPropertyId.split('/').pop()}
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                {gaProperties.find(p => p.name === gaPropertyId)?.displayName || gaPropertyId}
-              </p>
-              <p className="text-sm text-muted-foreground mt-2">
-                Last synced: Just now • Next sync: In 1 hour
-              </p>
+            <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-md">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-900 dark:text-white">
+                    <span className="font-medium">Connected Property:</span> {gaPropertyId.split('/').pop()}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {gaProperties.find(p => p.name === gaPropertyId)?.displayName || gaPropertyId}
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                    Last synced: Just now • Next sync: In 1 hour
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={changeProperties}
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Change
+                </Button>
+              </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-accent/10 rounded-lg">
-                <div className="text-2xl font-bold mb-1">3,521</div>
-                <div className="text-sm text-muted-foreground">Users (7d)</div>
+              <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-md">
+                <div className="text-2xl font-bold mb-1 text-gray-900 dark:text-white">3,521</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Users (7d)</div>
               </div>
-              <div className="text-center p-4 bg-accent/10 rounded-lg">
-                <div className="text-2xl font-bold mb-1">5.2K</div>
-                <div className="text-sm text-muted-foreground">Sessions (7d)</div>
+              <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-md">
+                <div className="text-2xl font-bold mb-1 text-gray-900 dark:text-white">5.2K</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Sessions (7d)</div>
               </div>
-              <div className="text-center p-4 bg-accent/10 rounded-lg">
-                <div className="text-2xl font-bold mb-1">3:24</div>
-                <div className="text-sm text-muted-foreground">Avg. Duration</div>
+              <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-md">
+                <div className="text-2xl font-bold mb-1 text-gray-900 dark:text-white">3:24</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Avg. Duration</div>
               </div>
             </div>
-            <Button variant="outline" onClick={disconnectGA}>Disconnect</Button>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={disconnectGA}>Disconnect</Button>
+              <Button variant="outline" onClick={refreshProperties} disabled={refreshing}>
+                <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                Refresh Data
+              </Button>
+            </div>
           </div>
         )}
       </Card>

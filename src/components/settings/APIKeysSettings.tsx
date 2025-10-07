@@ -67,16 +67,28 @@ export const APIKeysSettings = () => {
   const loadAPIKeys = async () => {
     if (!user) return;
 
-    const { data, error } = await supabase
-      .from("api_keys")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from("api_keys")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
 
-    if (error) {
-      console.error("Error loading API keys:", error);
-    } else {
-      setApiKeys(data || []);
+      if (error) {
+        // Handle table not found or other errors gracefully
+        if (error.code === 'PGRST116' || error.message.includes('404') || error.message.includes('relation "public.api_keys" does not exist')) {
+          console.warn("API keys table not found, using empty array");
+          setApiKeys([]);
+        } else {
+          console.error("Error loading API keys:", error);
+          setApiKeys([]);
+        }
+      } else {
+        setApiKeys(data || []);
+      }
+    } catch (err) {
+      console.error("Unexpected error loading API keys:", err);
+      setApiKeys([]);
     }
     setLoading(false);
   };

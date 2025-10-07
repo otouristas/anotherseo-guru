@@ -55,29 +55,72 @@ const COLORS = {
 };
 
 export function AdvancedAnalytics({ projectId }: AdvancedAnalyticsProps) {
-  const { data: keywords, loading: keywordsLoading } = useRealTimeData({
+  // Always call all hooks, but control their behavior with enabled flags
+  const { data: keywords, loading: keywordsLoading, error: keywordsError } = useRealTimeData({
     table: 'serp_rankings',
     projectId,
     cacheKey: `keywords:${projectId}`,
+    enabled: !!projectId,
+    cacheTTL: 10 * 60 * 1000, // 10 minutes cache
   });
 
-  const { data: analytics, loading: analyticsLoading } = useRealTimeData({
+  const { data: analytics, loading: analyticsLoading, error: analyticsError } = useRealTimeData({
     table: 'gsc_analytics',
     projectId,
     cacheKey: `analytics:${projectId}`,
+    enabled: !!projectId,
+    cacheTTL: 10 * 60 * 1000,
   });
 
-  const { data: competitors, loading: competitorsLoading } = useRealTimeData({
+  const { data: competitors, loading: competitorsLoading, error: competitorsError } = useRealTimeData({
     table: 'competitor_analysis',
     projectId,
     cacheKey: `competitors:${projectId}`,
+    enabled: !!projectId,
+    cacheTTL: 10 * 60 * 1000,
   });
 
-  const { data: recommendations, loading: recommendationsLoading } = useRealTimeData({
+  const { data: recommendations, loading: recommendationsLoading, error: recommendationsError } = useRealTimeData({
     table: 'ai_recommendations',
     projectId,
     cacheKey: `recommendations:${projectId}`,
+    enabled: !!projectId,
+    cacheTTL: 10 * 60 * 1000,
   });
+
+  // Check for critical errors that should prevent rendering
+  const hasCriticalError = keywordsError || analyticsError || competitorsError || recommendationsError;
+  const isLoading = keywordsLoading || analyticsLoading || competitorsLoading || recommendationsLoading;
+
+  // Show loading state or error state
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading analytics data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (hasCriticalError) {
+    return (
+      <div className="space-y-6">
+        <Card className="border-destructive">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 text-destructive mb-2">
+              <AlertTriangle className="w-5 h-5" />
+              <h3 className="font-semibold">Analytics Error</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Unable to load analytics data. Please check your connection and try again.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Process data for charts
   const chartData = useMemo(() => {
@@ -164,18 +207,6 @@ export function AdvancedAnalytics({ projectId }: AdvancedAnalyticsProps) {
       pendingRecommendations,
     };
   }, [keywords, analytics, recommendations]);
-
-  if (keywordsLoading || analyticsLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <MetricCard key={i} title="Loading..." loading />
-          ))}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <motion.div

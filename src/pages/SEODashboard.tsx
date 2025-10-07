@@ -41,11 +41,19 @@ import { AIOOptimizer } from "@/components/enterprise/AIOOptimizer";
 import { SeoReport } from "@/components/seo/SeoReport";
 import { PublicResearchRealTime } from "@/components/PublicResearchRealTime";
 import { AdvancedAnalytics } from "@/components/analytics/AdvancedAnalytics";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { AIContentStrategyGenerator } from "@/components/ai/AIContentStrategyGenerator";
 import { PredictiveSEOAnalytics } from "@/components/ai/PredictiveSEOAnalytics";
 import { AISERPOptimizer } from "@/components/ai/AISERPOptimizer";
 import { AdvancedPerformanceDashboard } from "@/components/ai/AdvancedPerformanceDashboard";
 import { TeamCollaborationSuite } from "@/components/ai/TeamCollaborationSuite";
+import { InternalLinkingAnalyzer } from "@/components/seo/InternalLinkingAnalyzer";
+import { AdvancedSEOAnalytics } from "@/components/seo/AdvancedSEOAnalytics";
+import { DataForSEOTest } from "@/components/seo/DataForSEOTest";
+import KeywordResearchMatrix from "@/components/seo/KeywordResearchMatrix";
+import SERPTrackerMinimal from "@/components/seo/SERPTrackerMinimal";
+import ProjectOverviewMinimal from "@/components/seo/ProjectOverviewMinimal";
+import GoogleIntegrationsMinimal from "@/components/seo/GoogleIntegrationsMinimal";
 
 export default function SEODashboard() {
   return (
@@ -159,11 +167,11 @@ function SEODashboardContent() {
 
     switch (activeTab) {
       case "overview":
-        return <ProjectOverview projectId={selectedProject} />;
+        return <ProjectOverviewMinimal projectId={selectedProject} />;
       case "ai-recommendations":
         return <AIRecommendations projectId={selectedProject} userId={user?.id || ""} />;
       case "serp":
-        return <SERPTracker projectId={selectedProject} />;
+        return <SERPTrackerMinimal projectId={selectedProject} />;
       case "monitoring":
         return <SERPMonitoring projectId={selectedProject} />;
       case "competitors":
@@ -195,7 +203,7 @@ function SEODashboardContent() {
       case "technical":
         return <TechnicalAudit projectId={selectedProject} />;
       case "integrations":
-        return <GoogleIntegrations projectId={selectedProject} />;
+        return <GoogleIntegrationsMinimal projectId={selectedProject} />;
       case "calendar":
         return <ContentCalendarView projectId={selectedProject} />;
       case "multi-location":
@@ -213,7 +221,11 @@ function SEODashboardContent() {
       case "public-research":
         return <PublicResearchRealTime />;
       case "analytics":
-        return <AdvancedAnalytics projectId={selectedProject} />;
+        return (
+          <ErrorBoundary>
+            <AdvancedAnalytics projectId={selectedProject} />
+          </ErrorBoundary>
+        );
       case "content-strategy":
         return <AIContentStrategyGenerator projectId={selectedProject} />;
       case "predictive-analytics":
@@ -224,6 +236,14 @@ function SEODashboardContent() {
         return <AdvancedPerformanceDashboard projectId={selectedProject} />;
       case "team-collaboration":
         return <TeamCollaborationSuite projectId={selectedProject} />;
+      case "internal-linking":
+        return <InternalLinkingAnalyzer projectId={selectedProject} />;
+      case "advanced-analytics":
+        return <AdvancedSEOAnalytics projectId={selectedProject} />;
+      case "dataforseo-test":
+        return <DataForSEOTest projectId={selectedProject} />;
+      case "keyword-matrix":
+        return <KeywordResearchMatrix projectId={selectedProject} />;
       default:
         return <ProjectOverview projectId={selectedProject} />;
     }
@@ -231,36 +251,38 @@ function SEODashboardContent() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full relative">
         {selectedProject && <SEOSidebar onTabChange={setActiveTab} activeTab={activeTab} />}
         
         <div className="flex-1 flex flex-col">
-          {/* Enhanced Header */}
-          <header className="sticky top-0 z-10 flex h-20 items-center gap-4 border-b bg-gradient-to-r from-background via-background to-primary/5 backdrop-blur shadow-lg px-4 md:px-6">
-            {selectedProject && <SidebarTrigger className="mr-2" />}
-            <div className="flex-1 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
+          {/* SEO Suite Sub-Header */}
+          <div className="sticky top-16 z-[10000] flex h-14 items-center gap-4 border-b bg-white dark:bg-gray-900 px-4 md:px-6 shadow-sm">
+            {selectedProject && <SidebarTrigger className="mr-2 flex-shrink-0" />}
+            <div className="flex-1 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                    <Zap className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
-                      SEO Command Center
-                    </h1>
-                    <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
-                      Enterprise-grade SEO intelligence platform
-                    </p>
-                  </div>
+                <div className="w-7 h-7 rounded-md bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                  <Zap className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                </div>
+                <div>
+                  <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    SEO Suite
+                  </h1>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">
+                    Professional SEO management platform
+                  </p>
                 </div>
               </div>
               {selectedProject && (
                 <div className="flex items-center gap-3">
-                  <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                    <span className="text-xs font-medium text-green-700 dark:text-green-400">Live Monitoring</span>
+                  <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-md bg-gray-100 dark:bg-gray-800">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Active</span>
                   </div>
-                  <Button onClick={handleNewProject} size="sm" className="gap-2 w-full sm:w-auto bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90">
+                  <Button 
+                    onClick={handleNewProject} 
+                    size="sm" 
+                    className="gap-2 bg-gray-900 hover:bg-gray-800 dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900"
+                  >
                     <Plus className="w-4 h-4" />
                     <span className="hidden sm:inline">New Project</span>
                     <span className="sm:hidden">New</span>
@@ -268,10 +290,10 @@ function SEODashboardContent() {
                 </div>
               )}
             </div>
-          </header>
+          </div>
 
-          {/* Enhanced Main Content */}
-          <main className="flex-1 overflow-auto bg-gradient-to-br from-background via-background to-primary/5">
+          {/* Professional Main Content */}
+          <main className="flex-1 overflow-auto bg-gray-50 dark:bg-gray-900">
             <div className="p-4 sm:p-6 lg:p-8">
               <div className="max-w-7xl mx-auto space-y-6">
                 <Breadcrumb />
@@ -286,11 +308,7 @@ function SEODashboardContent() {
                   </div>
                 )}
                 <div className="relative">
-                  {/* Background Pattern */}
-                  <div className="absolute inset-0 bg-grid-white/5 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]" style={{ backgroundSize: '20px 20px' }} />
-                  <div className="relative">
-                    {renderContent()}
-                  </div>
+                  {renderContent()}
                 </div>
               </div>
             </div>

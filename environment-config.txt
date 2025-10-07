@@ -10,8 +10,9 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
 # ===========================================
 # DATAFORSEO API CONFIGURATION
 # ===========================================
-VITE_DATAFORSEO_LOGIN=your_dataforseo_login_here
-VITE_DATAFORSEO_PASSWORD=your_dataforseo_password_here
+# Server-side only (Supabase Edge Functions)
+DATAFORSEO_LOGIN=george.k@growthrocks.com
+DATAFORSEO_PASSWORD=6f820760d2c324ac
 
 # ===========================================
 # STRIPE PAYMENT CONFIGURATION

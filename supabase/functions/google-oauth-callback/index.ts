@@ -12,9 +12,9 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { code, projectId, redirectUri } = await req.json();
+    const { code, projectId, redirectUri, refreshOnly } = await req.json();
     
-    console.log('Processing OAuth callback for project:', projectId);
+    console.log('Processing OAuth callback for project:', projectId, 'refreshOnly:', refreshOnly);
 
     const clientId = Deno.env.get('GOOGLE_OAUTH_CLIENT_ID');
     const clientSecret = Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET');
@@ -23,29 +23,102 @@ Deno.serve(async (req) => {
       throw new Error('OAuth credentials not configured');
     }
 
-    // Exchange authorization code for tokens
-    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        code,
-        client_id: clientId,
-        client_secret: clientSecret,
-        redirect_uri: redirectUri,
-        grant_type: 'authorization_code',
-      }),
-    });
+    // Initialize Supabase client
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-    if (!tokenResponse.ok) {
-      const error = await tokenResponse.text();
-      console.error('Token exchange failed:', error);
-      throw new Error('Failed to exchange authorization code');
+    let tokens;
+    
+    if (refreshOnly) {
+      // Get existing credentials and refresh token
+      const { data: existingSettings } = await supabase
+        .from('google_api_settings')
+        .select('credentials_json')
+        .eq('project_id', projectId)
+        .single();
+
+      if (!existingSettings?.credentials_json?.refresh_token) {
+        throw new Error('No refresh token available');
+      }
+
+      // Refresh the access token
+      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          refresh_token: existingSettings.credentials_json.refresh_token,
+          client_id: clientId,
+          client_secret: clientSecret,
+          grant_type: 'refresh_token',
+        }),
+      });
+
+      if (!tokenResponse.ok) {
+        throw new Error('Failed to refresh access token');
+      }
+
+      tokens = await tokenResponse.json();
+      
+      // Update stored credentials
+      await supabase
+        .from('google_api_settings')
+        .update({
+          credentials_json: {
+            ...existingSettings.credentials_json,
+            access_token: tokens.access_token,
+            expires_at: Date.now() + (tokens.expires_in * 1000),
+          },
+        })
+        .eq('project_id', projectId);
+    } else {
+      // Exchange authorization code for tokens
+      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          code,
+          client_id: clientId,
+          client_secret: clientSecret,
+          redirect_uri: redirectUri,
+          grant_type: 'authorization_code',
+        }),
+      });
+
+      if (!tokenResponse.ok) {
+        const error = await tokenResponse.text();
+        console.error('Token exchange failed:', error);
+        throw new Error('Failed to exchange authorization code');
+      }
+
+      tokens = await tokenResponse.json();
+      console.log('Successfully obtained tokens');
+
+      // Store credentials
+      const { error: upsertError } = await supabase
+        .from('google_api_settings')
+        .upsert({
+          project_id: projectId,
+          credentials_json: {
+            access_token: tokens.access_token,
+            refresh_token: tokens.refresh_token,
+            expires_at: Date.now() + (tokens.expires_in * 1000),
+            token_type: tokens.token_type,
+          },
+        }, {
+          onConflict: 'project_id',
+          ignoreDuplicates: false,
+        });
+
+      if (upsertError) {
+        console.error('Failed to store credentials:', upsertError);
+        throw new Error('Failed to store credentials');
+      }
     }
-
-    const tokens = await tokenResponse.json();
-    console.log('Successfully obtained tokens');
 
     // Get user's Google properties
     const [gscProperties, gaProperties] = await Promise.all([
@@ -63,32 +136,6 @@ Deno.serve(async (req) => {
         },
       }).then(res => res.ok ? res.json() : { properties: [] }),
     ]);
-
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // Store credentials
-    const { error: upsertError } = await supabase
-      .from('google_api_settings')
-      .upsert({
-        project_id: projectId,
-        credentials_json: {
-          access_token: tokens.access_token,
-          refresh_token: tokens.refresh_token,
-          expires_at: Date.now() + (tokens.expires_in * 1000),
-          token_type: tokens.token_type,
-        },
-      }, {
-        onConflict: 'project_id',
-        ignoreDuplicates: false,
-      });
-
-    if (upsertError) {
-      console.error('Failed to store credentials:', upsertError);
-      throw new Error('Failed to store credentials');
-    }
 
     return new Response(
       JSON.stringify({

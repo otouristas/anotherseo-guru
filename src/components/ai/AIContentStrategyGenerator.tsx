@@ -192,12 +192,40 @@ export function AIContentStrategyGenerator({ projectId }: { projectId: string })
 
   return (
     <div className="space-y-6">
+      {/* Enhanced Header */}
+      <Card className="border-0 shadow-xl bg-gradient-to-br from-primary/10 via-background to-secondary/10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl" />
+        <CardHeader className="relative pb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <Brain className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                  AI Content Strategy Generator
+                </CardTitle>
+                <p className="text-base text-muted-foreground mt-1">
+                  Generate comprehensive content strategies with AI-powered insights and optimization
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="gap-1">
+                <Sparkles className="w-3 h-3 text-purple-500" />
+                AI-Powered
+              </Badge>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
+
       {/* Input Form */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Brain className="h-5 w-5" />
-            AI Content Strategy Generator
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-background via-background to-primary/5">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Target className="w-5 h-5 text-primary" />
+            Strategy Configuration
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">

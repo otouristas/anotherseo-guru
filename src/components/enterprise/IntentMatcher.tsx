@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -145,8 +145,39 @@ Respond with a JSON array with objects containing: query, score, type, confidenc
   };
 
   return (
-    <Card className="p-6">
-      <div className="space-y-6">
+    <div className="space-y-6">
+      {/* Enhanced Header */}
+      <Card className="border-0 shadow-xl bg-gradient-to-br from-primary/10 via-background to-secondary/10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl" />
+        <CardHeader className="relative pb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-primary/10">
+                <Target className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent">
+                  Search Intent Matcher
+                </CardTitle>
+                <p className="text-base text-muted-foreground mt-1">
+                  AI-powered search intent analysis and content matching for optimal SEO performance
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="secondary" className="gap-1">
+                <Target className="w-3 h-3 text-blue-500" />
+                Enterprise
+              </Badge>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
+
+      {/* Input Section */}
+      <Card className="border-0 shadow-lg bg-gradient-to-br from-background via-background to-primary/5">
+        <CardContent className="p-6">
+          <div className="space-y-6">
         <div>
           <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
             <Target className="w-6 h-6 text-primary" />
@@ -241,7 +272,9 @@ Respond with a JSON array with objects containing: query, score, type, confidenc
             <p>Enter content and queries to analyze search intent</p>
           </div>
         )}
-      </div>
-    </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

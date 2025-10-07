@@ -5,9 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { Footer } from "@/components/Footer";
-import { Settings as SettingsIcon, Key, Bell, User, Palette, Database } from "lucide-react";
+import { Settings as SettingsIcon, Key, Bell, User, Palette, Database, Globe } from "lucide-react";
 import { GeneralSettings } from "@/components/settings/GeneralSettings";
 import { APIKeysSettings } from "@/components/settings/APIKeysSettings";
+import { APIIntegrationsSettings } from "@/components/settings/APIIntegrationsSettings";
 import { NotificationSettings } from "@/components/settings/NotificationSettings";
 import { ProfileSettings } from "@/components/settings/ProfileSettings";
 import { AppearanceSettings } from "@/components/settings/AppearanceSettings";
@@ -46,7 +47,7 @@ function SettingsContent() {
 
         <Card className="p-4 md:p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 gap-2">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-7 gap-2">
               <TabsTrigger value="general" className="flex items-center gap-2">
                 <SettingsIcon className="w-4 h-4 hidden sm:block" />
                 <span className="text-xs sm:text-sm">General</span>
@@ -58,6 +59,10 @@ function SettingsContent() {
               <TabsTrigger value="api-keys" className="flex items-center gap-2">
                 <Key className="w-4 h-4 hidden sm:block" />
                 <span className="text-xs sm:text-sm">API Keys</span>
+              </TabsTrigger>
+              <TabsTrigger value="api-integrations" className="flex items-center gap-2">
+                <Globe className="w-4 h-4 hidden sm:block" />
+                <span className="text-xs sm:text-sm">Integrations</span>
               </TabsTrigger>
               <TabsTrigger value="notifications" className="flex items-center gap-2">
                 <Bell className="w-4 h-4 hidden sm:block" />
@@ -83,6 +88,10 @@ function SettingsContent() {
 
             <TabsContent value="api-keys" className="space-y-4">
               <APIKeysSettings />
+            </TabsContent>
+
+            <TabsContent value="api-integrations" className="space-y-4">
+              <APIIntegrationsSettings />
             </TabsContent>
 
             <TabsContent value="notifications" className="space-y-4">

@@ -3,10 +3,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader as Loader2, Search, TrendingUp, Target, Globe, Sparkles, FileText, ChartBar as BarChart3, ExternalLink } from "lucide-react";
+import { Loader as Loader2, Search, TrendingUp, Target, Globe, Sparkles, FileText, ChartBar as BarChart3, ExternalLink, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { APIStatusMonitor } from "./APIStatusMonitor";
 
 interface KeywordOpportunityAnalyzerProps {
   projectId: string;
@@ -66,6 +68,23 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
   const runAnalysis = async () => {
     setAnalyzing(true);
     try {
+      // First check if GSC data is available
+      const { data: gscData, error: gscError } = await supabase
+        .from('gsc_analytics')
+        .select('id', { count: 'exact' })
+        .eq('project_id', projectId);
+
+      if (gscError) throw gscError;
+
+      if (!gscData || gscData[0]?.count === 0) {
+        toast({
+          title: "No Data Available",
+          description: "Please sync your Google Search Console data first. Use the 'Sync Data' button above.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke('keyword-opportunity-analyzer', {
         body: { projectId }
       });
@@ -209,6 +228,9 @@ export const KeywordOpportunityAnalyzer = ({ projectId }: KeywordOpportunityAnal
           )}
         </Button>
       </div>
+
+      {/* API Status Monitor */}
+      <APIStatusMonitor projectId={projectId} />
 
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <Card>
