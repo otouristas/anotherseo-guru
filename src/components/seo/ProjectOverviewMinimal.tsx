@@ -66,7 +66,7 @@ export default function ProjectOverview({ projectId }: ProjectOverviewProps) {
 
       // Load rankings data
       const { data: rankings } = await supabase
-        .from('keyword_rankings')
+        .from('serp_rankings')
         .select('*')
         .eq('project_id', projectId);
 
@@ -92,10 +92,10 @@ export default function ProjectOverview({ projectId }: ProjectOverviewProps) {
 
       // Load recent activity
       const { data: activity } = await supabase
-        .from('keyword_rankings')
+        .from('serp_rankings')
         .select('*')
         .eq('project_id', projectId)
-        .order('date', { ascending: false })
+        .order('checked_at', { ascending: false })
         .limit(5);
 
       setRecentActivity(activity || []);
@@ -206,7 +206,7 @@ export default function ProjectOverview({ projectId }: ProjectOverviewProps) {
                     <div>
                       <div className="font-medium text-gray-900">{activity.keyword}</div>
                       <div className="text-sm text-gray-600">
-                        Position {activity.position} • {new Date(activity.date).toLocaleDateString()}
+                        Position {activity.position} • {new Date(activity.checked_at).toLocaleDateString()}
                       </div>
                     </div>
                   </div>

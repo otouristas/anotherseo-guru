@@ -1,89 +1,72 @@
-# DataForSEO Credentials Setup Guide
+# DataForSEO API Setup Guide
 
-## ✅ Credentials Updated
+## Issue Identified
 
-Your DataForSEO credentials have been configured:
-- **Login**: george.k@growthrocks.com
-- **Password**: 6f820760d2c324ac
+Your keyword research feature is not returning results because the DataForSEO API credentials are not configured in your Supabase environment.
 
-## 🚀 Deployment Steps
+## What Was Fixed
 
-### 1. Update Supabase Environment Variables
+1. **Database Table Name Issue**: Fixed references from `keyword_rankings` to `serp_rankings` in `ProjectOverviewMinimal.tsx`
+2. **Date Column Issue**: Changed `date` to `checked_at` to match the actual database schema
 
-You need to set these environment variables in your Supabase project:
+## Required Setup: DataForSEO API Credentials
+
+### Step 1: Get DataForSEO API Credentials
+
+1. Go to [DataForSEO](https://dataforseo.com/)
+2. Sign up for an account or log in
+3. Navigate to your Dashboard
+4. Go to **API Access** section
+5. Copy your **Login (Email)** and **Password**
+
+### Step 2: Configure Supabase Edge Functions
+
+You need to add the DataForSEO credentials as environment variables in your Supabase project.
+
+#### Option 1: Using Supabase Dashboard (Recommended)
+
+1. Go to your Supabase Dashboard
+2. Navigate to **Settings** → **Edge Functions** → **Secrets**
+3. Add the following secrets:
+
+```
+DATAFORSEO_LOGIN=your_dataforseo_email@example.com
+DATAFORSEO_PASSWORD=your_dataforseo_password
+```
+
+**Alternative format** (if using API key):
+```
+DATAFORSEO_API_KEY=your_email:your_password
+```
+
+#### Option 2: Using Supabase CLI
 
 ```bash
-# Using Supabase CLI
-supabase secrets set DATAFORSEO_LOGIN=george.k@growthrocks.com
-supabase secrets set DATAFORSEO_PASSWORD=6f820760d2c324ac
-
-# Or via Supabase Dashboard:
-# Go to Settings > Edge Functions > Environment Variables
-# Add:
-# DATAFORSEO_LOGIN = george.k@growthrocks.com
-# DATAFORSEO_PASSWORD = 6f820760d2c324ac
+supabase secrets set DATAFORSEO_LOGIN=your_dataforseo_email@example.com
+supabase secrets set DATAFORSEO_PASSWORD=your_dataforseo_password
 ```
 
-### 2. Deploy the DataForSEO Proxy Function
+### Step 3: Verify Configuration
 
-```bash
-supabase functions deploy dataforseo-proxy
-```
+After setting up the credentials:
+1. Wait 1-2 minutes for environment variables to propagate
+2. Navigate to the Keywords page
+3. Search for a keyword (e.g., "digital marketing")
+4. You should now see results with search volume, CPC, and competition data
 
-### 3. Test the Connection
+## Summary
 
-1. Go to your SEO Suite
-2. Navigate to "DataForSEO Test" tab
-3. Click "Test Connection" to verify credentials work
-4. Run "Run All Tests" to test all endpoints
+**What was wrong:**
+- ❌ DataForSEO credentials not configured in Supabase
+- ❌ Database table name mismatch (keyword_rankings → serp_rankings)
 
-## 🔧 Local Development
+**What was fixed:**
+- ✅ Fixed database table references in code
+- ✅ Fixed date column references
+- ✅ Created setup documentation
 
-For local development, create a `.env.local` file:
+**What you need to do:**
+- ⏳ Add DataForSEO credentials to Supabase
+- ⏳ Test keyword research functionality
 
-```env
-DATAFORSEO_LOGIN=george.k@growthrocks.com
-DATAFORSEO_PASSWORD=6f820760d2c324ac
-```
-
-## 🧪 Testing Endpoints
-
-The following endpoints are now available:
-
-### Free Endpoints (No Cost)
-- **Locations**: Get available search locations
-- **SERP Endpoints**: Get available SERP endpoints
-- **Labs Categories**: Get taxonomy categories
-
-### Paid Endpoints (Cost per Request)
-- **SERP Analysis**: Live Google SERP data
-- **Keyword Volume**: Search volume data
-- **On-Page Analysis**: Website analysis
-
-## 🚨 Security Notes
-
-- ✅ Credentials are server-side only
-- ✅ No credentials exposed to frontend
-- ✅ Proper CORS configuration
-- ✅ Allow-listed endpoints only
-
-## 📊 Usage Examples
-
-```typescript
-// Get available locations
-const locations = await dfsLocations();
-
-// Analyze SERP for keyword
-const serpData = await dfsGoogleLiveAdvanced("best running shoes", 2840, "en", 20);
-
-// Get keyword volumes
-const volumes = await dfsSearchVolumeLive(["keyword1", "keyword2"], 2840, "en");
-```
-
-## 🔍 Troubleshooting
-
-If tests fail:
-1. Check Supabase environment variables are set
-2. Verify function is deployed: `supabase functions list`
-3. Check function logs: `supabase functions logs dataforseo-proxy`
-4. Ensure credentials are correct in DataForSEO dashboard
+Once you add the credentials, keyword research will work immediately!
