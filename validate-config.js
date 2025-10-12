@@ -3,8 +3,25 @@
 // Configuration validation script
 console.log('🔍 Validating configuration files...');
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Helpers
+function tryParseJSON(name, content) {
+  try {
+    return { ok: true, data: JSON.parse(content) };
+  } catch (e1) {
+    // Fallback for JSON with comments/trailing commas (JSONC)
+    const withoutBlock = content.replace(/\/\*[\s\S]*?\*\//g, '');
+    const withoutLine = withoutBlock.replace(/^\s*\/\/.*$/gm, '');
+    const withoutTrailingCommas = withoutLine.replace(/,(\s*[}\]])/g, '$1');
+    try {
+      return { ok: true, data: JSON.parse(withoutTrailingCommas) };
+    } catch (e2) {
+      return { ok: false, error: e2.message };
+    }
+  }
+}
 
 // Validate JSON files
 const jsonFiles = [
@@ -21,8 +38,12 @@ jsonFiles.forEach(file => {
   try {
     if (fs.existsSync(file)) {
       const content = fs.readFileSync(file, 'utf8');
-      JSON.parse(content);
-      console.log(`✅ ${file} - Valid JSON`);
+      const result = tryParseJSON(file, content);
+      if (result.ok) {
+        console.log(`✅ ${file} - Valid JSON${file.startsWith('tsconfig') ? ' (JSONC supported)' : ''}`);
+      } else {
+        console.log(`❌ ${file} - JSON Error: ${result.error}`);
+      }
     } else {
       console.log(`⚠️  ${file} - File not found`);
     }
