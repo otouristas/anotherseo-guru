@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart3, TrendingUp, Users, MousePointerClick, Clock, Target, RefreshCw, Search } from "lucide-react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import {
   LineChart,
@@ -268,6 +269,9 @@ export const GoogleAnalyticsDashboard = ({ projectId }: GoogleAnalyticsDashboard
               Last synced: {lastSync.toLocaleString()}
             </p>
           )}
+          <Link to="/app/performance/analytics" className="text-sm text-primary hover:underline">
+            Open stored GA4 history
+          </Link>
         </div>
         <Button onClick={syncData} disabled={syncing} size="sm">
           <RefreshCw className={`w-4 h-4 mr-2 ${syncing ? 'animate-spin' : ''}`} />

@@ -23,6 +23,7 @@ export function SEOSidebar({ onTabChange, activeTab }: SEOSidebarProps) {
   const mainItems = [
     { id: "overview", title: "Overview", icon: LayoutDashboard },
     { id: "analytics", title: "Analytics", icon: BarChart },
+    { id: "ga4", title: "GA4 History", icon: BarChart3 },
     { id: "advanced-analytics", title: "Advanced Analytics", icon: BarChart },
     { id: "seo-report", title: "SEO Report", icon: FileSearch },
   ];

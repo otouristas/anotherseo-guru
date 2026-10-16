@@ -802,6 +802,106 @@ export type Database = {
           },
         ]
       }
+      ga4_sync_alerts: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          project_id: string | null
+          property_id: string | null
+          report: string | null
+          severity: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          project_id?: string | null
+          property_id?: string | null
+          report?: string | null
+          severity?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          project_id?: string | null
+          property_id?: string | null
+          report?: string | null
+          severity?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ga4_sync_alerts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ga4_sync_runs: {
+        Row: {
+          attempt: number
+          end_date: string | null
+          error: string | null
+          finished_at: string | null
+          id: string
+          mode: string
+          project_id: string | null
+          property_id: string | null
+          report: string | null
+          rows_fetched: number
+          rows_written: number
+          start_date: string | null
+          started_at: string
+          state: string
+        }
+        Insert: {
+          attempt?: number
+          end_date?: string | null
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          mode: string
+          project_id?: string | null
+          property_id?: string | null
+          report?: string | null
+          rows_fetched?: number
+          rows_written?: number
+          start_date?: string | null
+          started_at?: string
+          state: string
+        }
+        Update: {
+          attempt?: number
+          end_date?: string | null
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          mode?: string
+          project_id?: string | null
+          property_id?: string | null
+          report?: string | null
+          rows_fetched?: number
+          rows_written?: number
+          start_date?: string | null
+          started_at?: string
+          state?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ga4_sync_runs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "seo_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       google_api_settings: {
         Row: {
           created_at: string
@@ -1939,6 +2039,74 @@ export type Database = {
       deduct_credits: {
         Args: { credits_to_deduct: number; user_id_param: string }
         Returns: boolean
+      }
+      ga4_history_overview: {
+        Args: { p_end: string; p_project_id: string | null; p_start: string }
+        Returns: {
+          active_users: number
+          average_session_duration: number
+          bounce_rate: number
+          conversions: number
+          date: string
+          ecommerce_purchases: number
+          engagement_rate: number
+          purchase_revenue: number
+          screen_page_views: number
+          sessions: number
+        }[]
+      }
+      ga4_history_pages: {
+        Args: { p_end: string; p_limit?: number; p_project_id: string | null; p_start: string }
+        Returns: {
+          active_users: number
+          page_path: string
+          page_title: string
+          screen_page_views: number
+          sessions: number
+        }[]
+      }
+      ga4_history_acquisition: {
+        Args: { p_end: string; p_limit?: number; p_project_id: string | null; p_start: string }
+        Returns: {
+          active_users: number
+          screen_page_views: number
+          session_medium: string
+          session_source: string
+          sessions: number
+        }[]
+      }
+      ga4_history_events: {
+        Args: { p_end: string; p_limit?: number; p_project_id: string | null; p_start: string }
+        Returns: {
+          active_users: number
+          event_count: number
+          event_name: string
+        }[]
+      }
+      ga4_history_sales: {
+        Args: { p_end: string; p_limit?: number; p_project_id: string | null; p_start: string }
+        Returns: {
+          currency_code: string
+          ecommerce_purchases: number
+          purchase_revenue: number
+          session_medium: string
+          session_source: string
+          sessions: number
+        }[]
+      }
+      ga4_history_properties: {
+        Args: { p_end: string; p_start: string }
+        Returns: {
+          active_users: number
+          currency_code: string | null
+          ecommerce_purchases: number
+          latest_date: string
+          project_id: string
+          property_id: string
+          purchase_revenue: number
+          screen_page_views: number
+          sessions: number
+        }[]
       }
     }
     Enums: {

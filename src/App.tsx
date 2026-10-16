@@ -22,6 +22,7 @@ import Help from "./pages/Help";
 import Jobs from "./pages/Jobs";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import PerformanceAnalytics from "./pages/PerformanceAnalytics";
 import { SEOAIChatbot } from "@/components/SEOAIChatbot";
 import { CookieConsent } from "@/components/CookieConsent";
 
@@ -62,6 +63,7 @@ const App = () => (
             <Route path="/help" element={<Help />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/app/performance/analytics" element={<PerformanceAnalytics />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <SEOAIChatbot />

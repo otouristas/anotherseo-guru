@@ -54,6 +54,7 @@ import KeywordResearchMatrix from "@/components/seo/KeywordResearchMatrix";
 import SERPTrackerMinimal from "@/components/seo/SERPTrackerMinimal";
 import ProjectOverviewMinimal from "@/components/seo/ProjectOverviewMinimal";
 import GoogleIntegrationsMinimal from "@/components/seo/GoogleIntegrationsMinimal";
+import { Ga4HistoryDashboard } from "@/components/seo/Ga4HistoryDashboard";
 
 export default function SEODashboard() {
   return (
@@ -224,6 +225,12 @@ function SEODashboardContent() {
         return (
           <ErrorBoundary>
             <AdvancedAnalytics projectId={selectedProject} />
+          </ErrorBoundary>
+        );
+      case "ga4":
+        return (
+          <ErrorBoundary>
+            <Ga4HistoryDashboard projectId={selectedProject} />
           </ErrorBoundary>
         );
       case "content-strategy":

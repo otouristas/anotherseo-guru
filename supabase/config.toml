@@ -78,6 +78,9 @@ verify_jwt = false
 [functions.fetch-ga4-data]
 verify_jwt = false
 
+[functions.ga4-nightly-sync]
+verify_jwt = false
+
 [functions.keyword-opportunity-analyzer]
 verify_jwt = false
 
